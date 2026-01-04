@@ -46,6 +46,7 @@ Plugins can render modals/dialogs internally when needed.
 ## Plugin Interface
 
 Plugins come in two forms:
+
 1. **Sidepanel Plugin**: Renders UI in the left or right sidepanel
 2. **Context Menu Plugin**: Only adds items to the row context menu
 
@@ -77,9 +78,11 @@ interface SidepanelPlugin<TData = unknown> {
   render: () => ReactNode;
 
   /**
-   * Context menu items contributed by this plugin (optional)
+   * Context menu configuration (optional)
    */
-  contextMenuItems?: ContextMenuItem<TData>[];
+  contextMenu?: {
+    items: ContextMenuItemFactory<TData>[];
+  };
 }
 
 /**
@@ -97,9 +100,11 @@ interface ContextMenuOnlyPlugin<TData = unknown> {
   name: string;
 
   /**
-   * Context menu items contributed by this plugin
+   * Context menu configuration
    */
-  contextMenuItems: ContextMenuItem<TData>[];
+  contextMenu: {
+    items: ContextMenuItemFactory<TData>[];
+  };
 }
 
 /**
@@ -110,9 +115,9 @@ type DataTablePlugin<TData = unknown> =
   | ContextMenuOnlyPlugin<TData>;
 
 /**
- * Context menu item definition
+ * Context menu item definition (resolved from factory)
  */
-interface ContextMenuItem<TData, TArgs = unknown> {
+interface ContextMenuItemEntry {
   /**
    * Unique identifier for the menu item
    */
@@ -131,23 +136,23 @@ interface ContextMenuItem<TData, TArgs = unknown> {
   /**
    * Handler when clicked
    */
-  onClick: (context: ContextMenuContext<TData, TArgs>) => void;
+  onClick: () => void;
 
   /**
-   * Whether to show this item (optional, default: true)
+   * Whether to show this item (default: true)
    */
-  visible?: (context: ContextMenuContext<TData, TArgs>) => boolean;
+  visible?: boolean;
 
   /**
-   * Whether item is disabled (optional, default: false)
+   * Whether item is disabled (default: false)
    */
-  disabled?: (context: ContextMenuContext<TData, TArgs>) => boolean;
+  disabled?: boolean;
 }
 
 /**
- * Context passed to context menu item handlers
+ * Context passed to contextMenuItem factory function
  */
-interface ContextMenuContext<TData, TArgs = unknown> {
+interface ContextMenuItemContext<TData, TArgs = unknown> {
   /**
    * The row that was right-clicked
    */
@@ -173,6 +178,19 @@ interface ContextMenuContext<TData, TArgs = unknown> {
    */
   pluginArgs: TArgs;
 }
+
+/**
+ * Factory type for creating context menu items
+ */
+type ContextMenuItemFactory<TData, TArgs = unknown> = 
+  (ctx: ContextMenuItemContext<TData, TArgs>) => ContextMenuItemEntry;
+
+/**
+ * Helper function to create a context menu item with full context access
+ */
+function contextMenuItem<TData, TArgs = unknown>(
+  factory: (ctx: ContextMenuItemContext<TData, TArgs>) => ContextMenuItemEntry
+): ContextMenuItemFactory<TData, TArgs>;
 
 interface PluginContext<TArgs> {
   /**
@@ -217,9 +235,11 @@ interface DefineSidepanelPluginOptions<TData, TSchema extends z.ZodType>
   render: (context: PluginContext<z.infer<TSchema>>) => () => ReactNode;
 
   /**
-   * Context menu items contributed by this plugin (optional)
+   * Context menu configuration (optional)
    */
-  contextMenuItems?: ContextMenuItem<TData, z.infer<TSchema>>[];
+  contextMenu?: {
+    items: ContextMenuItemFactory<TData, z.infer<TSchema>>[];
+  };
 }
 
 /**
@@ -228,9 +248,11 @@ interface DefineSidepanelPluginOptions<TData, TSchema extends z.ZodType>
 interface DefineContextMenuPluginOptions<TData, TSchema extends z.ZodType> 
   extends BasePluginOptions<TSchema> {
   /**
-   * Context menu items contributed by this plugin
+   * Context menu configuration
    */
-  contextMenuItems: ContextMenuItem<TData, z.infer<TSchema>>[];
+  contextMenu: {
+    items: ContextMenuItemFactory<TData, z.infer<TSchema>>[];
+  };
 }
 
 type DefinePluginOptions<TData, TSchema extends z.ZodType> =
@@ -441,17 +463,21 @@ const BulkActions = definePlugin({
   args: BulkActionsSchema,
   render: BulkActionsRenderer,
   // Add context menu items from sidepanel plugin
-  contextMenuItems: [
-    {
-      id: "delete",
-      label: "Delete",
-      onClick: ({ row, selectedRows }) => {
-        const targets = selectedRows.length > 0 ? selectedRows : [row];
-        handleDelete(targets);
-      },
-      visible: ({ pluginArgs }) => pluginArgs.enableDelete,
-    },
-  ],
+  contextMenu: {
+    items: [
+      contextMenuItem((ctx) => ({
+        id: "delete",
+        label: ctx.selectedRows.length > 1 
+          ? `Delete ${ctx.selectedRows.length} items` 
+          : "Delete",
+        onClick: () => {
+          const targets = ctx.selectedRows.length > 0 ? ctx.selectedRows : [ctx.row];
+          handleDelete(targets);
+        },
+        visible: ctx.pluginArgs.enableDelete,
+      })),
+    ],
+  },
 });
 
 // Usage - config is type-safe and validated at runtime
@@ -483,20 +509,22 @@ const RowActions = definePlugin({
     enableOpenInNewTab: z.boolean().default(true),
   }),
   // No position or render - context menu only
-  contextMenuItems: [
-    {
-      id: "copy-id",
-      label: "Copy ID",
-      onClick: ({ row }) => navigator.clipboard.writeText(row.id),
-      visible: ({ pluginArgs }) => pluginArgs.enableCopyId,
-    },
-    {
-      id: "open-new-tab",
-      label: "Open in New Tab",
-      onClick: ({ row }) => window.open(`/users/${row.id}`, "_blank"),
-      visible: ({ pluginArgs }) => pluginArgs.enableOpenInNewTab,
-    },
-  ],
+  contextMenu: {
+    items: [
+      contextMenuItem((ctx) => ({
+        id: "copy-id",
+        label: "Copy ID",
+        onClick: () => navigator.clipboard.writeText(ctx.row.id),
+        visible: ctx.pluginArgs.enableCopyId,
+      })),
+      contextMenuItem((ctx) => ({
+        id: "open-new-tab",
+        label: "Open in New Tab",
+        onClick: () => window.open(`/users/${ctx.row.id}`, "_blank"),
+        visible: ctx.pluginArgs.enableOpenInNewTab,
+      })),
+    ],
+  },
 });
 
 // Usage
