@@ -2,8 +2,20 @@
   "name": "@izumisy/seizen-datatable-react",
   "version": "0.1.0",
   "description": "Rich datatable for serious applications",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vite build",
+    "test": "vitest",
+    "type-check": "tsc"
   },
   "author": "IzumiSy",
   "license": "MIT",
@@ -11,11 +23,17 @@
     "react": ">= 19",
     "react-dom": ">= 19"
   },
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
+    "@vanilla-extract/css": "^1.17.1"
+  },
   "devDependencies": {
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vanilla-extract/vite-plugin": "^4.0.20",
     "typescript": "5",
     "vite": "^7.3.0",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-externalize-deps": "^0.10.0",
     "vite-tsconfig-paths": "^6.0.3",
