@@ -6,7 +6,6 @@ A rich, enterprise-grade DataTable component for React, powered by [TanStack Tab
 
 - 🎨 **CSS Variables theming** - Customize appearance by simply defining CSS variables
 - 🔧 **TypeScript** - Full type safety out of the box
-- ⚡ **Lightweight** - Built with vanilla-extract for zero-runtime CSS-in-JS
 - 🔌 **Data Adapters** - Connect to Supabase, Firestore, Hasura, and more with zero boilerplate
 - 🧩 **Plugin System** - Add search panels, side panels, column customization with a single line
 - 📄 **Pagination built-in** - Both offset-based and cursor-based pagination supported

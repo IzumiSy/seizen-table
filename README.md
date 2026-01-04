@@ -14,7 +14,6 @@ Enterprise-grade React UI components for serious applications.
 - 🎨 **CSS Variables first** - Theme with plain CSS, no runtime overhead
 - 🔌 **Pluggable architecture** - Add only what you need
 - 🔧 **TypeScript native** - Full type safety out of the box
-- ⚡ **Lightweight** - Zero-runtime CSS-in-JS with vanilla-extract
 
 ## Contributing
 
