@@ -119,11 +119,6 @@ type DataTablePlugin<TData = unknown> =
  */
 interface ContextMenuItemEntry {
   /**
-   * Unique identifier for the menu item
-   */
-  id: string;
-
-  /**
    * Display label
    */
   label: string;
@@ -182,13 +177,18 @@ interface ContextMenuItemContext<TData, TArgs = unknown> {
 /**
  * Factory type for creating context menu items
  */
-type ContextMenuItemFactory<TData, TArgs = unknown> = 
-  (ctx: ContextMenuItemContext<TData, TArgs>) => ContextMenuItemEntry;
+type ContextMenuItemFactory<TData, TArgs = unknown> = {
+  id: string;
+  create: (ctx: ContextMenuItemContext<TData, TArgs>) => ContextMenuItemEntry;
+};
 
 /**
  * Helper function to create a context menu item with full context access
+ * @param id - Unique identifier for the menu item
+ * @param factory - Factory function that receives context and returns menu item entry
  */
 function contextMenuItem<TData, TArgs = unknown>(
+  id: string,
   factory: (ctx: ContextMenuItemContext<TData, TArgs>) => ContextMenuItemEntry
 ): ContextMenuItemFactory<TData, TArgs>;
 
@@ -465,8 +465,7 @@ const BulkActions = definePlugin({
   // Add context menu items from sidepanel plugin
   contextMenu: {
     items: [
-      contextMenuItem((ctx) => ({
-        id: "delete",
+      contextMenuItem("delete", (ctx) => ({
         label: ctx.selectedRows.length > 1 
           ? `Delete ${ctx.selectedRows.length} items` 
           : "Delete",
@@ -511,14 +510,12 @@ const RowActions = definePlugin({
   // No position or render - context menu only
   contextMenu: {
     items: [
-      contextMenuItem((ctx) => ({
-        id: "copy-id",
+      contextMenuItem("copy-id", (ctx) => ({
         label: "Copy ID",
         onClick: () => navigator.clipboard.writeText(ctx.row.id),
         visible: ctx.pluginArgs.enableCopyId,
       })),
-      contextMenuItem((ctx) => ({
-        id: "open-new-tab",
+      contextMenuItem("open-new-tab", (ctx) => ({
         label: "Open in New Tab",
         onClick: () => window.open(`/users/${ctx.row.id}`, "_blank"),
         visible: ctx.pluginArgs.enableOpenInNewTab,
