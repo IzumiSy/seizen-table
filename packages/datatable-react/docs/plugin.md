@@ -4,11 +4,44 @@
 
 Different use cases require different UI enhancements:
 
-- Admin dashboards need bulk actions and advanced filtering
-- Spreadsheet-like apps need cell editing and sheet tabs
+- Admin dashboards need bulk actions and row detail panels
+- Data exploration apps need advanced filtering and search
 - Analytics tools need column customization and export features
 
 The plugin system allows these features to be added modularly.
+
+## Layout
+
+DataTable provides built-in sidepanels with IDE-style vertical tabs on both sides. Each plugin specifies which side to render on.
+
+```
+┌───────┬─────────────────────────────────────────────┬───────┐
+│ [N]   │                                             │ [D]   │
+│ [a]   │                                             │ [e]   │
+│ [v]   │                                             │ [t]   │
+│ [i]   │             Table Body                      │ [a]   │
+│ [g]   │                                             │ [i]   │
+│ [a]   │                                             │ [l]   │
+│ [t]   ├─────────────────────────────────────────────┤ [s]   │
+│ [e]   │                                             ├───────┤
+│       │                                             │ [F]   │
+│   ↑   │                                             │ [i]   │
+│ left- │                                             │ [l]   │
+│ sider │                                             │ [t]   │
+│       │                                             │ [e]   │
+│       │                                             │ [r]   │
+│       │                                             │   ↑   │
+│       │                                             │ right-│
+│       │                                             │ sider │
+└───────┴─────────────────────────────────────────────┴───────┘
+```
+
+| Position | Description |
+|----------|-------------|
+| `left-sider` | IDE-style vertical tab on the left side. Ideal for navigation, tree views. |
+| `right-sider` | IDE-style vertical tab on the right side. Ideal for details, inspectors. |
+
+Plugins can render modals/dialogs internally when needed.
 
 ## Plugin Interface
 
@@ -22,14 +55,14 @@ interface DataTablePlugin<TData = unknown> {
   id: string;
 
   /**
-   * Plugin display name
+   * Plugin display name (used as vertical tab label in sidepanel)
    */
   name: string;
 
   /**
    * Plugin position in the DataTable layout
    */
-  position: "toolbar" | "sidebar" | "footer" | "overlay";
+  position: "left-sider" | "right-sider";
 
   /**
    * Render the plugin UI
@@ -51,14 +84,14 @@ interface DefinePluginOptions<TData, TSchema extends z.ZodType> {
   id: string;
 
   /**
-   * Plugin display name
+   * Plugin display name (used as vertical tab label in sidepanel)
    */
   name: string;
 
   /**
    * Plugin position in the DataTable layout
    */
-  position: "toolbar" | "sidebar" | "footer" | "overlay";
+  position: "left-sider" | "right-sider";
 
   /**
    * Zod schema for configuration validation
@@ -151,61 +184,39 @@ useOnChange("sorting", (sorting) => {
 
 ## Built-in Plugins
 
-### SearchPanel
+### RowDetail
 
-Global search and advanced filtering UI.
-
-```typescript
-import { SearchPanel } from "@izumisy/seizen-datatable-plugin-search";
-
-const searchPlugin = SearchPanel.configure({
-  // Searchable columns
-  searchableColumns: ["name", "email"],
-  // Enable advanced filter builder
-  enableAdvancedFilter: true,
-  // Debounce search input
-  debounceMs: 300,
-});
-```
-
-### SidePanel
-
-Slide-out panel for row details, editing, or custom content.
+Display row details in the sidepanel.
 
 ```typescript
-import { SidePanel } from "@izumisy/seizen-datatable-plugin-sidepanel";
+import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
 
-const sidePanelPlugin = SidePanel.configure({
-  // Render function for panel content
-  render: (row) => <UserDetailPanel user={row} />,
-  // Panel width
-  width: 400,
+const rowDetailPlugin = RowDetail.configure({
+  // Render function for detail content
+  render: (row) => <UserDetailView user={row} />,
   // Open on row click
   trigger: "row-click",
 });
 ```
 
-### SheetView
+### FilterBuilder
 
-Spreadsheet-like tabs for multiple views/datasets.
+Advanced filtering UI in the sidepanel.
 
 ```typescript
-import { SheetView } from "@izumisy/seizen-datatable-plugin-sheet";
+import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
 
-const sheetPlugin = SheetView.configure({
-  sheets: [
-    { id: "all", label: "All Users", filter: {} },
-    { id: "active", label: "Active", filter: { status: "active" } },
-    { id: "inactive", label: "Inactive", filter: { status: "inactive" } },
-  ],
-  // Allow users to create custom sheets
-  allowCustomSheets: true,
+const filterPlugin = FilterBuilder.configure({
+  // Filterable columns
+  filterableColumns: ["name", "email", "status"],
+  // Enable saved filters
+  enableSavedFilters: true,
 });
 ```
 
 ### ColumnCustomizer
 
-UI for showing/hiding and reordering columns.
+UI for showing/hiding and reordering columns in the sidepanel.
 
 ```typescript
 import { ColumnCustomizer } from "@izumisy/seizen-datatable-plugin-columns";
@@ -222,8 +233,8 @@ const columnPlugin = ColumnCustomizer.configure({
 
 ```tsx
 import { DataTable } from "@izumisy/seizen-datatable-react";
-import { SearchPanel } from "@izumisy/seizen-datatable-plugin-search";
-import { SidePanel } from "@izumisy/seizen-datatable-plugin-sidepanel";
+import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
+import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
 
 function UsersTable() {
   return (
@@ -231,8 +242,9 @@ function UsersTable() {
       data={data}
       columns={columns}
       plugins={[
-        SearchPanel.configure({ searchableColumns: ["name", "email"] }),
-        SidePanel.configure({ render: (row) => <UserDetail user={row} /> }),
+        // These will appear as vertical tabs in the sidepanel
+        RowDetail.configure({ render: (row) => <UserDetail user={row} /> }),
+        FilterBuilder.configure({ filterableColumns: ["name", "email"] }),
       ]}
     />
   );
@@ -292,7 +304,7 @@ function BulkActionsRenderer(context: PluginContext<z.infer<typeof BulkActionsSc
 const BulkActions = definePlugin({
   id: "bulk-actions",
   name: "Bulk Actions",
-  position: "toolbar",
+  position: "right-sider",
   args: BulkActionsSchema,
   render: BulkActionsRenderer,
 });
