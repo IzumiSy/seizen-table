@@ -45,10 +45,17 @@ Plugins can render modals/dialogs internally when needed.
 
 ## Plugin Interface
 
+Plugins come in two forms:
+1. **Sidepanel Plugin**: Renders UI in the left or right sidepanel
+2. **Context Menu Plugin**: Only adds items to the row context menu
+
 ```typescript
 import { z } from "zod";
 
-interface DataTablePlugin<TData = unknown> {
+/**
+ * Sidepanel plugin - renders UI in sidepanel and optionally adds context menu items
+ */
+interface SidepanelPlugin<TData = unknown> {
   /**
    * Unique plugin identifier
    */
@@ -68,6 +75,103 @@ interface DataTablePlugin<TData = unknown> {
    * Render the plugin UI
    */
   render: () => ReactNode;
+
+  /**
+   * Context menu items contributed by this plugin (optional)
+   */
+  contextMenuItems?: ContextMenuItem<TData>[];
+}
+
+/**
+ * Context menu only plugin - only adds items to the row context menu
+ */
+interface ContextMenuOnlyPlugin<TData = unknown> {
+  /**
+   * Unique plugin identifier
+   */
+  id: string;
+
+  /**
+   * Plugin display name
+   */
+  name: string;
+
+  /**
+   * Context menu items contributed by this plugin
+   */
+  contextMenuItems: ContextMenuItem<TData>[];
+}
+
+/**
+ * Plugin can be either a sidepanel plugin or a context menu only plugin
+ */
+type DataTablePlugin<TData = unknown> = 
+  | SidepanelPlugin<TData> 
+  | ContextMenuOnlyPlugin<TData>;
+
+/**
+ * Context menu item definition
+ */
+interface ContextMenuItem<TData, TArgs = unknown> {
+  /**
+   * Unique identifier for the menu item
+   */
+  id: string;
+
+  /**
+   * Display label
+   */
+  label: string;
+
+  /**
+   * Icon (optional)
+   */
+  icon?: ReactNode;
+
+  /**
+   * Handler when clicked
+   */
+  onClick: (context: ContextMenuContext<TData, TArgs>) => void;
+
+  /**
+   * Whether to show this item (optional, default: true)
+   */
+  visible?: (context: ContextMenuContext<TData, TArgs>) => boolean;
+
+  /**
+   * Whether item is disabled (optional, default: false)
+   */
+  disabled?: (context: ContextMenuContext<TData, TArgs>) => boolean;
+}
+
+/**
+ * Context passed to context menu item handlers
+ */
+interface ContextMenuContext<TData, TArgs = unknown> {
+  /**
+   * The row that was right-clicked
+   */
+  row: TData;
+
+  /**
+   * Row index
+   */
+  rowIndex: number;
+
+  /**
+   * Currently selected rows
+   */
+  selectedRows: TData[];
+
+  /**
+   * Table instance
+   */
+  table: Table<TData>;
+
+  /**
+   * Plugin configuration args
+   */
+  pluginArgs: TArgs;
 }
 
 interface PluginContext<TArgs> {
@@ -77,32 +181,61 @@ interface PluginContext<TArgs> {
   args: TArgs;
 }
 
-interface DefinePluginOptions<TData, TSchema extends z.ZodType> {
+/**
+ * Base options shared by all plugin types
+ */
+interface BasePluginOptions<TSchema extends z.ZodType> {
   /**
    * Unique plugin identifier
    */
   id: string;
 
   /**
-   * Plugin display name (used as vertical tab label in sidepanel)
+   * Plugin display name (used as vertical tab label for sidepanel plugins)
    */
   name: string;
 
+  /**
+   * Zod schema for configuration validation
+   */
+  args: TSchema;
+}
+
+/**
+ * Options for defining a sidepanel plugin
+ */
+interface DefineSidepanelPluginOptions<TData, TSchema extends z.ZodType> 
+  extends BasePluginOptions<TSchema> {
   /**
    * Plugin position in the DataTable layout
    */
   position: "left-sider" | "right-sider";
 
   /**
-   * Zod schema for configuration validation
-   */
-  args: TSchema;
-
-  /**
    * Render function that receives context with validated args
    */
   render: (context: PluginContext<z.infer<TSchema>>) => () => ReactNode;
+
+  /**
+   * Context menu items contributed by this plugin (optional)
+   */
+  contextMenuItems?: ContextMenuItem<TData, z.infer<TSchema>>[];
 }
+
+/**
+ * Options for defining a context menu only plugin
+ */
+interface DefineContextMenuPluginOptions<TData, TSchema extends z.ZodType> 
+  extends BasePluginOptions<TSchema> {
+  /**
+   * Context menu items contributed by this plugin
+   */
+  contextMenuItems: ContextMenuItem<TData, z.infer<TSchema>>[];
+}
+
+type DefinePluginOptions<TData, TSchema extends z.ZodType> =
+  | DefineSidepanelPluginOptions<TData, TSchema>
+  | DefineContextMenuPluginOptions<TData, TSchema>;
 
 // definePlugin returns a plugin factory with type-safe configure method
 function definePlugin<TData, TSchema extends z.ZodType>(
@@ -307,6 +440,18 @@ const BulkActions = definePlugin({
   position: "right-sider",
   args: BulkActionsSchema,
   render: BulkActionsRenderer,
+  // Add context menu items from sidepanel plugin
+  contextMenuItems: [
+    {
+      id: "delete",
+      label: "Delete",
+      onClick: ({ row, selectedRows }) => {
+        const targets = selectedRows.length > 0 ? selectedRows : [row];
+        handleDelete(targets);
+      },
+      visible: ({ pluginArgs }) => pluginArgs.enableDelete,
+    },
+  ],
 });
 
 // Usage - config is type-safe and validated at runtime
@@ -319,6 +464,45 @@ const BulkActions = definePlugin({
         { label: "Archive", onClick: (rows) => archiveUsers(rows) },
       ],
     }),
+  ]}
+/>
+```
+
+## Context Menu Only Plugin Example
+
+```tsx
+import { z } from "zod";
+import { definePlugin } from "@izumisy/seizen-datatable-react";
+
+// Plugin that only adds context menu items (no sidepanel)
+const RowActions = definePlugin({
+  id: "row-actions",
+  name: "Row Actions",
+  args: z.object({
+    enableCopyId: z.boolean().default(true),
+    enableOpenInNewTab: z.boolean().default(true),
+  }),
+  // No position or render - context menu only
+  contextMenuItems: [
+    {
+      id: "copy-id",
+      label: "Copy ID",
+      onClick: ({ row }) => navigator.clipboard.writeText(row.id),
+      visible: ({ pluginArgs }) => pluginArgs.enableCopyId,
+    },
+    {
+      id: "open-new-tab",
+      label: "Open in New Tab",
+      onClick: ({ row }) => window.open(`/users/${row.id}`, "_blank"),
+      visible: ({ pluginArgs }) => pluginArgs.enableOpenInNewTab,
+    },
+  ],
+});
+
+// Usage
+<DataTable
+  plugins={[
+    RowActions.configure({ enableCopyId: true }),
   ]}
 />
 ```
