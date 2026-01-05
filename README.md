@@ -6,8 +6,8 @@ Enterprise-grade React UI components for serious applications.
 
 | Package | Description |
 |---------|-------------|
-| [@izumisy/seizen-datatable-react](./packages/datatable-react) | Rich DataTable with data adapters and plugin system |
-| [@izumisy/seizen-command-palette-react](./packages/command-palette-react) | Intuitive command palette |
+| [@izumisy/seizen-datatable-react](./packages/datatable-react) | Rich DataTable with plugin feature |
+| [@izumisy/seizen-command-palette-react](./packages/command-palette-react) | Intuitive Command Palette |
 
 ## Philosophy
 

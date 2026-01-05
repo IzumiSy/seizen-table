@@ -4,18 +4,91 @@
 
 Different use cases require different UI enhancements:
 
-- Admin dashboards need bulk actions and advanced filtering
-- Spreadsheet-like apps need cell editing and sheet tabs
+- Admin dashboards need bulk actions and row detail panels
+- Data exploration apps need advanced filtering and search
 - Analytics tools need column customization and export features
 
 The plugin system allows these features to be added modularly.
 
+## Layout
+
+DataTable provides built-in sidepanels with IDE-style vertical tabs on both sides. Each plugin specifies which side to render on.
+
+```
+┌───────┬─────────────────────────────────────────────┬───────┐
+│ [N]   │                                             │ [D]   │
+│ [a]   │                                             │ [e]   │
+│ [v]   │                                             │ [t]   │
+│ [i]   │             Table Body                      │ [a]   │
+│ [g]   │                                             │ [i]   │
+│ [a]   │                                             │ [l]   │
+│ [t]   ├─────────────────────────────────────────────┤ [s]   │
+│ [e]   │                                             ├───────┤
+│       │                                             │ [F]   │
+│   ↑   │                                             │ [i]   │
+│ left- │                                             │ [l]   │
+│ sider │                                             │ [t]   │
+│       │                                             │ [e]   │
+│       │                                             │ [r]   │
+│       │                                             │   ↑   │
+│       │                                             │ right-│
+│       │                                             │ sider │
+└───────┴─────────────────────────────────────────────┴───────┘
+```
+
+| Position | Description |
+|----------|-------------|
+| `left-sider` | IDE-style vertical tab on the left side. Ideal for navigation, tree views. |
+| `right-sider` | IDE-style vertical tab on the right side. Ideal for details, inspectors. |
+
+Plugins can render modals/dialogs internally when needed.
+
 ## Plugin Interface
+
+Plugins come in two forms:
+
+1. **Sidepanel Plugin**: Renders UI in the left or right sidepanel
+2. **Context Menu Plugin**: Only adds items to the row context menu
 
 ```typescript
 import { z } from "zod";
 
-interface DataTablePlugin<TData = unknown> {
+/**
+ * Sidepanel plugin - renders UI in sidepanel and optionally adds context menu items
+ */
+interface SidepanelPlugin<TData = unknown> {
+  /**
+   * Unique plugin identifier
+   */
+  id: string;
+
+  /**
+   * Plugin display name (used as vertical tab label in sidepanel)
+   */
+  name: string;
+
+  /**
+   * Plugin position in the DataTable layout
+   */
+  position: "left-sider" | "right-sider";
+
+  /**
+   * Render the plugin UI
+   */
+  render: () => ReactNode;
+
+  /**
+   * Context menu configuration (optional)
+   */
+  contextMenu?: {
+    items: ContextMenuItemFactory<TData>[];
+  };
+}
+
+/**
+ * Context menu only plugin - only adds items to the row context menu
+ */
+interface ContextMenuOnlyPlugin<TData = unknown> {
   /**
    * Unique plugin identifier
    */
@@ -27,15 +100,97 @@ interface DataTablePlugin<TData = unknown> {
   name: string;
 
   /**
-   * Plugin position in the DataTable layout
+   * Context menu configuration
    */
-  position: "toolbar" | "sidebar" | "footer" | "overlay";
+  contextMenu: {
+    items: ContextMenuItemFactory<TData>[];
+  };
+}
+
+/**
+ * Plugin can be either a sidepanel plugin or a context menu only plugin
+ */
+type DataTablePlugin<TData = unknown> = 
+  | SidepanelPlugin<TData> 
+  | ContextMenuOnlyPlugin<TData>;
+
+/**
+ * Context menu item definition (resolved from factory)
+ */
+interface ContextMenuItemEntry {
+  /**
+   * Display label
+   */
+  label: string;
 
   /**
-   * Render the plugin UI
+   * Icon (optional)
    */
-  render: () => ReactNode;
+  icon?: ReactNode;
+
+  /**
+   * Handler when clicked
+   */
+  onClick: () => void;
+
+  /**
+   * Whether to show this item (default: true)
+   */
+  visible?: boolean;
+
+  /**
+   * Whether item is disabled (default: false)
+   */
+  disabled?: boolean;
 }
+
+/**
+ * Context passed to contextMenuItem factory function
+ */
+interface ContextMenuItemContext<TData, TArgs = unknown> {
+  /**
+   * The row that was right-clicked
+   */
+  row: TData;
+
+  /**
+   * Row index
+   */
+  rowIndex: number;
+
+  /**
+   * Currently selected rows
+   */
+  selectedRows: TData[];
+
+  /**
+   * Table instance
+   */
+  table: Table<TData>;
+
+  /**
+   * Plugin configuration args
+   */
+  pluginArgs: TArgs;
+}
+
+/**
+ * Factory type for creating context menu items
+ */
+type ContextMenuItemFactory<TData, TArgs = unknown> = {
+  id: string;
+  create: (ctx: ContextMenuItemContext<TData, TArgs>) => ContextMenuItemEntry;
+};
+
+/**
+ * Helper function to create a context menu item with full context access
+ * @param id - Unique identifier for the menu item
+ * @param factory - Factory function that receives context and returns menu item entry
+ */
+function contextMenuItem<TData, TArgs = unknown>(
+  id: string,
+  factory: (ctx: ContextMenuItemContext<TData, TArgs>) => ContextMenuItemEntry
+): ContextMenuItemFactory<TData, TArgs>;
 
 interface PluginContext<TArgs> {
   /**
@@ -44,32 +199,65 @@ interface PluginContext<TArgs> {
   args: TArgs;
 }
 
-interface DefinePluginOptions<TData, TSchema extends z.ZodType> {
+/**
+ * Base options shared by all plugin types
+ */
+interface BasePluginOptions<TSchema extends z.ZodType> {
   /**
    * Unique plugin identifier
    */
   id: string;
 
   /**
-   * Plugin display name
+   * Plugin display name (used as vertical tab label for sidepanel plugins)
    */
   name: string;
-
-  /**
-   * Plugin position in the DataTable layout
-   */
-  position: "toolbar" | "sidebar" | "footer" | "overlay";
 
   /**
    * Zod schema for configuration validation
    */
   args: TSchema;
+}
+
+/**
+ * Options for defining a sidepanel plugin
+ */
+interface DefineSidepanelPluginOptions<TData, TSchema extends z.ZodType> 
+  extends BasePluginOptions<TSchema> {
+  /**
+   * Plugin position in the DataTable layout
+   */
+  position: "left-sider" | "right-sider";
 
   /**
    * Render function that receives context with validated args
    */
   render: (context: PluginContext<z.infer<TSchema>>) => () => ReactNode;
+
+  /**
+   * Context menu configuration (optional)
+   */
+  contextMenu?: {
+    items: ContextMenuItemFactory<TData, z.infer<TSchema>>[];
+  };
 }
+
+/**
+ * Options for defining a context menu only plugin
+ */
+interface DefineContextMenuPluginOptions<TData, TSchema extends z.ZodType> 
+  extends BasePluginOptions<TSchema> {
+  /**
+   * Context menu configuration
+   */
+  contextMenu: {
+    items: ContextMenuItemFactory<TData, z.infer<TSchema>>[];
+  };
+}
+
+type DefinePluginOptions<TData, TSchema extends z.ZodType> =
+  | DefineSidepanelPluginOptions<TData, TSchema>
+  | DefineContextMenuPluginOptions<TData, TSchema>;
 
 // definePlugin returns a plugin factory with type-safe configure method
 function definePlugin<TData, TSchema extends z.ZodType>(
@@ -151,61 +339,39 @@ useOnChange("sorting", (sorting) => {
 
 ## Built-in Plugins
 
-### SearchPanel
+### RowDetail
 
-Global search and advanced filtering UI.
-
-```typescript
-import { SearchPanel } from "@izumisy/seizen-datatable-plugin-search";
-
-const searchPlugin = SearchPanel.configure({
-  // Searchable columns
-  searchableColumns: ["name", "email"],
-  // Enable advanced filter builder
-  enableAdvancedFilter: true,
-  // Debounce search input
-  debounceMs: 300,
-});
-```
-
-### SidePanel
-
-Slide-out panel for row details, editing, or custom content.
+Display row details in the sidepanel.
 
 ```typescript
-import { SidePanel } from "@izumisy/seizen-datatable-plugin-sidepanel";
+import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
 
-const sidePanelPlugin = SidePanel.configure({
-  // Render function for panel content
-  render: (row) => <UserDetailPanel user={row} />,
-  // Panel width
-  width: 400,
+const rowDetailPlugin = RowDetail.configure({
+  // Render function for detail content
+  render: (row) => <UserDetailView user={row} />,
   // Open on row click
   trigger: "row-click",
 });
 ```
 
-### SheetView
+### FilterBuilder
 
-Spreadsheet-like tabs for multiple views/datasets.
+Advanced filtering UI in the sidepanel.
 
 ```typescript
-import { SheetView } from "@izumisy/seizen-datatable-plugin-sheet";
+import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
 
-const sheetPlugin = SheetView.configure({
-  sheets: [
-    { id: "all", label: "All Users", filter: {} },
-    { id: "active", label: "Active", filter: { status: "active" } },
-    { id: "inactive", label: "Inactive", filter: { status: "inactive" } },
-  ],
-  // Allow users to create custom sheets
-  allowCustomSheets: true,
+const filterPlugin = FilterBuilder.configure({
+  // Filterable columns
+  filterableColumns: ["name", "email", "status"],
+  // Enable saved filters
+  enableSavedFilters: true,
 });
 ```
 
 ### ColumnCustomizer
 
-UI for showing/hiding and reordering columns.
+UI for showing/hiding and reordering columns in the sidepanel.
 
 ```typescript
 import { ColumnCustomizer } from "@izumisy/seizen-datatable-plugin-columns";
@@ -222,8 +388,8 @@ const columnPlugin = ColumnCustomizer.configure({
 
 ```tsx
 import { DataTable } from "@izumisy/seizen-datatable-react";
-import { SearchPanel } from "@izumisy/seizen-datatable-plugin-search";
-import { SidePanel } from "@izumisy/seizen-datatable-plugin-sidepanel";
+import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
+import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
 
 function UsersTable() {
   return (
@@ -231,8 +397,9 @@ function UsersTable() {
       data={data}
       columns={columns}
       plugins={[
-        SearchPanel.configure({ searchableColumns: ["name", "email"] }),
-        SidePanel.configure({ render: (row) => <UserDetail user={row} /> }),
+        // These will appear as vertical tabs in the sidepanel
+        RowDetail.configure({ render: (row) => <UserDetail user={row} /> }),
+        FilterBuilder.configure({ filterableColumns: ["name", "email"] }),
       ]}
     />
   );
@@ -292,9 +459,24 @@ function BulkActionsRenderer(context: PluginContext<z.infer<typeof BulkActionsSc
 const BulkActions = definePlugin({
   id: "bulk-actions",
   name: "Bulk Actions",
-  position: "toolbar",
+  position: "right-sider",
   args: BulkActionsSchema,
   render: BulkActionsRenderer,
+  // Add context menu items from sidepanel plugin
+  contextMenu: {
+    items: [
+      contextMenuItem("delete", (ctx) => ({
+        label: ctx.selectedRows.length > 1 
+          ? `Delete ${ctx.selectedRows.length} items` 
+          : "Delete",
+        onClick: () => {
+          const targets = ctx.selectedRows.length > 0 ? ctx.selectedRows : [ctx.row];
+          handleDelete(targets);
+        },
+        visible: ctx.pluginArgs.enableDelete,
+      })),
+    ],
+  },
 });
 
 // Usage - config is type-safe and validated at runtime
@@ -307,6 +489,45 @@ const BulkActions = definePlugin({
         { label: "Archive", onClick: (rows) => archiveUsers(rows) },
       ],
     }),
+  ]}
+/>
+```
+
+## Context Menu Only Plugin Example
+
+```tsx
+import { z } from "zod";
+import { definePlugin } from "@izumisy/seizen-datatable-react";
+
+// Plugin that only adds context menu items (no sidepanel)
+const RowActions = definePlugin({
+  id: "row-actions",
+  name: "Row Actions",
+  args: z.object({
+    enableCopyId: z.boolean().default(true),
+    enableOpenInNewTab: z.boolean().default(true),
+  }),
+  // No position or render - context menu only
+  contextMenu: {
+    items: [
+      contextMenuItem("copy-id", (ctx) => ({
+        label: "Copy ID",
+        onClick: () => navigator.clipboard.writeText(ctx.row.id),
+        visible: ctx.pluginArgs.enableCopyId,
+      })),
+      contextMenuItem("open-new-tab", (ctx) => ({
+        label: "Open in New Tab",
+        onClick: () => window.open(`/users/${ctx.row.id}`, "_blank"),
+        visible: ctx.pluginArgs.enableOpenInNewTab,
+      })),
+    ],
+  },
+});
+
+// Usage
+<DataTable
+  plugins={[
+    RowActions.configure({ enableCopyId: true }),
   ]}
 />
 ```
