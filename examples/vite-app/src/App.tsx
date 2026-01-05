@@ -13,18 +13,78 @@ import {
 } from "./plugins/FileExportPlugin";
 import { ColumnControlPlugin } from "./plugins/ColumnControlPlugin";
 import { data, type Person } from "./data";
+import {
+  StatusBadge,
+  DepartmentBadge,
+  AvatarName,
+  SalaryCell,
+  EmailCell,
+  DateCell,
+  LocationCell,
+} from "./components/cells";
 
 const columns: ColumnDef<Person>[] = [
-  { accessorKey: "id", header: "ID" },
-  { accessorKey: "name", header: "Name" },
-  { accessorKey: "age", header: "Age" },
-  { accessorKey: "email", header: "Email" },
-  { accessorKey: "department", header: "Department" },
-  { accessorKey: "joinedAt", header: "Joined At" },
-  { accessorKey: "role", header: "Role" },
-  { accessorKey: "salary", header: "Salary" },
-  { accessorKey: "location", header: "Location" },
-  { accessorKey: "status", header: "Status" },
+  {
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ getValue }) => (
+      <span style={{ color: "#9ca3af", fontFamily: "monospace" }}>
+        #{String(getValue()).padStart(3, "0")}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ getValue }) => <AvatarName name={getValue() as string} />,
+  },
+  {
+    accessorKey: "age",
+    header: "Age",
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ getValue }) => <EmailCell email={getValue() as string} />,
+  },
+  {
+    accessorKey: "department",
+    header: "Department",
+    cell: ({ getValue }) => (
+      <DepartmentBadge department={getValue() as string} />
+    ),
+  },
+  {
+    accessorKey: "joinedAt",
+    header: "Joined At",
+    cell: ({ getValue }) => <DateCell date={getValue() as string} />,
+  },
+  {
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ getValue }) => (
+      <span style={{ fontStyle: "italic", color: "#4b5563" }}>
+        {getValue() as string}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "salary",
+    header: "Salary",
+    cell: ({ getValue }) => <SalaryCell salary={getValue() as number} />,
+  },
+  {
+    accessorKey: "location",
+    header: "Location",
+    cell: ({ getValue }) => <LocationCell location={getValue() as string} />,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ getValue }) => (
+      <StatusBadge status={getValue() as Person["status"]} />
+    ),
+  },
 ];
 
 function App() {
