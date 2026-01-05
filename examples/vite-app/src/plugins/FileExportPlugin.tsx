@@ -78,13 +78,19 @@ function FileExportRenderer(context: PluginContext<FileExportConfig>) {
   const { args } = context;
 
   return function FileExportPanel() {
-    const { data, columns } = usePluginContext();
+    const { data, columns, table } = usePluginContext();
     const [filename, setFilename] = useState(args.filename);
     const [includeHeaders, setIncludeHeaders] = useState(args.includeHeaders);
     const [selectedExporterId, setSelectedExporterId] = useState(
       args.exporters[0]?.id ?? "csv"
     );
     const [exported, setExported] = useState(false);
+
+    // Filter columns based on visibility
+    const columnVisibility = table.getColumnVisibility();
+    const visibleColumns = columns.filter(
+      (col) => columnVisibility[col.key] !== false
+    );
 
     const selectedExporter =
       args.exporters.find((e) => e.id === selectedExporterId) ??
@@ -93,17 +99,19 @@ function FileExportRenderer(context: PluginContext<FileExportConfig>) {
     const handleExport = useCallback(() => {
       if (!selectedExporter) return;
 
-      const content = selectedExporter.convert(data, columns, {
+      const content = selectedExporter.convert(data, visibleColumns, {
         includeHeaders,
       });
       const fullFilename = `${filename}.${selectedExporter.extension}`;
       downloadFile(content, fullFilename, selectedExporter.mimeType);
       setExported(true);
       setTimeout(() => setExported(false), 2000);
-    }, [data, columns, filename, includeHeaders, selectedExporter]);
+    }, [data, visibleColumns, filename, includeHeaders, selectedExporter]);
 
     const previewContent = selectedExporter
-      ? selectedExporter.convert(data.slice(0, 3), columns, { includeHeaders })
+      ? selectedExporter.convert(data.slice(0, 3), visibleColumns, {
+          includeHeaders,
+        })
       : "No exporter selected";
 
     return (

@@ -23,7 +23,7 @@ const fallback = {
   cellPaddingX: "12px",
   cellPaddingY: "10px",
   sidepanelBg: "#f9fafb",
-  sidepanelWidth: "40px",
+  sidepanelWidth: "35px",
   sidepanelTabBg: "transparent",
   sidepanelTabHoverBg: "#e5e7eb",
   sidepanelTabActiveBg: "#ffffff",

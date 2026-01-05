@@ -10,6 +10,8 @@ import {
   type SortingState,
   type ColumnFiltersState,
   type PaginationState,
+  type VisibilityState,
+  type ColumnOrderState,
   type Table,
 } from "@tanstack/react-table";
 import type { DataTablePlugin } from "../plugin";
@@ -150,6 +152,51 @@ export interface DataTableInstance<TData> {
   getColumns: () => DataTableColumn<TData>[];
 
   // ===========================================================================
+  // Column Visibility
+  // ===========================================================================
+
+  /**
+   * Get the current column visibility state.
+   * @returns Object mapping column IDs to visibility (true = visible)
+   */
+  getColumnVisibility: () => VisibilityState;
+
+  /**
+   * Set column visibility state.
+   * @param visibility - Object mapping column IDs to visibility
+   */
+  setColumnVisibility: (visibility: VisibilityState) => void;
+
+  /**
+   * Toggle visibility of a specific column.
+   * @param columnId - The column ID to toggle
+   */
+  toggleColumnVisibility: (columnId: string) => void;
+
+  // ===========================================================================
+  // Column Order
+  // ===========================================================================
+
+  /**
+   * Get the current column order.
+   * @returns Array of column IDs in order
+   */
+  getColumnOrder: () => ColumnOrderState;
+
+  /**
+   * Set the column order.
+   * @param order - Array of column IDs in desired order
+   */
+  setColumnOrder: (order: ColumnOrderState) => void;
+
+  /**
+   * Move a column to a new position.
+   * @param columnId - The column ID to move
+   * @param toIndex - The target index
+   */
+  moveColumn: (columnId: string, toIndex: number) => void;
+
+  // ===========================================================================
   // Plugins
   // ===========================================================================
 
@@ -213,6 +260,8 @@ export function useDataTable<TData>({
     pageIndex: 0,
     pageSize: 10,
   });
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
 
   // Plugin control
   const plugin = usePluginControl();
@@ -246,6 +295,8 @@ export function useDataTable<TData>({
       columnFilters,
       globalFilter,
       pagination,
+      columnVisibility,
+      columnOrder,
     },
     enableRowSelection: true,
     enableMultiRowSelection: enableMultiSelect,
@@ -254,6 +305,8 @@ export function useDataTable<TData>({
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -304,6 +357,39 @@ export function useDataTable<TData>({
       getData: () => data,
       getColumns: () => columns,
 
+      // Column Visibility
+      getColumnVisibility: () => columnVisibility,
+      setColumnVisibility,
+      toggleColumnVisibility: (columnId: string) => {
+        setColumnVisibility((prev) => ({
+          ...prev,
+          [columnId]: prev[columnId] === false ? true : false,
+        }));
+      },
+
+      // Column Order
+      getColumnOrder: () => columnOrder,
+      setColumnOrder,
+      moveColumn: (columnId: string, toIndex: number) => {
+        setColumnOrder((prev) => {
+          // If no order is set, use the default column order
+          const currentOrder =
+            prev.length > 0
+              ? prev
+              : columns.map((col) =>
+                  "accessorKey" in col
+                    ? (col.accessorKey as string)
+                    : col.id ?? ""
+                );
+          const fromIndex = currentOrder.indexOf(columnId);
+          if (fromIndex === -1) return prev;
+          const newOrder = [...currentOrder];
+          newOrder.splice(fromIndex, 1);
+          newOrder.splice(toIndex, 0, columnId);
+          return newOrder;
+        });
+      },
+
       // Plugins
       plugins,
       plugin,
@@ -317,11 +403,14 @@ export function useDataTable<TData>({
   }, [
     tanstackTable,
     data,
+    columns,
     plugins,
     columnFilters,
     globalFilter,
     sorting,
     pagination,
+    columnVisibility,
+    columnOrder,
     plugin,
     eventBus,
   ]);

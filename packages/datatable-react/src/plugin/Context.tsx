@@ -134,13 +134,27 @@ export function PluginContextProvider<TData>({
   const sortingState = table.getSortingState();
   const paginationState = table.getPaginationState();
 
-  // Convert columns to simplified PluginColumnInfo
-  const columns: PluginColumnInfo[] = table.getColumns().map((col) => {
+  // Convert columns to simplified PluginColumnInfo (respecting column order)
+  const columnOrder = table.getColumnOrder();
+  const rawColumns: PluginColumnInfo[] = table.getColumns().map((col) => {
     const accessorKey =
       "accessorKey" in col ? (col.accessorKey as string) : col.id ?? "";
     const header = typeof col.header === "string" ? col.header : accessorKey;
     return { key: accessorKey, header };
   });
+
+  // Sort columns by order if order is set
+  const columns: PluginColumnInfo[] =
+    columnOrder.length > 0
+      ? [...rawColumns].sort((a, b) => {
+          const aIndex = columnOrder.indexOf(a.key);
+          const bIndex = columnOrder.indexOf(b.key);
+          // Columns not in order go to the end
+          if (aIndex === -1) return 1;
+          if (bIndex === -1) return -1;
+          return aIndex - bIndex;
+        })
+      : rawColumns;
 
   // Store previous values for change detection and emit events
   const prevDataRef = useRef(data);

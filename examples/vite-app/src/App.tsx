@@ -11,15 +11,8 @@ import {
   JsonlExporter,
   TsvExporter,
 } from "./plugins/FileExportPlugin";
-
-type Person = {
-  id: number;
-  name: string;
-  age: number;
-  email: string;
-  department: string;
-  joinedAt: string;
-};
+import { ColumnControlPlugin } from "./plugins/ColumnControlPlugin";
+import { data, type Person } from "./data";
 
 const columns: ColumnDef<Person>[] = [
   { accessorKey: "id", header: "ID" },
@@ -27,49 +20,11 @@ const columns: ColumnDef<Person>[] = [
   { accessorKey: "age", header: "Age" },
   { accessorKey: "email", header: "Email" },
   { accessorKey: "department", header: "Department" },
-];
-
-const data: Person[] = [
-  {
-    id: 1,
-    name: "John Doe",
-    age: 30,
-    email: "john@example.com",
-    department: "Engineering",
-    joinedAt: "2022-01-15",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    age: 25,
-    email: "jane@example.com",
-    department: "Design",
-    joinedAt: "2023-03-20",
-  },
-  {
-    id: 3,
-    name: "Bob Johnson",
-    age: 35,
-    email: "bob@example.com",
-    department: "Marketing",
-    joinedAt: "2021-08-10",
-  },
-  {
-    id: 4,
-    name: "Alice Williams",
-    age: 28,
-    email: "alice@example.com",
-    department: "Engineering",
-    joinedAt: "2022-11-05",
-  },
-  {
-    id: 5,
-    name: "Charlie Brown",
-    age: 42,
-    email: "charlie@example.com",
-    department: "Sales",
-    joinedAt: "2020-04-22",
-  },
+  { accessorKey: "joinedAt", header: "Joined At" },
+  { accessorKey: "role", header: "Role" },
+  { accessorKey: "salary", header: "Salary" },
+  { accessorKey: "location", header: "Location" },
+  { accessorKey: "status", header: "Status" },
 ];
 
 function App() {
@@ -79,6 +34,9 @@ function App() {
     plugins: [
       RowDetailPlugin.configure({
         width: 450,
+      }),
+      ColumnControlPlugin.configure({
+        width: 400,
       }),
       FileExportPlugin.configure({
         width: 450,
