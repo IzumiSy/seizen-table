@@ -16,7 +16,6 @@ export default defineConfig({
     }),
     dts({
       insertTypesEntry: true,
-      rollupTypes: true,
     }),
   ],
   build: {

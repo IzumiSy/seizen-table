@@ -5,6 +5,26 @@ import { useState, useCallback, useMemo } from "react";
 // =============================================================================
 
 /**
+ * Registry for plugin open() args types.
+ *
+ * Plugin authors can extend this interface via module augmentation
+ * to provide type-safe args for their plugins.
+ *
+ * @example
+ * ```typescript
+ * // In your plugin file:
+ * declare module "@izumisy/seizen-datatable-react/plugin" {
+ *   interface PluginArgsRegistry {
+ *     "my-plugin": { row: MyRowType; mode: "view" | "edit" };
+ *   }
+ * }
+ * ```
+ */
+export interface PluginArgsRegistry {
+  // Empty by default - plugins extend this via module augmentation
+}
+
+/**
  * Internal plugin state.
  * @internal
  */
@@ -21,10 +41,27 @@ export interface PluginInternalState {
 export interface PluginControl {
   /**
    * Open a plugin's sidepanel.
+   *
+   * When a plugin registers its args type via module augmentation,
+   * the args parameter becomes type-safe.
+   *
    * @param pluginId - ID of the plugin to open
-   * @param args - Optional arguments to pass to the plugin (accessible via openArgs in usePluginContext)
+   * @param args - Arguments to pass to the plugin (accessible via openArgs in usePluginContext)
+   *
+   * @example
+   * ```typescript
+   * // With registered plugin (type-safe)
+   * table.plugin.open("row-detail", { row }); // ✅
+   * table.plugin.open("row-detail", { foo: 1 }); // ❌ Type error
+   *
+   * // With unregistered plugin (requires explicit type or uses unknown)
+   * table.plugin.open("custom-plugin" as const, { data: 123 });
+   * ```
    */
-  open: (pluginId: string, args?: unknown) => void;
+  open: <K extends keyof PluginArgsRegistry>(
+    pluginId: K,
+    args: PluginArgsRegistry[K]
+  ) => void;
 
   /**
    * Close the currently open plugin's sidepanel.

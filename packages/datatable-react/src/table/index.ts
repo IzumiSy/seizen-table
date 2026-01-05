@@ -16,6 +16,11 @@ export type {
   EventBus,
 } from "../plugin/useEventBus";
 
+// Re-export PluginArgsRegistry for module augmentation
+// This ensures that module augmentation on "@izumisy/seizen-datatable-react/plugin"
+// also affects types imported from "@izumisy/seizen-datatable-react"
+export type { PluginArgsRegistry } from "../plugin/usePluginControl";
+
 // Re-export useful types from TanStack Table
 export type {
   ColumnDef,

@@ -10,15 +10,36 @@ import type {
 // =============================================================================
 
 /**
+ * Registry for custom event types.
+ *
+ * Plugin authors can extend this interface via module augmentation
+ * to provide type-safe custom events.
+ *
+ * @example
+ * ```typescript
+ * // In your plugin file:
+ * declare module "@izumisy/seizen-datatable-react/plugin" {
+ *   interface EventBusRegistry {
+ *     "my-plugin:action": { itemId: string; action: "create" | "delete" };
+ *     "my-plugin:complete": { success: boolean };
+ *   }
+ * }
+ * ```
+ */
+export interface EventBusRegistry {
+  // Empty by default - plugins extend this via module augmentation
+}
+
+/**
  * Map of built-in event names to their payload types.
  *
  * DataTable automatically emits these events:
  * - State change events: data, selection, filter, sorting, pagination
  * - Action events: row-click
  *
- * Plugins and applications can also emit custom events.
+ * Plugins can extend EventBusRegistry to add custom events.
  */
-export interface DataTableEventMap {
+export interface DataTableEventMap extends EventBusRegistry {
   /**
    * Emitted when table data changes.
    */

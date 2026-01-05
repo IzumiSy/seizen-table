@@ -76,10 +76,10 @@ function App() {
     columns,
     plugins: [
       RowDetailPlugin.configure({
-        width: 350,
+        width: 450,
       }),
       FileExportPlugin.configure({
-        width: 300,
+        width: 450,
         filename: "users",
         includeHeaders: true,
         exporters: [CsvExporter, JsonlExporter],

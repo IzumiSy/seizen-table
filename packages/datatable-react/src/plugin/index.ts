@@ -31,9 +31,13 @@ export type {
 export { usePluginContext, PluginContextProvider } from "./Context";
 export type { PluginContextValue, PluginColumnInfo } from "./Context";
 
+// PluginControl (for type-safe plugin.open())
+export type { PluginArgsRegistry } from "./usePluginControl";
+
 // Event types
 export { useEventBus } from "./useEventBus";
 export type {
+  EventBusRegistry,
   DataTableEventMap,
   DataTableEventName,
   EventBus,

@@ -17,6 +17,22 @@ export type { Exporter, ExportColumn, ExportOptions };
 export { CsvExporter, JsonlExporter, TsvExporter } from "./fileExporters";
 
 // =============================================================================
+// Module Augmentation for Type-Safe Plugin Args & Events
+// =============================================================================
+
+declare module "@izumisy/seizen-datatable-react/plugin" {
+  interface PluginArgsRegistry {
+    "file-export": Record<string, never>; // No args needed for open
+  }
+
+  interface EventBusRegistry {
+    "file-export:start": { format: string; rowCount: number };
+    "file-export:complete": { filename: string; format: string };
+    "file-export:error": { error: Error };
+  }
+}
+
+// =============================================================================
 // Plugin Definition
 // =============================================================================
 

@@ -6,6 +6,16 @@ import {
   type PluginContext,
 } from "@izumisy/seizen-datatable-react/plugin";
 
+// =============================================================================
+// Module Augmentation for Type-Safe Plugin Args
+// =============================================================================
+
+declare module "@izumisy/seizen-datatable-react/plugin" {
+  interface PluginArgsRegistry {
+    "row-detail": { row: unknown };
+  }
+}
+
 /**
  * Schema for RowDetail plugin configuration
  */
