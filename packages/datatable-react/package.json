@@ -7,6 +7,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./plugin": {
+      "import": "./dist/plugin.js",
+      "types": "./dist/plugin.d.ts"
     }
   },
   "files": [
@@ -21,7 +25,8 @@
   "license": "MIT",
   "peerDependencies": {
     "react": ">= 19",
-    "react-dom": ">= 19"
+    "react-dom": ">= 19",
+    "zod": ">= 4"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
@@ -31,12 +36,13 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vanilla-extract/vite-plugin": "^4.0.20",
-    "typescript": "5",
+    "typescript": "5.8.2",
     "vite": "^7.3.0",
     "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-externalize-deps": "^0.10.0",
     "vite-tsconfig-paths": "^6.0.3",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.16",
+    "zod": "^4.3.5"
   }
 }

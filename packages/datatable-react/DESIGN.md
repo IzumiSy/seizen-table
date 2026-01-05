@@ -38,10 +38,9 @@ The DataTable is designed as a modular, enterprise-grade table component with th
 packages/
 ├── datatable-react/           # Core component
 │   ├── src/
-│   │   ├── DataTable.tsx
-│   │   ├── useDataTable.ts
-│   │   └── styles.css.ts
-│   └── package.json
+│   │   ├── table/             # DataTable component and hooks
+│   │   └── plugin/            # Plugin definition utilities
+│   └── docs/                  # Design documents
 │
 ├── datatable-adapter-graphql/ # GraphQL adapter
 ├── datatable-adapter-rest/    # REST/OpenAPI adapter

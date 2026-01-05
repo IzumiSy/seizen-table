@@ -21,7 +21,7 @@ pnpm add @izumisy/seizen-datatable-react
 ## Quick Start
 
 ```tsx
-import { DataTable, type ColumnDef } from "@izumisy/seizen-datatable-react";
+import { useDataTable, DataTable, type ColumnDef } from "@izumisy/seizen-datatable-react";
 
 type Person = {
   name: string;
@@ -41,7 +41,51 @@ const data: Person[] = [
 ];
 
 function App() {
-  return <DataTable data={data} columns={columns} />;
+  const table = useDataTable({ data, columns });
+
+  return <DataTable table={table} />;
+}
+```
+
+`useDataTable` and `DataTable` are always used together. This pattern provides:
+
+- **Full control** - Access table state and methods from the hook
+- **Flexibility** - Trigger actions from outside the table component
+- **Composability** - Share table instance across multiple components
+
+```tsx
+function UsersPage() {
+  const table = useDataTable({
+    data: users,
+    columns,
+    plugins: [
+      RowDetail.configure({ render: (row) => <UserDetail user={row} /> }),
+    ],
+  });
+
+  // Access selected rows from the hook
+  const handleBulkDelete = () => {
+    const selectedRows = table.getSelectedRows();
+    deleteUsers(selectedRows);
+    table.clearSelection();
+  };
+
+  // Access filter state
+  const handleExport = () => {
+    const currentFilter = table.getFilterState();
+    exportWithFilter(currentFilter);
+  };
+
+  return (
+    <div>
+      <div className="toolbar">
+        <button onClick={handleBulkDelete}>Delete Selected</button>
+        <button onClick={handleExport}>Export</button>
+        <span>{table.getSelectedRows().length} selected</span>
+      </div>
+      <DataTable table={table} />
+    </div>
+  );
 }
 ```
 
@@ -93,20 +137,21 @@ Customize the appearance by defining CSS variables. All variables have sensible 
 }
 ```
 
-## Headless Usage
+## Custom Table Rendering
 
-For full control over rendering, use the `useDataTable` hook:
+For full control over table rendering, use `table.render()` or access the TanStack Table instance directly:
 
 ```tsx
 import { useDataTable, flexRender, type ColumnDef } from "@izumisy/seizen-datatable-react";
 
 function CustomTable<TData>({ data, columns }: { data: TData[]; columns: ColumnDef<TData>[] }) {
   const table = useDataTable({ data, columns });
+  const tanstack = table._tanstackTable;
 
   return (
     <table>
       <thead>
-        {table.getHeaderGroups().map((headerGroup) => (
+        {tanstack.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
               <th key={header.id}>
@@ -119,7 +164,7 @@ function CustomTable<TData>({ data, columns }: { data: TData[]; columns: ColumnD
         ))}
       </thead>
       <tbody>
-        {table.getRowModel().rows.map((row) => (
+        {tanstack.getRowModel().rows.map((row) => (
           <tr key={row.id}>
             {row.getVisibleCells().map((cell) => (
               <td key={cell.id}>
@@ -139,6 +184,7 @@ function CustomTable<TData>({ data, columns }: { data: TData[]; columns: ColumnD
 Connect your DataTable to any backend with minimal setup. Sorting, filtering, and pagination are handled automatically by the adapter.
 
 ```tsx
+import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
 import { SupabaseAdapter } from "@izumisy/seizen-datatable-adapter-supabase";
 
 const adapter = SupabaseAdapter.configure({
@@ -147,8 +193,12 @@ const adapter = SupabaseAdapter.configure({
 });
 
 function UsersTable() {
-  const { state } = useAdapter(adapter);
-  return <DataTable data={state.data} columns={columns} />;
+  const table = useDataTable({
+    columns,
+    adapter,
+  });
+
+  return <DataTable table={table} />;
 }
 ```
 
@@ -163,23 +213,27 @@ function UsersTable() {
 Enhance your DataTable with pre-built UI components. Add powerful features without writing complex code.
 
 ```tsx
-import { SearchPanel } from "@izumisy/seizen-datatable-plugin-search";
-import { SidePanel } from "@izumisy/seizen-datatable-plugin-sidepanel";
+import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
+import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
 
-<DataTable
-  data={data}
-  columns={columns}
-  plugins={[
-    SearchPanel.configure({ searchableColumns: ["name", "email"] }),
-    SidePanel.configure({ render: (row) => <UserDetail user={row} /> }),
-  ]}
-/>
+function UsersTable() {
+  const table = useDataTable({
+    data,
+    columns,
+    plugins: [
+      RowDetail.configure({ render: (row) => <UserDetail user={row} /> }),
+      FilterBuilder.configure({ filterableColumns: ["name", "email"] }),
+    ],
+  });
+
+  return <DataTable table={table} />;
+}
 ```
 
 **Planned Plugins:**
-- **SearchPanel** - Global search with advanced filtering
-- **SidePanel** - Row details in a slide-out panel
-- **SheetView** - Tab-based views like spreadsheets
+- **RowDetail** - Row details in a sidepanel
+- **FilterBuilder** - Advanced filtering UI
 - **ColumnCustomizer** - Show/hide and reorder columns
 
 ## License

@@ -30,10 +30,9 @@ const fallback = {
   rowSelectedBg: "#eff6ff",
 };
 
-export const table = style({
-  width: "100%",
-  borderCollapse: "collapse",
-  borderSpacing: 0,
+// Container for the entire DataTable with sidepanels
+export const container = style({
+  display: "flex",
   fontFamily: `var(--szui-font-family, ${fallback.fontFamily})`,
   fontSize: `var(--szui-font-size, ${fallback.fontSize})`,
   lineHeight: `var(--szui-line-height, ${fallback.lineHeight})`,
@@ -42,6 +41,18 @@ export const table = style({
   border: `var(--szui-border-width, ${fallback.borderWidth}) solid var(--szui-border-color, ${fallback.borderColor})`,
   borderRadius: `var(--szui-border-radius, ${fallback.borderRadius})`,
   overflow: "hidden",
+});
+
+// Wrapper for the main table
+export const tableWrapper = style({
+  flex: 1,
+  overflow: "auto",
+});
+
+export const table = style({
+  width: "100%",
+  borderCollapse: "collapse",
+  borderSpacing: 0,
 });
 
 export const thead = style({
@@ -69,7 +80,7 @@ export const tr = style({
     "&:hover": {
       backgroundColor: `var(--szui-row-hover-bg, ${fallback.rowHoverBg})`,
     },
-    '&[data-selected="true"]': {
+    "&[data-selected]": {
       backgroundColor: `var(--szui-row-selected-bg, ${fallback.rowSelectedBg})`,
     },
   },
