@@ -187,9 +187,7 @@ export type DefinePluginOptions<TData, TSchema extends z.ZodType> =
  */
 export function definePlugin<TData, TSchema extends z.ZodType>(
   options: DefinePluginOptions<TData, TSchema>
-): {
-  configure: (config: z.infer<TSchema>) => DataTablePlugin<TData>;
-} {
+) {
   return {
     configure: (config: z.infer<TSchema>) => {
       // Validate config with Zod schema

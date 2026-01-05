@@ -33,9 +33,9 @@ function RowDetailRenderer(context: PluginContext<RowDetailConfig>) {
   const { args } = context;
 
   return function RowDetailPanel() {
-    const { openArgs, useEvent } = usePluginContext();
-    // Initialize with openArgs (for first click) or null
-    const initialRow = (openArgs as { row: unknown } | undefined)?.row ?? null;
+    // Pass plugin ID as type parameter for type-safe openArgs
+    const { openArgs, useEvent } = usePluginContext<"row-detail">();
+    const initialRow = openArgs?.row ?? null;
     const [selectedRow, setSelectedRow] = useState<unknown>(initialRow);
 
     // Subscribe to row-click events for subsequent clicks while panel is open

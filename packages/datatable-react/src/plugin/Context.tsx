@@ -7,6 +7,7 @@ import {
 } from "react";
 import type { DataTableInstance } from "../table/useDataTable";
 import type { DataTableEventMap, DataTableEventName } from "./useEventBus";
+import type { PluginArgsRegistry } from "./usePluginControl";
 
 // =============================================================================
 // Types
@@ -23,18 +24,21 @@ export interface PluginColumnInfo {
 }
 
 /**
- * Plugin context value available to all plugins
+ * Plugin context value available to all plugins.
+ *
+ * Note: `data`, `selectedRows`, and `table` are typed as `unknown` because
+ * plugins are defined generically and cannot know the specific row type.
  */
-export interface PluginContextValue<TData = unknown> {
+export interface PluginContextValue<TOpenArgs = unknown> {
   /**
    * The DataTable instance
    */
-  table: DataTableInstance<TData>;
+  table: DataTableInstance<unknown>;
 
   /**
    * Current table data
    */
-  data: TData[];
+  data: unknown[];
 
   /**
    * Column information (key and header)
@@ -44,23 +48,29 @@ export interface PluginContextValue<TData = unknown> {
   /**
    * Currently selected rows
    */
-  selectedRows: TData[];
+  selectedRows: unknown[];
 
   /**
    * Arguments passed to openPlugin() when the plugin was opened.
    * Use this to receive initial data when the plugin mounts.
    *
+   * For type-safe access, pass the plugin ID as the type parameter:
+   * ```tsx
+   * const { openArgs } = usePluginContext<"row-detail">();
+   * // openArgs is typed as { row: Person } if registered in PluginArgsRegistry
+   * ```
+   *
    * @example
    * ```tsx
    * // Application opens plugin with args:
-   * table.openPlugin("row-detail", { row: clickedRow });
+   * table.plugin.open("row-detail", { row: clickedRow });
    *
-   * // Plugin receives args:
-   * const { openArgs } = usePluginContext();
-   * const initialRow = (openArgs as { row: Person })?.row;
+   * // Plugin receives args (type-safe):
+   * const { openArgs } = usePluginContext<"row-detail">();
+   * const initialRow = openArgs?.row;
    * ```
    */
-  openArgs: unknown;
+  openArgs: TOpenArgs | undefined;
 
   /**
    * Hook to subscribe to events emitted by DataTable.
@@ -100,7 +110,7 @@ export interface PluginContextValue<TData = unknown> {
 // Context
 // =============================================================================
 
-const PluginContext = createContext<PluginContextValue<any> | null>(null);
+const PluginContext = createContext<PluginContextValue | null>(null);
 
 // =============================================================================
 // Provider
@@ -190,8 +200,8 @@ export function PluginContextProvider<TData>({
     }, [event, callback]);
   };
 
-  const contextValue: PluginContextValue<TData> = {
-    table,
+  const contextValue: PluginContextValue = {
+    table: table as DataTableInstance<unknown>,
     data,
     columns,
     selectedRows,
@@ -213,7 +223,13 @@ export function PluginContextProvider<TData>({
 /**
  * Hook to access table context from within a plugin component.
  *
- * @example
+ * Note: `data`, `selectedRows`, and `table` are typed as `unknown` because
+ * plugins are defined generically and cannot know the specific row type at
+ * definition time. Cast as needed in your plugin implementation.
+ *
+ * @typeParam TPluginId - The plugin ID for type-safe openArgs (optional)
+ *
+ * @example Basic usage
  * ```tsx
  * function MyPluginComponent() {
  *   const { table, data, selectedRows, useEvent } = usePluginContext();
@@ -225,8 +241,27 @@ export function PluginContextProvider<TData>({
  *   return <div>Total rows: {data.length}</div>;
  * }
  * ```
+ *
+ * @example With type-safe openArgs
+ * ```tsx
+ * // First, register the plugin args type:
+ * declare module "@izumisy/seizen-datatable-react/plugin" {
+ *   interface PluginArgsRegistry {
+ *     "row-detail": { row: Person };
+ *   }
+ * }
+ *
+ * // Then use with plugin ID for type-safe openArgs:
+ * function RowDetailPanel() {
+ *   const { openArgs } = usePluginContext<"row-detail">();
+ *   // openArgs is typed as { row: Person } | undefined
+ *   const row = openArgs?.row;
+ * }
+ * ```
  */
-export function usePluginContext<TData = unknown>(): PluginContextValue<TData> {
+export function usePluginContext<
+  TPluginId extends keyof PluginArgsRegistry | (string & {}) = string
+>() {
   const context = useContext(PluginContext);
   if (!context) {
     throw new Error(
@@ -234,5 +269,9 @@ export function usePluginContext<TData = unknown>(): PluginContextValue<TData> {
         "Make sure your plugin is rendered inside a DataTable."
     );
   }
-  return context as PluginContextValue<TData>;
+  return context as PluginContextValue<
+    TPluginId extends keyof PluginArgsRegistry
+      ? PluginArgsRegistry[TPluginId]
+      : unknown
+  >;
 }
