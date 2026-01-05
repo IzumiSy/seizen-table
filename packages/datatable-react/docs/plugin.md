@@ -381,9 +381,10 @@ const table = useDataTable({
   data,
   columns,
   plugins: [RowDetailPlugin.configure({ width: 350 })],
-  onRowClick: (row) => {
-    table.plugin.open("row-detail", { row });
-  },
+});
+
+useDataTableEvent(table, "row-click", (row) => {
+  table.plugin.open("row-detail", { row });
 });
 ```
 

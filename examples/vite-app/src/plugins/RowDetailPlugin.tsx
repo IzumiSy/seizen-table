@@ -133,9 +133,10 @@ function formatValue(value: unknown): string {
  *   data,
  *   columns,
  *   plugins: [RowDetailPlugin.configure({ width: 350 })],
- *   onRowClick: (row) => {
- *     table.openPlugin("row-detail", { row });
- *   },
+ * });
+ *
+ * useDataTableEvent(table, "row-click", (row) => {
+ *   table.plugin.open("row-detail", { row });
  * });
  * ```
  */
