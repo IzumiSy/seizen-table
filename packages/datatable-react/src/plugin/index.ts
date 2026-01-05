@@ -7,14 +7,32 @@
  */
 
 // definePlugin
-export { definePlugin } from "./definePlugin";
+export {
+  definePlugin,
+  isSlotPlugin,
+  isSidepanelPlugin,
+  hasSidepanelSlot,
+  getSidepanelSlot,
+} from "./definePlugin";
 export type {
+  // Slot types
+  SlotType,
+  SidepanelSlot,
+  HeaderSlot,
+  FooterSlot,
+  CellSlot,
+  InlineRowSlot,
+  PluginSlots,
+  // Plugin types
   PluginPosition,
+  SlotPlugin,
   SidepanelPlugin,
   ContextMenuOnlyPlugin,
   DataTablePlugin,
   PluginContext,
-  DefineSidepanelPluginOptions,
+  // Define options
+  DefinePluginSlots,
+  DefineSlotPluginOptions,
   DefineContextMenuPluginOptions,
   DefinePluginOptions,
 } from "./definePlugin";
@@ -30,6 +48,16 @@ export type {
 // PluginContext
 export { usePluginContext, PluginContextProvider } from "./Context";
 export type { PluginContextValue, PluginColumnInfo } from "./Context";
+
+// Slot Renderers
+export {
+  SidepanelSlotRenderer,
+  HeaderSlotRenderer,
+  FooterSlotRenderer,
+  CellSlotRenderer,
+  InlineRowSlotRenderer,
+  PluginRenderer, // deprecated alias
+} from "./Renderer";
 
 // PluginControl (for type-safe plugin.open())
 export type { PluginArgsRegistry } from "./usePluginControl";

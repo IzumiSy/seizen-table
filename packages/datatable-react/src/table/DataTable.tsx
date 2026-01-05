@@ -1,6 +1,13 @@
+import { Fragment } from "react";
 import { flexRender } from "@tanstack/react-table";
 import type { DataTableInstance } from "./useDataTable";
-import { PluginRenderer } from "../plugin/Renderer";
+import {
+  SidepanelSlotRenderer,
+  HeaderSlotRenderer,
+  FooterSlotRenderer,
+  CellSlotRenderer,
+  InlineRowSlotRenderer,
+} from "../plugin/Renderer";
 import { PluginContextProvider } from "../plugin/Context";
 import * as styles from "./styles.css";
 
@@ -31,7 +38,7 @@ export function DataTable<TData>({ table, className }: DataTableProps<TData>) {
     <PluginContextProvider table={table}>
       <div className={containerClassName}>
         {/* Left Sidepanel */}
-        <PluginRenderer position="left-sider" />
+        <SidepanelSlotRenderer position="left-sider" />
 
         {/* Main Table */}
         <div className={styles.tableWrapper}>
@@ -51,33 +58,56 @@ export function DataTable<TData>({ table, className }: DataTableProps<TData>) {
                   ))}
                 </tr>
               ))}
+              {/* Header Slot - between thead rows and tbody */}
+              <tr>
+                <th
+                  colSpan={tanstack.getAllColumns().length}
+                  style={{ padding: 0, border: "none" }}
+                >
+                  <HeaderSlotRenderer />
+                </th>
+              </tr>
             </thead>
             <tbody>
               {tanstack.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className={styles.tr}
-                  data-selected={row.getIsSelected() || undefined}
-                  onClick={() => {
-                    table.eventBus.emit("row-click", row.original);
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className={styles.td}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
-                  ))}
-                </tr>
+                <Fragment key={row.id}>
+                  <tr
+                    className={styles.tr}
+                    data-selected={row.getIsSelected() || undefined}
+                    onClick={() => {
+                      table.eventBus.emit("row-click", row.original);
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className={styles.td}>
+                        <CellSlotRenderer
+                          cell={cell}
+                          column={cell.column}
+                          row={row}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </CellSlotRenderer>
+                      </td>
+                    ))}
+                  </tr>
+                  {/* Inline Row Slot - renders below matching row */}
+                  <InlineRowSlotRenderer
+                    row={row}
+                    colSpan={row.getVisibleCells().length}
+                  />
+                </Fragment>
               ))}
             </tbody>
           </table>
+          {/* Footer Slot - below the table */}
+          <FooterSlotRenderer />
         </div>
 
         {/* Right Sidepanel */}
-        <PluginRenderer position="right-sider" />
+        <SidepanelSlotRenderer position="right-sider" />
       </div>
     </PluginContextProvider>
   );

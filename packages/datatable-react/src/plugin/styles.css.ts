@@ -139,3 +139,32 @@ export const sidepanelTabLabel = style({
   letterSpacing: "0.05em",
   whiteSpace: "nowrap",
 });
+
+// =============================================================================
+// Header Slot Styles
+// =============================================================================
+
+export const headerSlot = style({
+  borderBottom: `var(--szui-border-width, ${fallback.borderWidth}) solid var(--szui-border-color, ${fallback.borderColor})`,
+});
+
+// =============================================================================
+// Footer Slot Styles
+// =============================================================================
+
+export const footerSlot = style({
+  borderTop: `var(--szui-border-width, ${fallback.borderWidth}) solid var(--szui-border-color, ${fallback.borderColor})`,
+});
+
+// =============================================================================
+// Inline Row Slot Styles
+// =============================================================================
+
+export const inlineRow = style({
+  backgroundColor: `var(--szui-sidepanel-bg, ${fallback.sidepanelBg})`,
+});
+
+export const inlineRowCell = style({
+  padding: `var(--szui-cell-padding-y, ${fallback.cellPaddingY}) var(--szui-cell-padding-x, ${fallback.cellPaddingX})`,
+  borderBottom: `var(--szui-border-width, ${fallback.borderWidth}) solid var(--szui-border-color, ${fallback.borderColor})`,
+});

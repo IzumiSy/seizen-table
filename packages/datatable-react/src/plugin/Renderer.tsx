@@ -1,9 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
+import type { Cell, Column, Row } from "@tanstack/react-table";
 import type {
   DataTablePlugin,
   PluginPosition,
-  SidepanelPlugin,
+  SidepanelSlot,
 } from "./definePlugin";
+import { isSlotPlugin, getSidepanelSlot } from "./definePlugin";
 import { usePluginContext } from "./Context";
 import * as styles from "./styles.css";
 
@@ -15,34 +17,46 @@ interface PluginRendererProps {
 }
 
 /**
- * Check if a plugin is a sidepanel plugin
+ * Get sidepanel plugins with their slot configuration for a specific position
  */
-function isSidepanelPlugin(
-  plugin: DataTablePlugin<any>
-): plugin is SidepanelPlugin<any> {
-  return "position" in plugin && "render" in plugin;
+function getSidepanelPluginsForPosition(
+  plugins: DataTablePlugin<any>[],
+  position: PluginPosition
+): Array<{ plugin: DataTablePlugin<any>; slot: SidepanelSlot }> {
+  return plugins
+    .map((plugin) => {
+      const slot = getSidepanelSlot(plugin);
+      if (slot && slot.position === position) {
+        return { plugin, slot };
+      }
+      return null;
+    })
+    .filter(
+      (item): item is { plugin: DataTablePlugin<any>; slot: SidepanelSlot } =>
+        item !== null
+    );
 }
 
 /**
- * Renders plugins for a specific position
+ * Renders sidepanel plugins for a specific position
  */
-export function PluginRenderer({ position }: PluginRendererProps) {
+export function SidepanelSlotRenderer({ position }: PluginRendererProps) {
   const { table } = usePluginContext();
   const plugins = table.plugins;
   const activePluginId = table.plugin.getActiveId();
   const setActive = table.plugin.setActive;
-  // Filter plugins by position
-  const sidepanelPlugins = plugins.filter(
-    (p) => isSidepanelPlugin(p) && p.position === position
-  ) as SidepanelPlugin<any>[];
+
+  // Get sidepanel plugins for this position
+  const sidepanelPlugins = getSidepanelPluginsForPosition(plugins, position);
 
   // Memoize plugin components to maintain stable references
   const pluginComponents = useMemo(() => {
-    return sidepanelPlugins.map((plugin) => ({
+    return sidepanelPlugins.map(({ plugin, slot }) => ({
       id: plugin.id,
+      name: plugin.name,
       // Use header if provided, otherwise fallback to name
-      header: plugin.header ?? plugin.name,
-      Component: plugin.render,
+      header: slot.header ?? plugin.name,
+      Component: slot.render,
     }));
   }, [sidepanelPlugins]);
 
@@ -52,22 +66,22 @@ export function PluginRenderer({ position }: PluginRendererProps) {
 
   const dataPosition = position === "left-sider" ? "left" : "right";
   // Check if the active plugin belongs to this position
-  const isActiveHere = sidepanelPlugins.some((p) => p.id === activePluginId);
+  const isActiveHere = sidepanelPlugins.some(
+    ({ plugin }) => plugin.id === activePluginId
+  );
 
   return (
     <div className={styles.sidepanel} data-position={dataPosition}>
       {/* Vertical tabs */}
       <div className={styles.sidepanelTabs}>
-        {sidepanelPlugins.map((plugin) => (
+        {pluginComponents.map(({ id, name }) => (
           <button
-            key={plugin.id}
+            key={id}
             className={styles.sidepanelTab}
-            data-active={activePluginId === plugin.id || undefined}
-            onClick={() =>
-              setActive(activePluginId === plugin.id ? null : plugin.id)
-            }
+            data-active={activePluginId === id || undefined}
+            onClick={() => setActive(activePluginId === id ? null : id)}
           >
-            <span className={styles.sidepanelTabLabel}>{plugin.name}</span>
+            <span className={styles.sidepanelTabLabel}>{name}</span>
           </button>
         ))}
       </div>
@@ -103,5 +117,168 @@ export function PluginRenderer({ position }: PluginRendererProps) {
         </div>
       ))}
     </div>
+  );
+}
+
+/**
+ * @deprecated Use SidepanelSlotRenderer instead
+ */
+export const PluginRenderer = SidepanelSlotRenderer;
+
+// =============================================================================
+// Header Slot Renderer
+// =============================================================================
+
+/**
+ * Renders all header slots from plugins in registration order
+ */
+export function HeaderSlotRenderer() {
+  const { table } = usePluginContext();
+  const plugins = table.plugins;
+
+  // Collect all header slots
+  const headerSlots = plugins
+    .filter(isSlotPlugin)
+    .filter((p) => p.slots.header !== undefined)
+    .map((p) => ({ id: p.id, render: p.slots.header!.render }));
+
+  if (headerSlots.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      {headerSlots.map(({ id, render: Render }) => (
+        <div key={id} className={styles.headerSlot} data-plugin-id={id}>
+          <Render />
+        </div>
+      ))}
+    </>
+  );
+}
+
+// =============================================================================
+// Footer Slot Renderer
+// =============================================================================
+
+/**
+ * Renders all footer slots from plugins in registration order
+ */
+export function FooterSlotRenderer() {
+  const { table } = usePluginContext();
+  const plugins = table.plugins;
+
+  // Collect all footer slots
+  const footerSlots = plugins
+    .filter(isSlotPlugin)
+    .filter((p) => p.slots.footer !== undefined)
+    .map((p) => ({ id: p.id, render: p.slots.footer!.render }));
+
+  if (footerSlots.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      {footerSlots.map(({ id, render: Render }) => (
+        <div key={id} className={styles.footerSlot} data-plugin-id={id}>
+          <Render />
+        </div>
+      ))}
+    </>
+  );
+}
+
+// =============================================================================
+// Cell Slot Renderer
+// =============================================================================
+
+interface CellSlotRendererProps<TData> {
+  cell: Cell<TData, unknown>;
+  column: Column<TData, unknown>;
+  row: Row<TData>;
+  /** Default content to render if no plugin handles the cell */
+  children: ReactNode;
+}
+
+/**
+ * Renders cell content using the first matching plugin cell slot,
+ * or falls back to default content
+ */
+export function CellSlotRenderer<TData>({
+  cell,
+  column,
+  row,
+  children,
+}: CellSlotRendererProps<TData>) {
+  const { table } = usePluginContext();
+  const plugins = table.plugins;
+
+  // Find first plugin with a cell slot (first match wins)
+  const cellPlugin = plugins.find(
+    (p) => isSlotPlugin(p) && p.slots.cell !== undefined
+  );
+
+  if (cellPlugin && isSlotPlugin(cellPlugin) && cellPlugin.slots.cell) {
+    return (
+      <>
+        {cellPlugin.slots.cell.render(cell as any, column as any, row as any)}
+      </>
+    );
+  }
+
+  return <>{children}</>;
+}
+
+// =============================================================================
+// Inline Row Slot Renderer
+// =============================================================================
+
+interface InlineRowSlotRendererProps<TData = unknown> {
+  row: Row<TData>;
+  /** Number of columns for colspan */
+  colSpan: number;
+}
+
+/**
+ * Renders inline row content for a specific row.
+ * Only renders when:
+ * 1. A plugin with inlineRow slot is open (via plugin.open)
+ * 2. The openArgs.id matches the row's original.id (supports string or number)
+ * First matching plugin wins.
+ */
+export function InlineRowSlotRenderer<TData>({
+  row,
+  colSpan,
+}: InlineRowSlotRendererProps<TData>) {
+  const { table, openArgs } = usePluginContext();
+  const plugins = table.plugins;
+  const activePluginId = table.plugin.getActiveId();
+
+  // Get row id from original data (supports various id field types)
+  const rowData = row.original as Record<string, unknown>;
+  const rowId = rowData.id;
+
+  // Check if any plugin with inlineRow slot is open and matches this row
+  const activeInlineRowPlugin = plugins.find((p) => {
+    if (!isSlotPlugin(p) || !p.slots.inlineRow) return false;
+    if (p.id !== activePluginId) return false;
+    // Check if openArgs.id matches this row's id (convert to string for comparison)
+    const args = openArgs as { id?: string | number } | undefined;
+    return rowId !== undefined && String(args?.id) === String(rowId);
+  });
+
+  if (!activeInlineRowPlugin || !isSlotPlugin(activeInlineRowPlugin)) {
+    return null;
+  }
+
+  const renderInlineRow = activeInlineRowPlugin.slots.inlineRow!.render;
+
+  return (
+    <tr className={styles.inlineRow} data-plugin-id={activeInlineRowPlugin.id}>
+      <td colSpan={colSpan} className={styles.inlineRowCell}>
+        {renderInlineRow(row as any)}
+      </td>
+    </tr>
   );
 }

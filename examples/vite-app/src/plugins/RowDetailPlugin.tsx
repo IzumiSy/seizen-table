@@ -142,8 +142,12 @@ function formatValue(value: unknown): string {
 export const RowDetailPlugin = definePlugin({
   id: "row-detail",
   name: "Details",
-  position: "right-sider" as const,
   args: RowDetailSchema,
-  header: "Row Details",
-  render: RowDetailRenderer,
+  slots: {
+    sidepanel: {
+      position: "right-sider",
+      header: "Row Details",
+      render: RowDetailRenderer,
+    },
+  },
 });

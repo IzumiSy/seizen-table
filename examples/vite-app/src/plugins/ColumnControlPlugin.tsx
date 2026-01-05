@@ -224,8 +224,12 @@ function ColumnControlRenderer(context: PluginContext<ColumnControlConfig>) {
 export const ColumnControlPlugin = definePlugin({
   id: "column-control",
   name: "Columns",
-  position: "right-sider" as const,
   args: ColumnControlSchema,
-  header: "Column Visibility",
-  render: ColumnControlRenderer,
+  slots: {
+    sidepanel: {
+      position: "right-sider",
+      header: "Column Visibility",
+      render: ColumnControlRenderer,
+    },
+  },
 });

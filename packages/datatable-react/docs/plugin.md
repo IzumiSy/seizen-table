@@ -10,38 +10,47 @@ Different use cases require different UI enhancements:
 
 The plugin system allows these features to be added modularly.
 
-## Layout
+## Layout & Slots
 
-DataTable provides built-in sidepanels with IDE-style vertical tabs on both sides. Each plugin specifies which side to render on.
+DataTable provides 5 slots where plugins can render UI components:
 
 ```
 ┌───────┬─────────────────────────────────────────────┬───────┐
-│ [N]   │                                             │ [D]   │
-│ [a]   │                                             │ [e]   │
-│ [v]   │                                             │ [t]   │
-│ [i]   │             Table Body                      │ [a]   │
-│ [g]   │                                             │ [i]   │
-│ [a]   │                                             │ [l]   │
-│ [t]   ├─────────────────────────────────────────────┤ [s]   │
-│ [e]   │                                             ├───────┤
-│       │                                             │ [F]   │
-│   ↑   │                                             │ [i]   │
-│ left- │                                             │ [l]   │
-│ sider │                                             │ [t]   │
-│       │                                             │ [e]   │
-│       │                                             │ [r]   │
+│ [N]   │  ┌─────────────────────────────────────┐    │ [D]   │
+│ [a]   │  │         Header Slot                 │    │ [e]   │
+│ [v]   │  └─────────────────────────────────────┘    │ [t]   │
+│ [i]   │  ┌─────────────────────────────────────┐    │ [a]   │
+│ [g]   │  │         Table Row 1                 │    │ [i]   │
+│ [a]   │  ├─────────────────────────────────────┤    │ [l]   │
+│ [t]   │  │  Inline Row Slot (when opened)      │    │ [s]   │
+│ [e]   │  ├─────────────────────────────────────┤    ├───────┤
+│       │  │         Table Row 2                 │    │ [F]   │
+│   ↑   │  │         ...                         │    │ [i]   │
+│ left- │  └─────────────────────────────────────┘    │ [l]   │
+│ sider │  ┌─────────────────────────────────────┐    │ [t]   │
+│       │  │         Footer Slot                 │    │ [e]   │
+│       │  └─────────────────────────────────────┘    │ [r]   │
 │       │                                             │   ↑   │
 │       │                                             │ right-│
 │       │                                             │ sider │
 └───────┴─────────────────────────────────────────────┴───────┘
 ```
 
-| Position | Description |
-|----------|-------------|
-| `left-sider` | IDE-style vertical tab on the left side. Ideal for navigation, tree views. |
-| `right-sider` | IDE-style vertical tab on the right side. Ideal for details, inspectors. |
+### Available Slots
 
-Plugins can render modals/dialogs internally when needed.
+| Slot | Description | Rendering Strategy |
+|------|-------------|-------------------|
+| `sidepanel` | IDE-style vertical tab panel (left or right) | Tab-based toggle |
+| `header` | Between table header row and body rows | Sequential (all plugins) |
+| `footer` | Below the table | Sequential (all plugins) |
+| `cell` | Custom cell renderer for all columns | First match wins |
+| `inlineRow` | Expandable sub-row below a specific row | First match wins |
+
+### Slot Rendering Strategies
+
+- **Tab-based toggle**: Only one sidepanel can be active at a time per position
+- **Sequential**: All plugins with this slot render in registration order
+- **First match wins**: Only the first plugin with this slot renders
 
 ## Plugin Usage
 
@@ -149,6 +158,124 @@ export const MyPlugin = definePlugin({
   plugins={[MyPlugin.configure({ width: 400, title: "Custom Title" })]}
 />
 ```
+
+## Creating a Slot-Based Plugin
+
+Use `definePlugin` with the `slots` option to create a plugin that uses multiple slots.
+
+### Basic Structure
+
+```tsx
+import { z } from "zod";
+import {
+  definePlugin,
+  usePluginContext,
+  type PluginContext,
+} from "@izumisy/seizen-datatable-react/plugin";
+
+const MultiSlotSchema = z.object({
+  primaryColor: z.string().default("#3b82f6"),
+});
+
+type MultiSlotConfig = z.infer<typeof MultiSlotSchema>;
+
+// Sidepanel renderer
+function createSidepanelRenderer(context: PluginContext<MultiSlotConfig>) {
+  return function SidepanelContent() {
+    const { data } = usePluginContext();
+    return <div>Total: {data.length} rows</div>;
+  };
+}
+
+// Header renderer
+function createHeaderRenderer(context: PluginContext<MultiSlotConfig>) {
+  const { args } = context;
+  return function HeaderContent() {
+    return (
+      <div style={{ borderLeft: `3px solid ${args.primaryColor}` }}>
+        Header content
+      </div>
+    );
+  };
+}
+
+// Footer renderer
+function createFooterRenderer(context: PluginContext<MultiSlotConfig>) {
+  return function FooterContent() {
+    return <div>Footer content</div>;
+  };
+}
+
+// Cell renderer (receives cell, column, row)
+function createCellRenderer(context: PluginContext<MultiSlotConfig>) {
+  const { args } = context;
+  return function CellContent(
+    cell: { getValue: () => unknown },
+    column: unknown,
+    row: unknown
+  ) {
+    const value = cell.getValue();
+    if (typeof value === "number") {
+      return <span style={{ color: args.primaryColor }}>{value.toLocaleString()}</span>;
+    }
+    return <>{String(value ?? "")}</>;
+  };
+}
+
+// Inline row renderer (receives row)
+function createInlineRowRenderer(context: PluginContext<MultiSlotConfig>) {
+  const { args } = context;
+  return function InlineRowContent(row: { original: Record<string, unknown> }) {
+    const { table } = usePluginContext();
+    return (
+      <div style={{ padding: 16 }}>
+        <h4>Row Details</h4>
+        <pre>{JSON.stringify(row.original, null, 2)}</pre>
+        <button onClick={() => table.plugin.close()}>Close</button>
+      </div>
+    );
+  };
+}
+
+export const MultiSlotPlugin = definePlugin({
+  id: "multi-slot",
+  name: "Multi Slot",
+  args: MultiSlotSchema,
+  slots: {
+    sidepanel: {
+      position: "right-sider",
+      header: "Multi Slot Plugin",
+      render: createSidepanelRenderer,
+    },
+    header: {
+      render: createHeaderRenderer,
+    },
+    footer: {
+      render: createFooterRenderer,
+    },
+    cell: {
+      render: createCellRenderer,
+    },
+    inlineRow: {
+      render: createInlineRowRenderer,
+    },
+  },
+});
+```
+
+### Opening Inline Row
+
+The `inlineRow` slot renders below a specific row when opened via `plugin.open`:
+
+```tsx
+// Open inline row for a specific row by ID
+table.plugin.open("multi-slot", { id: row.id });
+
+// Close the inline row
+table.plugin.close();
+```
+
+The `id` in `openArgs` is matched against each row's `id` field to determine which row to expand.
 
 ## Creating a Context Menu Only Plugin
 

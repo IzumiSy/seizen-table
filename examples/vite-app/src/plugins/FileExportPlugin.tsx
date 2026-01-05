@@ -352,8 +352,12 @@ function FileExportRenderer(context: PluginContext<FileExportConfig>) {
 export const FileExportPlugin = definePlugin({
   id: "file-export",
   name: "Export",
-  position: "right-sider" as const,
   args: FileExportSchema,
-  header: "File Export",
-  render: FileExportRenderer,
+  slots: {
+    sidepanel: {
+      position: "right-sider",
+      header: "File Export",
+      render: FileExportRenderer,
+    },
+  },
 });

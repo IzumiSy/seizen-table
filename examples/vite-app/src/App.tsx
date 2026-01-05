@@ -4,6 +4,12 @@ import {
   DataTable,
   type ColumnDef,
 } from "@izumisy/seizen-datatable-react";
+import { data, type Person } from "./data";
+import {
+  usePluginToggle,
+  PluginToggleList,
+  type PluginRegistry,
+} from "./plugins/PluginToggle";
 import { RowDetailPlugin } from "./plugins/RowDetailPlugin";
 import {
   FileExportPlugin,
@@ -12,7 +18,7 @@ import {
   TsvExporter,
 } from "./plugins/FileExportPlugin";
 import { ColumnControlPlugin } from "./plugins/ColumnControlPlugin";
-import { data, type Person } from "./data";
+import { AllSlotsDemo } from "./plugins/AllSlotsPlugin";
 import {
   StatusBadge,
   DepartmentBadge,
@@ -22,6 +28,44 @@ import {
   DateCell,
   LocationCell,
 } from "./components/cells";
+
+// =============================================================================
+// Plugin Definitions
+// =============================================================================
+
+const AVAILABLE_PLUGINS = {
+  "row-detail": {
+    name: "Row Detail",
+    description: "Show row details in sidepanel",
+    plugin: RowDetailPlugin.configure({ width: 450 }),
+  },
+  "column-control": {
+    name: "Column Control",
+    description: "Toggle column visibility",
+    plugin: ColumnControlPlugin.configure({ width: 400 }),
+  },
+  "file-export": {
+    name: "File Export",
+    description: "Export data to CSV/JSON/TSV",
+    plugin: FileExportPlugin.configure({
+      width: 450,
+      filename: "users",
+      includeHeaders: true,
+      exporters: [CsvExporter, JsonlExporter, TsvExporter],
+    }),
+  },
+  "all-slots-demo": {
+    name: "All Slots Demo",
+    description: "Demo plugin using all 5 slots",
+    plugin: AllSlotsDemo.configure({
+      sidepanelTitle: "All Slots Demo",
+      enableCellHighlight: true,
+      primaryColor: "#8b5cf6",
+    }),
+  },
+} as const satisfies PluginRegistry;
+
+type PluginId = keyof typeof AVAILABLE_PLUGINS;
 
 const columns: ColumnDef<Person>[] = [
   {
@@ -87,32 +131,43 @@ const columns: ColumnDef<Person>[] = [
   },
 ];
 
+// =============================================================================
+// App Component
+// =============================================================================
+
 function App() {
+  const { plugins, pluginRegistry, enabledPlugins, togglePlugin, isEnabled } =
+    usePluginToggle<Person, PluginId>({
+      plugins: AVAILABLE_PLUGINS,
+      initialEnabled: ["row-detail", "column-control", "file-export"],
+    });
+
   const table = useDataTable({
     data,
     columns,
-    plugins: [
-      RowDetailPlugin.configure({
-        width: 450,
-      }),
-      ColumnControlPlugin.configure({
-        width: 400,
-      }),
-      FileExportPlugin.configure({
-        width: 450,
-        filename: "users",
-        includeHeaders: true,
-        exporters: [CsvExporter, JsonlExporter, TsvExporter],
-      }),
-    ],
+    plugins,
   });
 
   useDataTableEvent(table, "row-click", (row) => {
-    table.plugin.open("row-detail", { row });
+    if (isEnabled("all-slots-demo")) {
+      // Open inline row when AllSlotsDemo is enabled
+      table.plugin.open("all-slots-demo", { id: (row as Person).id });
+    } else if (isEnabled("row-detail")) {
+      // Fallback to row detail
+      table.plugin.open("row-detail", { row });
+    }
   });
 
   return (
-    <div className="p-5">
+    <div style={{ padding: "20px" }}>
+      {/* Plugin Toggles */}
+      <PluginToggleList
+        pluginRegistry={pluginRegistry}
+        enabledPlugins={enabledPlugins}
+        onToggle={togglePlugin}
+      />
+
+      {/* DataTable */}
       <DataTable table={table} />
     </div>
   );
