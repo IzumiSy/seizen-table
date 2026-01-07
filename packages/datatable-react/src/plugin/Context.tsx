@@ -9,6 +9,20 @@ import type { DataTableInstance } from "../table/useDataTable";
 import type { DataTableEventMap, DataTableEventName } from "./useEventBus";
 import type { PluginArgsRegistry } from "./usePluginControl";
 
+// Re-export filter types from columnMeta (which also does module augmentation)
+export type {
+  FilterType,
+  FilterOperator,
+  StringFilterOperator,
+  NumberFilterOperator,
+  DateFilterOperator,
+  EnumFilterOperator,
+  ColumnFilterMeta,
+} from "./columnMeta";
+export { DEFAULT_FILTER_OPERATORS, FILTER_OPERATOR_LABELS } from "./columnMeta";
+
+import type { ColumnFilterMeta } from "./columnMeta";
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -21,6 +35,8 @@ export interface PluginColumnInfo {
   key: string;
   /** Column header text */
   header: string;
+  /** Column filter metadata */
+  filterMeta?: ColumnFilterMeta;
 }
 
 /**
@@ -140,7 +156,18 @@ export function PluginContextProvider<TData>({
     const accessorKey =
       "accessorKey" in col ? (col.accessorKey as string) : col.id ?? "";
     const header = typeof col.header === "string" ? col.header : accessorKey;
-    return { key: accessorKey, header };
+
+    // Extract filter metadata from column meta (type-safe via module augmentation)
+    const meta = "meta" in col ? col.meta : undefined;
+    const filterMeta: ColumnFilterMeta | undefined = meta?.filterType
+      ? {
+          filterType: meta.filterType,
+          filterOperators: meta.filterOperators,
+          filterEnumValues: meta.filterEnumValues,
+        }
+      : undefined;
+
+    return { key: accessorKey, header, filterMeta };
   });
 
   // Sort columns by order if order is set

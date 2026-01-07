@@ -20,6 +20,7 @@ import {
   usePluginControl,
   type PluginControl,
 } from "../plugin/usePluginControl";
+import { pluginFilterFn } from "./filterFn";
 
 // =============================================================================
 // Column Types
@@ -298,6 +299,13 @@ export function useDataTable<TData>({
       columnVisibility,
       columnOrder,
     },
+    filterFns: {
+      plugin: pluginFilterFn,
+    },
+    defaultColumn: {
+      filterFn: "plugin",
+    },
+    globalFilterFn: "plugin",
     enableRowSelection: true,
     enableMultiRowSelection: enableMultiSelect,
     onRowSelectionChange: handleRowSelectionChange,

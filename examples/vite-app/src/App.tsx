@@ -18,6 +18,7 @@ import {
   TsvExporter,
 } from "./plugins/FileExportPlugin";
 import { ColumnControlPlugin } from "./plugins/ColumnControlPlugin";
+import { FilterPlugin } from "./plugins/FilterPlugin";
 import { AllSlotsDemo } from "./plugins/AllSlotsPlugin";
 import {
   StatusBadge,
@@ -42,7 +43,7 @@ const AVAILABLE_PLUGINS = {
   "column-control": {
     name: "Column Control",
     description: "Toggle column visibility",
-    plugin: ColumnControlPlugin.configure({ width: 400 }),
+    plugin: ColumnControlPlugin.configure({ width: 450 }),
   },
   "file-export": {
     name: "File Export",
@@ -53,6 +54,11 @@ const AVAILABLE_PLUGINS = {
       includeHeaders: true,
       exporters: [CsvExporter, JsonlExporter, TsvExporter],
     }),
+  },
+  filter: {
+    name: "Filter",
+    description: "Filter data by column values",
+    plugin: FilterPlugin.configure({ width: 450 }),
   },
   "all-slots-demo": {
     name: "All Slots Demo",
@@ -71,6 +77,7 @@ const columns: ColumnDef<Person>[] = [
   {
     accessorKey: "id",
     header: "ID",
+    meta: { filterType: "number" },
     cell: ({ getValue }) => (
       <span style={{ color: "#9ca3af", fontFamily: "monospace" }}>
         #{String(getValue()).padStart(3, "0")}
@@ -80,20 +87,34 @@ const columns: ColumnDef<Person>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    meta: { filterType: "string" },
     cell: ({ getValue }) => <AvatarName name={getValue() as string} />,
   },
   {
     accessorKey: "age",
     header: "Age",
+    meta: { filterType: "number" },
   },
   {
     accessorKey: "email",
     header: "Email",
+    meta: { filterType: "string" },
     cell: ({ getValue }) => <EmailCell email={getValue() as string} />,
   },
   {
     accessorKey: "department",
     header: "Department",
+    meta: {
+      filterType: "enum",
+      filterEnumValues: [
+        "Engineering",
+        "Sales",
+        "Marketing",
+        "HR",
+        "Finance",
+        "Operations",
+      ],
+    },
     cell: ({ getValue }) => (
       <DepartmentBadge department={getValue() as string} />
     ),
@@ -101,11 +122,13 @@ const columns: ColumnDef<Person>[] = [
   {
     accessorKey: "joinedAt",
     header: "Joined At",
+    meta: { filterType: "date" },
     cell: ({ getValue }) => <DateCell date={getValue() as string} />,
   },
   {
     accessorKey: "role",
     header: "Role",
+    meta: { filterType: "string" },
     cell: ({ getValue }) => (
       <span style={{ fontStyle: "italic", color: "#4b5563" }}>
         {getValue() as string}
@@ -115,16 +138,32 @@ const columns: ColumnDef<Person>[] = [
   {
     accessorKey: "salary",
     header: "Salary",
+    meta: { filterType: "number" },
     cell: ({ getValue }) => <SalaryCell salary={getValue() as number} />,
   },
   {
     accessorKey: "location",
     header: "Location",
+    meta: {
+      filterType: "enum",
+      filterEnumValues: [
+        "Tokyo",
+        "Osaka",
+        "New York",
+        "London",
+        "Singapore",
+        "Berlin",
+      ],
+    },
     cell: ({ getValue }) => <LocationCell location={getValue() as string} />,
   },
   {
     accessorKey: "status",
     header: "Status",
+    meta: {
+      filterType: "enum",
+      filterEnumValues: ["active", "inactive", "on-leave"],
+    },
     cell: ({ getValue }) => (
       <StatusBadge status={getValue() as Person["status"]} />
     ),
@@ -139,7 +178,7 @@ function App() {
   const { plugins, pluginRegistry, enabledPlugins, togglePlugin, isEnabled } =
     usePluginToggle<Person, PluginId>({
       plugins: AVAILABLE_PLUGINS,
-      initialEnabled: ["row-detail", "column-control", "file-export"],
+      initialEnabled: ["row-detail", "column-control", "file-export", "filter"],
     });
 
   const table = useDataTable({
