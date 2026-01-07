@@ -359,7 +359,7 @@ export function definePlugin<TData, TSchema extends z.ZodType>(
   options: DefinePluginOptions<TData, TSchema>
 ) {
   return {
-    configure: (config: z.infer<TSchema>) => {
+    configure: (config: z.input<TSchema>) => {
       // Validate config with Zod schema
       const validatedArgs = options.args.parse(config);
       const context: PluginContext<z.infer<TSchema>> = { args: validatedArgs };

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { z } from "zod";
 import {
   definePlugin,
@@ -15,7 +15,9 @@ import {
  */
 const FilterPluginSchema = z.object({
   /** Width of the sidepanel */
-  width: z.number().default(320),
+  width: z.number().optional().default(320),
+  /** Disable global search in header slot */
+  disableGlobalSearch: z.boolean().optional().default(false),
 });
 
 type FilterPluginConfig = z.infer<typeof FilterPluginSchema>;
@@ -531,6 +533,140 @@ function FilterPanel() {
 }
 
 // =============================================================================
+// Global Search Header Component
+// =============================================================================
+
+function GlobalSearchHeader() {
+  const { table } = usePluginContext();
+  const [searchValue, setSearchValue] = useState(
+    () => table.getGlobalFilter() ?? ""
+  );
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchValue(value);
+
+      // Debounce the global filter update
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      debounceRef.current = setTimeout(() => {
+        table.setGlobalFilter(value);
+      }, 300);
+    },
+    [table]
+  );
+
+  const handleClear = useCallback(() => {
+    setSearchValue("");
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    table.setGlobalFilter("");
+  }, [table]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        padding: "8px 12px",
+        backgroundColor: "#f9fafb",
+        borderBottom: "1px solid #e5e7eb",
+      }}
+    >
+      {/* Search icon */}
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#9ca3af"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35" />
+      </svg>
+
+      {/* Search input */}
+      <input
+        type="text"
+        value={searchValue}
+        onChange={(e) => handleSearchChange(e.target.value)}
+        placeholder="Search all columns..."
+        style={{
+          flex: 1,
+          padding: "6px 8px",
+          fontSize: "14px",
+          border: "1px solid #e5e7eb",
+          borderRadius: "4px",
+          outline: "none",
+          backgroundColor: "#fff",
+        }}
+      />
+
+      {/* Clear button - only show when there's a value */}
+      {searchValue && (
+        <button
+          onClick={handleClear}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "24px",
+            height: "24px",
+            padding: 0,
+            fontSize: "16px",
+            color: "#9ca3af",
+            backgroundColor: "transparent",
+            border: "1px solid #e5e7eb",
+            borderRadius: "4px",
+            cursor: "pointer",
+            transition: "all 0.15s ease",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = "#f3f4f6";
+            e.currentTarget.style.color = "#6b7280";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#9ca3af";
+          }}
+          title="Clear search"
+        >
+          ×
+        </button>
+      )}
+    </div>
+  );
+}
+
+function createGlobalSearchRenderer(
+  context: PluginContext<FilterPluginConfig>
+) {
+  const { args } = context;
+  if (args.disableGlobalSearch) {
+    return function EmptyHeader() {
+      return null;
+    };
+  }
+  return GlobalSearchHeader;
+}
+
+// =============================================================================
 // Main Renderer
 // =============================================================================
 
@@ -614,6 +750,9 @@ export const FilterPlugin = definePlugin({
       position: "right-sider",
       header: "Filters",
       render: FilterRenderer,
+    },
+    header: {
+      render: createGlobalSearchRenderer,
     },
   },
 });
