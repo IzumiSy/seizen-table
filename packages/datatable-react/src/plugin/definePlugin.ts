@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import type { z } from "zod";
 import type { Cell, Column, Row } from "@tanstack/react-table";
 import type {
-  ContextMenuItemFactory,
   CellContextMenuItemFactory,
   ColumnContextMenuItemFactory,
 } from "./contextMenuItem";
@@ -107,104 +106,34 @@ export interface PluginSlots<TData = unknown> {
 // =============================================================================
 
 /**
- * Base plugin interface - all plugins have id and name
- */
-interface BasePlugin {
-  id: string;
-  name: string;
-}
-
-/**
- * Plugin with slots - can have any combination of slots
- */
-export interface SlotPlugin<TData = unknown> extends BasePlugin {
-  slots: PluginSlots<TData>;
-  contextMenu?: {
-    items: ContextMenuItemFactory<TData, unknown>[];
-  };
-  contextMenuItems?: ContextMenuItemsSlot<TData>;
-}
-
-/**
- * @deprecated Use SlotPlugin instead. Kept for backward compatibility.
- * Sidepanel plugin - renders UI in sidepanel and optionally adds context menu items
- */
-export interface SidepanelPlugin<TData = unknown> extends BasePlugin {
-  position: PluginPosition;
-  /** Header content displayed at the top of the panel when open. Can be a string or ReactNode. */
-  header?: string | ReactNode;
-  render: () => ReactNode;
-  contextMenu?: {
-    items: ContextMenuItemFactory<TData, unknown>[];
-  };
-  contextMenuItems?: ContextMenuItemsSlot<TData>;
-}
-
-/**
- * Context menu only plugin - only adds items to the row context menu
- */
-export interface ContextMenuOnlyPlugin<TData = unknown> extends BasePlugin {
-  contextMenu: {
-    items: ContextMenuItemFactory<TData, unknown>[];
-  };
-  contextMenuItems?: ContextMenuItemsSlot<TData>;
-}
-
-/**
- * Plugin can be a slot plugin, sidepanel plugin (legacy), or context menu only plugin.
+ * DataTable plugin type.
  * Use DataTablePlugin<unknown> for plugins that don't use TData in context menu.
  */
-export type DataTablePlugin<TData = unknown> =
-  | SlotPlugin<TData>
-  | SidepanelPlugin<TData>
-  | ContextMenuOnlyPlugin<TData>;
-
-/**
- * Type guard to check if a plugin is a slot plugin
- */
-export function isSlotPlugin(
-  plugin: DataTablePlugin<any>
-): plugin is SlotPlugin<any> {
-  return "slots" in plugin;
+export interface DataTablePlugin<TData = unknown> {
+  /** Unique plugin identifier */
+  id: string;
+  /** Plugin display name (used as vertical tab label for sidepanel plugins) */
+  name: string;
+  /** Slot configurations */
+  slots: PluginSlots<TData>;
+  /** Context menu items for cell and column */
+  contextMenuItems?: ContextMenuItemsSlot<TData>;
 }
 
 /**
- * Type guard to check if a plugin is a legacy sidepanel plugin
+ * Type guard to check if a plugin has a sidepanel slot
  */
-export function isSidepanelPlugin(
-  plugin: DataTablePlugin<any>
-): plugin is SidepanelPlugin<any> {
-  return "position" in plugin && "render" in plugin && !("slots" in plugin);
+export function hasSidepanelSlot(plugin: DataTablePlugin<any>): boolean {
+  return plugin.slots.sidepanel !== undefined;
 }
 
 /**
- * Type guard to check if a plugin has a sidepanel (either slot or legacy)
- */
-export function hasSidepanelSlot(
-  plugin: DataTablePlugin<any>
-): plugin is SlotPlugin<any> | SidepanelPlugin<any> {
-  return isSlotPlugin(plugin)
-    ? plugin.slots.sidepanel !== undefined
-    : isSidepanelPlugin(plugin);
-}
-
-/**
- * Get sidepanel configuration from a plugin (normalizes legacy and slot plugins)
+ * Get sidepanel configuration from a plugin
  */
 export function getSidepanelSlot(
   plugin: DataTablePlugin<any>
 ): SidepanelSlot | undefined {
-  if (isSlotPlugin(plugin)) {
-    return plugin.slots.sidepanel;
-  }
-  if (isSidepanelPlugin(plugin)) {
-    return {
-      position: plugin.position,
-      header: plugin.header,
-      render: plugin.render,
-    };
-  }
-  return undefined;
+  return plugin.slots.sidepanel;
 }
 
 // =============================================================================
@@ -229,23 +158,6 @@ interface BasePluginOptions<TSchema extends z.ZodType> {
   name: string;
   /** Zod schema for configuration validation */
   args: TSchema;
-}
-
-/**
- * Options for defining a context menu only plugin
- */
-export interface DefineContextMenuPluginOptions<
-  TData,
-  TSchema extends z.ZodType
-> extends BasePluginOptions<TSchema> {
-  contextMenu: {
-    items: ContextMenuItemFactory<TData, z.infer<TSchema>>[];
-  };
-  /** Context menu items for cell and column */
-  contextMenuItems?: {
-    cell?: CellContextMenuItemFactory<TData, z.infer<TSchema>>[];
-    column?: ColumnContextMenuItemFactory<TData, z.infer<TSchema>>[];
-  };
 }
 
 /**
@@ -291,10 +203,6 @@ export interface DefineSlotPluginOptions<TData, TSchema extends z.ZodType>
   extends BasePluginOptions<TSchema> {
   /** Slot configurations */
   slots: DefinePluginSlots<TData, TSchema>;
-  /** Optional context menu configuration (legacy row-level) */
-  contextMenu?: {
-    items: ContextMenuItemFactory<TData, z.infer<TSchema>>[];
-  };
   /** Context menu items for cell and column */
   contextMenuItems?: {
     cell?: CellContextMenuItemFactory<TData, z.infer<TSchema>>[];
@@ -302,9 +210,10 @@ export interface DefineSlotPluginOptions<TData, TSchema extends z.ZodType>
   };
 }
 
-export type DefinePluginOptions<TData, TSchema extends z.ZodType> =
-  | DefineSlotPluginOptions<TData, TSchema>
-  | DefineContextMenuPluginOptions<TData, TSchema>;
+export type DefinePluginOptions<
+  TData,
+  TSchema extends z.ZodType
+> = DefineSlotPluginOptions<TData, TSchema>;
 
 /**
  * Define a plugin with type-safe configuration.
@@ -315,7 +224,7 @@ export type DefinePluginOptions<TData, TSchema extends z.ZodType> =
  * @example Slot Plugin with Sidepanel
  * ```tsx
  * import { z } from "zod";
- * import { definePlugin, contextMenuItem, usePluginContext } from "@izumisy/seizen-datatable-react/plugin";
+ * import { definePlugin, cellContextMenuItem, usePluginContext } from "@izumisy/seizen-datatable-react/plugin";
  *
  * const BulkActionsSchema = z.object({
  *   enableDelete: z.boolean().default(true),
@@ -347,12 +256,11 @@ export type DefinePluginOptions<TData, TSchema extends z.ZodType> =
  *       render: createSidepanelRenderer,
  *     },
  *   },
- *   contextMenu: {
- *     items: [
- *       contextMenuItem("delete", (ctx) => ({
- *         label: `Delete ${ctx.selectedRows.length} items`,
- *         onClick: () => handleDelete(ctx.selectedRows),
- *         visible: ctx.pluginArgs.enableDelete,
+ *   contextMenuItems: {
+ *     cell: [
+ *       cellContextMenuItem("copy-value", (ctx) => ({
+ *         label: "Copy value",
+ *         onClick: () => navigator.clipboard.writeText(String(ctx.value)),
  *       })),
  *     ],
  *   },
@@ -360,26 +268,6 @@ export type DefinePluginOptions<TData, TSchema extends z.ZodType> =
  *
  * // Usage
  * <DataTable plugins={[BulkActions.configure({ enableDelete: true })]} />
- * ```
- *
- * @example Context Menu Only Plugin
- * ```tsx
- * const RowActions = definePlugin({
- *   id: "row-actions",
- *   name: "Row Actions",
- *   args: z.object({
- *     enableCopyId: z.boolean().default(true),
- *   }),
- *   contextMenu: {
- *     items: [
- *       contextMenuItem("copy-id", (ctx) => ({
- *         label: "Copy ID",
- *         onClick: () => navigator.clipboard.writeText(ctx.row.id),
- *         visible: ctx.pluginArgs.enableCopyId,
- *       })),
- *     ],
- *   },
- * });
  * ```
  */
 export function definePlugin<TData, TSchema extends z.ZodType>(
@@ -391,73 +279,56 @@ export function definePlugin<TData, TSchema extends z.ZodType>(
       const validatedArgs = options.args.parse(config);
       const context: PluginContext<z.infer<TSchema>> = { args: validatedArgs };
 
-      // Check if it's a slot-based plugin
-      if ("slots" in options) {
-        const slotOptions = options as DefineSlotPluginOptions<TData, TSchema>;
-        const slots: PluginSlots<TData> = {};
+      const slots: PluginSlots<TData> = {};
 
-        // Build sidepanel slot
-        if (slotOptions.slots.sidepanel) {
-          const sidepanelDef = slotOptions.slots.sidepanel;
-          const header =
-            typeof sidepanelDef.header === "function"
-              ? sidepanelDef.header(context)
-              : sidepanelDef.header;
-          slots.sidepanel = {
-            position: sidepanelDef.position,
-            header,
-            render: sidepanelDef.render(context),
-          };
-        }
-
-        // Build header slot
-        if (slotOptions.slots.header) {
-          slots.header = {
-            render: slotOptions.slots.header.render(context),
-          };
-        }
-
-        // Build footer slot
-        if (slotOptions.slots.footer) {
-          slots.footer = {
-            render: slotOptions.slots.footer.render(context),
-          };
-        }
-
-        // Build cell slot
-        if (slotOptions.slots.cell) {
-          slots.cell = {
-            render: slotOptions.slots.cell.render(context),
-          };
-        }
-
-        // Build inlineRow slot
-        if (slotOptions.slots.inlineRow) {
-          slots.inlineRow = {
-            render: slotOptions.slots.inlineRow.render(context),
-          };
-        }
-
-        return {
-          id: options.id,
-          name: options.name,
-          slots,
-          contextMenu: slotOptions.contextMenu,
-          contextMenuItems: slotOptions.contextMenuItems,
-        } as SlotPlugin<TData>;
+      // Build sidepanel slot
+      if (options.slots.sidepanel) {
+        const sidepanelDef = options.slots.sidepanel;
+        const header =
+          typeof sidepanelDef.header === "function"
+            ? sidepanelDef.header(context)
+            : sidepanelDef.header;
+        slots.sidepanel = {
+          position: sidepanelDef.position,
+          header,
+          render: sidepanelDef.render(context),
+        };
       }
 
-      // Context menu only plugin
-      const contextMenuOptions = options as DefineContextMenuPluginOptions<
-        TData,
-        TSchema
-      >;
+      // Build header slot
+      if (options.slots.header) {
+        slots.header = {
+          render: options.slots.header.render(context),
+        };
+      }
+
+      // Build footer slot
+      if (options.slots.footer) {
+        slots.footer = {
+          render: options.slots.footer.render(context),
+        };
+      }
+
+      // Build cell slot
+      if (options.slots.cell) {
+        slots.cell = {
+          render: options.slots.cell.render(context),
+        };
+      }
+
+      // Build inlineRow slot
+      if (options.slots.inlineRow) {
+        slots.inlineRow = {
+          render: options.slots.inlineRow.render(context),
+        };
+      }
+
       return {
         id: options.id,
         name: options.name,
-        contextMenu: contextMenuOptions.contextMenu,
-        contextMenuItems: contextMenuOptions.contextMenuItems,
-      } as ContextMenuOnlyPlugin<TData>;
+        slots,
+        contextMenuItems: options.contextMenuItems,
+      } as DataTablePlugin<TData>;
     },
   };
 }

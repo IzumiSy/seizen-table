@@ -5,7 +5,7 @@ import type {
   PluginPosition,
   SidepanelSlot,
 } from "./definePlugin";
-import { isSlotPlugin, getSidepanelSlot } from "./definePlugin";
+import { getSidepanelSlot } from "./definePlugin";
 import { usePluginContext } from "./Context";
 import * as styles from "./styles.css";
 
@@ -138,7 +138,6 @@ export function HeaderSlotRenderer() {
 
   // Collect all header slots
   const headerSlots = plugins
-    .filter(isSlotPlugin)
     .filter((p) => p.slots.header !== undefined)
     .map((p) => ({ id: p.id, render: p.slots.header!.render }));
 
@@ -170,7 +169,6 @@ export function FooterSlotRenderer() {
 
   // Collect all footer slots
   const footerSlots = plugins
-    .filter(isSlotPlugin)
     .filter((p) => p.slots.footer !== undefined)
     .map((p) => ({ id: p.id, render: p.slots.footer!.render }));
 
@@ -215,11 +213,9 @@ export function CellSlotRenderer<TData>({
   const plugins = table.plugins;
 
   // Find first plugin with a cell slot (first match wins)
-  const cellPlugin = plugins.find(
-    (p) => isSlotPlugin(p) && p.slots.cell !== undefined
-  );
+  const cellPlugin = plugins.find((p) => p.slots.cell !== undefined);
 
-  if (cellPlugin && isSlotPlugin(cellPlugin) && cellPlugin.slots.cell) {
+  if (cellPlugin && cellPlugin.slots.cell) {
     return (
       <>
         {cellPlugin.slots.cell.render(cell as any, column as any, row as any)}
@@ -261,14 +257,14 @@ export function InlineRowSlotRenderer<TData>({
 
   // Check if any plugin with inlineRow slot is open and matches this row
   const activeInlineRowPlugin = plugins.find((p) => {
-    if (!isSlotPlugin(p) || !p.slots.inlineRow) return false;
+    if (!p.slots.inlineRow) return false;
     if (p.id !== activePluginId) return false;
     // Check if openArgs.id matches this row's id (convert to string for comparison)
     const args = openArgs as { id?: string | number } | undefined;
     return rowId !== undefined && String(args?.id) === String(rowId);
   });
 
-  if (!activeInlineRowPlugin || !isSlotPlugin(activeInlineRowPlugin)) {
+  if (!activeInlineRowPlugin) {
     return null;
   }
 
