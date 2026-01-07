@@ -821,10 +821,7 @@ export const FilterPlugin = definePlugin({
   contextMenuItems: {
     cell: [
       cellContextMenuItem("filter-by-value", (ctx) => {
-        const filterMeta = ctx.column.columnDef.meta as
-          | { filterType?: string }
-          | undefined;
-        const isFilterable = !!filterMeta?.filterType;
+        const isFilterable = !!ctx.column.columnDef.meta?.filterType;
         const displayValue =
           ctx.value == null ? "(empty)" : String(ctx.value).slice(0, 20);
         return {
