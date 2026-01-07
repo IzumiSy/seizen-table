@@ -66,7 +66,7 @@ export {
   CellSlotRenderer,
   InlineRowSlotRenderer,
   PluginRenderer, // deprecated alias
-} from "./Renderer";
+} from "./SlotRenderer";
 
 // PluginControl (for type-safe plugin.open())
 export type { PluginArgsRegistry } from "./usePluginControl";

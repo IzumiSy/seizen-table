@@ -12,7 +12,7 @@ import {
   FooterSlotRenderer,
   CellSlotRenderer,
   InlineRowSlotRenderer,
-} from "../plugin/Renderer";
+} from "../plugin/SlotRenderer";
 import { PluginContextProvider } from "../plugin/Context";
 import {
   ContextMenuProvider,
