@@ -47,7 +47,19 @@ export type {
 
 // PluginContext
 export { usePluginContext, PluginContextProvider } from "./Context";
-export type { PluginContextValue, PluginColumnInfo } from "./Context";
+export type {
+  PluginContextValue,
+  PluginColumnInfo,
+  // Filter types
+  FilterType,
+  FilterOperator,
+  StringFilterOperator,
+  NumberFilterOperator,
+  DateFilterOperator,
+  EnumFilterOperator,
+  ColumnFilterMeta,
+} from "./Context";
+export { DEFAULT_FILTER_OPERATORS, FILTER_OPERATOR_LABELS } from "./Context";
 
 // Slot Renderers
 export {
