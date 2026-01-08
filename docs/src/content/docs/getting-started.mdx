@@ -32,47 +32,25 @@ Here's a basic DataTable in action:
 
 <DemoPreview demo="basic" height={300} client:load />
 
-## The Hook + Component Pattern
-
-`useDataTable` and `DataTable` are always used together. This pattern provides:
-
-- **Full control** - Access table state and methods from the hook
-- **Flexibility** - Trigger actions from outside the table component
-- **Composability** - Share table instance across multiple components
-
 ```tsx
-function UsersPage() {
-  const table = useDataTable({
-    data: users,
-    columns,
-    plugins: [
-      RowDetail.configure({ render: (row) => <UserDetail user={row} /> }),
-    ],
-  });
+import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
 
-  // Access selected rows from the hook
-  const handleBulkDelete = () => {
-    const selectedRows = table.getSelectedRows();
-    deleteUsers(selectedRows);
-    table.clearSelection();
-  };
+const columns = [
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "age", header: "Age" },
+  { accessorKey: "email", header: "Email" },
+];
 
-  // Access filter state
-  const handleExport = () => {
-    const currentFilter = table.getFilterState();
-    exportWithFilter(currentFilter);
-  };
+const data = [
+  { name: "John Doe", age: 30, email: "john@example.com" },
+  { name: "Jane Smith", age: 25, email: "jane@example.com" },
+  { name: "Bob Wilson", age: 35, email: "bob@example.com" },
+];
 
-  return (
-    <div>
-      <div className="toolbar">
-        <button onClick={handleBulkDelete}>Delete Selected</button>
-        <button onClick={handleExport}>Export</button>
-        <span>{table.getSelectedRows().length} selected</span>
-      </div>
-      <DataTable table={table} />
-    </div>
-  );
+function BasicDemo() {
+  const table = useDataTable({ data, columns });
+
+  return <DataTable table={table} />;
 }
 ```
 
