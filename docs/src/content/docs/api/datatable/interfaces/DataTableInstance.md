@@ -5,7 +5,7 @@ prev: false
 title: "DataTableInstance"
 ---
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:51](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L51)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:51](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L51)
 
 DataTable instance returned by useDataTable
 
@@ -21,7 +21,7 @@ DataTable instance returned by useDataTable
 
 > **clearSelection**: () => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:71](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L71)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:71](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L71)
 
 Clear all row selections.
 
@@ -35,7 +35,7 @@ Clear all row selections.
 
 > **eventBus**: `object`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:228](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L228)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:228](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L228)
 
 Event bus for plugin communication.
 Use this to emit custom events that plugins can subscribe to.
@@ -111,7 +111,7 @@ table.eventBus.emit("my-custom-event", { data: "value" });
 
 > **getColumnOrder**: () => `ColumnOrderState`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:185](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L185)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:185](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L185)
 
 Get the current column order.
 
@@ -127,7 +127,7 @@ Array of column IDs in order
 
 > **getColumns**: () => [`DataTableColumn`](/seizen-ui/api/datatable/type-aliases/datatablecolumn/)\<`TData`\>[]
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:153](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L153)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:153](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L153)
 
 Get the column definitions.
 
@@ -143,7 +143,7 @@ Array of column definitions
 
 > **getColumnVisibility**: () => `VisibilityState`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:163](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L163)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:163](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L163)
 
 Get the current column visibility state.
 
@@ -159,7 +159,7 @@ Object mapping column IDs to visibility (true = visible)
 
 > **getData**: () => `TData`[]
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:147](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L147)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:147](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L147)
 
 Get the current table data.
 
@@ -175,7 +175,7 @@ Array of row data
 
 > **getFilterState**: () => [`ColumnFiltersState`](/seizen-ui/api/datatable/type-aliases/columnfiltersstate/)
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:81](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L81)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:81](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L81)
 
 Get the current column filter state.
 
@@ -191,7 +191,7 @@ Array of column filters
 
 > **getGlobalFilter**: () => `string`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:93](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L93)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:93](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L93)
 
 Get the current global filter value.
 
@@ -207,7 +207,7 @@ Global filter string
 
 > **getPaginationState**: () => [`PaginationState`](/seizen-ui/api/datatable/interfaces/paginationstate/)
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:125](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L125)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:125](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L125)
 
 Get the current pagination state.
 
@@ -223,7 +223,7 @@ Pagination state including pageIndex and pageSize
 
 > **getSelectedRows**: () => `TData`[]
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:60](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L60)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:60](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L60)
 
 Get the currently selected rows.
 
@@ -239,7 +239,7 @@ Array of selected row data
 
 > **getSortingState**: () => [`SortingState`](/seizen-ui/api/datatable/type-aliases/sortingstate/)
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:109](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L109)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:109](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L109)
 
 Get the current sorting state.
 
@@ -255,7 +255,7 @@ Array of sorting configurations
 
 > **moveColumn**: (`columnId`, `toIndex`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:198](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L198)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:198](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L198)
 
 Move a column to a new position.
 
@@ -283,7 +283,7 @@ The target index
 
 > **plugin**: `PluginControl`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:212](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L212)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:212](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L212)
 
 Plugin control interface.
 
@@ -293,7 +293,7 @@ Plugin control interface.
 
 > **plugins**: `DataTablePlugin`\<`any`\>[]
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:207](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L207)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:207](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L207)
 
 Plugins registered with this table.
 
@@ -303,7 +303,7 @@ Plugins registered with this table.
 
 > **setColumnOrder**: (`order`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:191](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L191)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:191](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L191)
 
 Set the column order.
 
@@ -325,7 +325,7 @@ Array of column IDs in desired order
 
 > **setColumnVisibility**: (`visibility`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:169](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L169)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:169](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L169)
 
 Set column visibility state.
 
@@ -347,7 +347,7 @@ Object mapping column IDs to visibility
 
 > **setFilter**: (`filter`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:87](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L87)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:87](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L87)
 
 Set column filters programmatically.
 
@@ -369,7 +369,7 @@ Column filter state to apply
 
 > **setGlobalFilter**: (`value`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:99](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L99)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:99](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L99)
 
 Set the global filter value.
 
@@ -391,7 +391,7 @@ Filter string to apply across all columns
 
 > **setPageIndex**: (`index`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:131](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L131)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:131](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L131)
 
 Set the current page index (0-based).
 
@@ -413,7 +413,7 @@ Page index to navigate to
 
 > **setPageSize**: (`size`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:137](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L137)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:137](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L137)
 
 Set the number of rows per page.
 
@@ -435,7 +435,7 @@ Number of rows to display per page
 
 > **setSelectedRows**: (`rows`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:66](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L66)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:66](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L66)
 
 Set the selected rows programmatically.
 
@@ -457,7 +457,7 @@ Array of row data to select
 
 > **setSorting**: (`sorting`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:115](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L115)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:115](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L115)
 
 Set sorting programmatically.
 
@@ -479,7 +479,7 @@ Sorting state to apply
 
 > **toggleColumnVisibility**: (`columnId`) => `void`
 
-Defined in: [packages/datatable-react/src/table/useDataTable.ts:175](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/useDataTable.ts#L175)
+Defined in: [packages/datatable-react/src/table/useDataTable.ts:175](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/useDataTable.ts#L175)
 
 Toggle visibility of a specific column.
 

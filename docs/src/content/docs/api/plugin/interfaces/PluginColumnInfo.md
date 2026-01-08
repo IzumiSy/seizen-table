@@ -5,7 +5,7 @@ prev: false
 title: "PluginColumnInfo"
 ---
 
-Defined in: [Context.tsx:33](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L33)
+Defined in: [Context.tsx:33](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L33)
 
 Column info for plugins (simplified from ColumnDef)
 
@@ -15,7 +15,7 @@ Column info for plugins (simplified from ColumnDef)
 
 > `optional` **filterMeta**: [`ColumnFilterMeta`](/seizen-ui/api/plugin/interfaces/columnfiltermeta/)
 
-Defined in: [Context.tsx:39](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L39)
+Defined in: [Context.tsx:39](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L39)
 
 Column filter metadata
 
@@ -25,7 +25,7 @@ Column filter metadata
 
 > **header**: `string`
 
-Defined in: [Context.tsx:37](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L37)
+Defined in: [Context.tsx:37](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L37)
 
 Column header text
 
@@ -35,6 +35,6 @@ Column header text
 
 > **key**: `string`
 
-Defined in: [Context.tsx:35](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L35)
+Defined in: [Context.tsx:35](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L35)
 
 Column accessor key

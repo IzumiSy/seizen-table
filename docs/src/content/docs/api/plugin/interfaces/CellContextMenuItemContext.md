@@ -5,7 +5,7 @@ prev: false
 title: "CellContextMenuItemContext"
 ---
 
-Defined in: [contextMenuItem.ts:32](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L32)
+Defined in: [contextMenuItem.ts:32](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L32)
 
 Context passed to cellContextMenuItem factory function
 
@@ -25,7 +25,7 @@ Context passed to cellContextMenuItem factory function
 
 > **cell**: `Cell`\<`TData`, `unknown`\>
 
-Defined in: [contextMenuItem.ts:34](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L34)
+Defined in: [contextMenuItem.ts:34](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L34)
 
 The cell that was right-clicked
 
@@ -35,7 +35,7 @@ The cell that was right-clicked
 
 > **column**: `Column`\<`TData`, `unknown`\>
 
-Defined in: [contextMenuItem.ts:36](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L36)
+Defined in: [contextMenuItem.ts:36](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L36)
 
 The column of the right-clicked cell
 
@@ -45,7 +45,7 @@ The column of the right-clicked cell
 
 > **emit**: \<`K`\>(`event`, `payload`) => `void`
 
-Defined in: [contextMenuItem.ts:48](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L48)
+Defined in: [contextMenuItem.ts:48](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L48)
 
 Emit an event to the EventBus
 
@@ -75,7 +75,7 @@ Emit an event to the EventBus
 
 > **pluginArgs**: `TArgs`
 
-Defined in: [contextMenuItem.ts:46](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L46)
+Defined in: [contextMenuItem.ts:46](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L46)
 
 Plugin configuration args (validated by Zod schema)
 
@@ -85,7 +85,7 @@ Plugin configuration args (validated by Zod schema)
 
 > **row**: `Row`\<`TData`\>
 
-Defined in: [contextMenuItem.ts:38](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L38)
+Defined in: [contextMenuItem.ts:38](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L38)
 
 The row containing the right-clicked cell
 
@@ -95,7 +95,7 @@ The row containing the right-clicked cell
 
 > **selectedRows**: `TData`[]
 
-Defined in: [contextMenuItem.ts:42](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L42)
+Defined in: [contextMenuItem.ts:42](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L42)
 
 Currently selected rows in the table
 
@@ -105,7 +105,7 @@ Currently selected rows in the table
 
 > **table**: `Table`\<`TData`\>
 
-Defined in: [contextMenuItem.ts:44](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L44)
+Defined in: [contextMenuItem.ts:44](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L44)
 
 TanStack Table instance
 
@@ -115,6 +115,6 @@ TanStack Table instance
 
 > **value**: `unknown`
 
-Defined in: [contextMenuItem.ts:40](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L40)
+Defined in: [contextMenuItem.ts:40](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L40)
 
 The raw value of the cell (cell.getValue())

@@ -5,7 +5,7 @@ prev: false
 title: "DataTableEventMap"
 ---
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:47](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L47)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:47](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L47)
 
 Map of built-in event names to their payload types.
 
@@ -33,7 +33,7 @@ The type of row data. Defaults to `unknown`.
 
 > **cell-context-menu**: `object`
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:85](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L85)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:85](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L85)
 
 Emitted when cell context menu is opened.
 Payload includes the cell, column, row, and value.
@@ -60,7 +60,7 @@ Payload includes the cell, column, row, and value.
 
 > **column-context-menu**: `object`
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:96](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L96)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:96](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L96)
 
 Emitted when column header context menu is opened.
 Payload includes the column.
@@ -75,7 +75,7 @@ Payload includes the column.
 
 > **data-change**: `TData`[]
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:52](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L52)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:52](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L52)
 
 Emitted when table data changes.
 Payload is the entire data array.
@@ -86,7 +86,7 @@ Payload is the entire data array.
 
 > **filter-change**: [`ColumnFiltersState`](/seizen-ui/api/datatable/type-aliases/columnfiltersstate/)
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:63](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L63)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:63](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L63)
 
 Emitted when column filters change.
 
@@ -96,7 +96,7 @@ Emitted when column filters change.
 
 > **pagination-change**: [`PaginationState`](/seizen-ui/api/datatable/interfaces/paginationstate/)
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:73](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L73)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:73](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L73)
 
 Emitted when pagination changes.
 
@@ -106,7 +106,7 @@ Emitted when pagination changes.
 
 > **row-click**: `TData`
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:79](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L79)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:79](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L79)
 
 Emitted when a table row is clicked.
 Payload is the clicked row data.
@@ -117,7 +117,7 @@ Payload is the clicked row data.
 
 > **selection-change**: `TData`[]
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:58](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L58)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:58](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L58)
 
 Emitted when row selection changes.
 Payload is the array of selected rows.
@@ -128,6 +128,6 @@ Payload is the array of selected rows.
 
 > **sorting-change**: [`SortingState`](/seizen-ui/api/datatable/type-aliases/sortingstate/)
 
-Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:68](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/useEventBus.ts#L68)
+Defined in: [packages/datatable-react/src/plugin/useEventBus.ts:68](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/useEventBus.ts#L68)
 
 Emitted when sorting changes.

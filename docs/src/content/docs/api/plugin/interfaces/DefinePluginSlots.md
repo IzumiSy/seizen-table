@@ -5,7 +5,7 @@ prev: false
 title: "DefinePluginSlots"
 ---
 
-Defined in: [definePlugin.ts:166](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/definePlugin.ts#L166)
+Defined in: [definePlugin.ts:166](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/definePlugin.ts#L166)
 
 Slot render function definitions for defineSlotPlugin
 
@@ -25,7 +25,7 @@ Slot render function definitions for defineSlotPlugin
 
 > `optional` **cell**: `object`
 
-Defined in: [definePlugin.ts:182](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/definePlugin.ts#L182)
+Defined in: [definePlugin.ts:182](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/definePlugin.ts#L182)
 
 Cell slot - custom cell renderer for all columns (first match wins)
 
@@ -67,7 +67,7 @@ Cell slot - custom cell renderer for all columns (first match wins)
 
 > `optional` **footer**: `object`
 
-Defined in: [definePlugin.ts:178](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/definePlugin.ts#L178)
+Defined in: [definePlugin.ts:178](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/definePlugin.ts#L178)
 
 Footer slot - renders below the table
 
@@ -95,7 +95,7 @@ Footer slot - renders below the table
 
 > `optional` **header**: `object`
 
-Defined in: [definePlugin.ts:174](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/definePlugin.ts#L174)
+Defined in: [definePlugin.ts:174](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/definePlugin.ts#L174)
 
 Header slot - renders between table header and body
 
@@ -123,7 +123,7 @@ Header slot - renders between table header and body
 
 > `optional` **inlineRow**: `object`
 
-Defined in: [definePlugin.ts:192](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/definePlugin.ts#L192)
+Defined in: [definePlugin.ts:192](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/definePlugin.ts#L192)
 
 Inline row slot - renders below a specific row when opened (first match wins)
 
@@ -157,7 +157,7 @@ Inline row slot - renders below a specific row when opened (first match wins)
 
 > `optional` **sidepanel**: `object`
 
-Defined in: [definePlugin.ts:168](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/definePlugin.ts#L168)
+Defined in: [definePlugin.ts:168](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/definePlugin.ts#L168)
 
 Sidepanel slot - renders in left or right sidepanel
 

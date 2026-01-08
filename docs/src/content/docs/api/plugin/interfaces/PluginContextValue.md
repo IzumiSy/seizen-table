@@ -5,7 +5,7 @@ prev: false
 title: "PluginContextValue"
 ---
 
-Defined in: [Context.tsx:48](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L48)
+Defined in: [Context.tsx:48](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L48)
 
 Plugin context value available to all plugins.
 
@@ -24,7 +24,7 @@ plugins are defined generically and cannot know the specific row type.
 
 > **columns**: [`PluginColumnInfo`](/seizen-ui/api/plugin/interfaces/plugincolumninfo/)[]
 
-Defined in: [Context.tsx:62](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L62)
+Defined in: [Context.tsx:62](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L62)
 
 Column information (key and header)
 
@@ -34,7 +34,7 @@ Column information (key and header)
 
 > **data**: `unknown`[]
 
-Defined in: [Context.tsx:57](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L57)
+Defined in: [Context.tsx:57](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L57)
 
 Current table data
 
@@ -44,7 +44,7 @@ Current table data
 
 > **openArgs**: `TOpenArgs` \| `undefined`
 
-Defined in: [Context.tsx:89](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L89)
+Defined in: [Context.tsx:89](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L89)
 
 Arguments passed to openPlugin() when the plugin was opened.
 Use this to receive initial data when the plugin mounts.
@@ -72,7 +72,7 @@ const initialRow = openArgs?.row;
 
 > **selectedRows**: `unknown`[]
 
-Defined in: [Context.tsx:67](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L67)
+Defined in: [Context.tsx:67](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L67)
 
 Currently selected rows
 
@@ -82,7 +82,7 @@ Currently selected rows
 
 > **table**: `DataTableInstance`\<`unknown`\>
 
-Defined in: [Context.tsx:52](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L52)
+Defined in: [Context.tsx:52](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L52)
 
 The DataTable instance
 
@@ -92,7 +92,7 @@ The DataTable instance
 
 > **useEvent**: \<`K`\>(`event`, `callback`) => `void`
 
-Defined in: [Context.tsx:117](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L117)
+Defined in: [Context.tsx:117](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L117)
 
 Hook to subscribe to events emitted by DataTable.
 

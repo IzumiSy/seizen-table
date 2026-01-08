@@ -10,3 +10,77 @@
     --sl-content-width: 60rem;
   }
 }
+
+/* Hero section gradient background */
+.hero {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.35) 0%,
+    rgba(168, 85, 247, 0.3) 35%,
+    rgba(236, 72, 153, 0.25) 70%,
+    rgba(251, 146, 60, 0.2) 100%
+  );
+  border-radius: 1.5rem;
+  padding: 2rem;
+  margin-block-end: 2rem;
+}
+
+:root[data-theme="light"] .hero {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.25) 0%,
+    rgba(168, 85, 247, 0.2) 35%,
+    rgba(236, 72, 153, 0.15) 70%,
+    rgba(251, 146, 60, 0.12) 100%
+  );
+}
+
+/* Splash page section spacing */
+[data-template="splash"] .sl-markdown-content h2 {
+  margin-block-start: 6rem;
+}
+
+[data-template="splash"] .sl-markdown-content > h2:first-child {
+  margin-block-start: 3rem;
+}
+
+/* AG Grid style section header */
+.section-header {
+  margin-block-end: 2rem;
+}
+
+.section-header .eyebrow {
+  color: #4f46e5;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-block-end: 0.5rem;
+}
+
+:root[data-theme="dark"] .section-header .eyebrow {
+  color: #818cf8;
+}
+
+.section-header .title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+  color: #1e293b;
+}
+
+:root[data-theme="dark"] .section-header .title {
+  color: #f1f5f9;
+}
+
+.section-header .description {
+  font-size: 1.125rem;
+  color: #64748b;
+  max-width: 48rem;
+  line-height: 1.6;
+}
+
+:root[data-theme="dark"] .section-header .description {
+  color: #94a3b8;
+}

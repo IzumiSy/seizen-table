@@ -5,7 +5,7 @@ prev: false
 title: "DataTableProps"
 ---
 
-Defined in: [packages/datatable-react/src/table/DataTable.tsx:38](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/DataTable.tsx#L38)
+Defined in: [packages/datatable-react/src/table/DataTable.tsx:38](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/DataTable.tsx#L38)
 
 ## Type Parameters
 
@@ -19,7 +19,7 @@ Defined in: [packages/datatable-react/src/table/DataTable.tsx:38](https://github
 
 > `optional` **className**: `string`
 
-Defined in: [packages/datatable-react/src/table/DataTable.tsx:47](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/DataTable.tsx#L47)
+Defined in: [packages/datatable-react/src/table/DataTable.tsx:47](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/DataTable.tsx#L47)
 
 Additional CSS class name for the table container
 
@@ -29,7 +29,7 @@ Additional CSS class name for the table container
 
 > `optional` **paginate**: [`PaginateOptions`](/seizen-ui/api/datatable/interfaces/paginateoptions/)
 
-Defined in: [packages/datatable-react/src/table/DataTable.tsx:52](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/DataTable.tsx#L52)
+Defined in: [packages/datatable-react/src/table/DataTable.tsx:52](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/DataTable.tsx#L52)
 
 Pagination options
 
@@ -39,6 +39,6 @@ Pagination options
 
 > **table**: [`DataTableInstance`](/seizen-ui/api/datatable/interfaces/datatableinstance/)\<`TData`\>
 
-Defined in: [packages/datatable-react/src/table/DataTable.tsx:42](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/DataTable.tsx#L42)
+Defined in: [packages/datatable-react/src/table/DataTable.tsx:42](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/DataTable.tsx#L42)
 
 The table instance from useDataTable

@@ -4,44 +4,85 @@ description: A rich, enterprise-grade DataTable component for React, powered by 
 template: splash
 hero:
   tagline: A rich, enterprise-grade DataTable component for React, powered by TanStack Table.
-  actions:
-    - text: Get Started
-      link: /seizen-ui/getting-started/
-      icon: right-arrow
-    - text: View on GitHub
-      link: https://github.com/izumisy/seizen-ui
-      icon: external
-      variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-## Live Demo
+<div style={{ marginTop: "50px"}}>
+<DemoPreview demo="full" height={650} client:load />
+</div>
 
-Try out the full-featured DataTable with filtering, column control, data export, and row details.
+<div style={{ marginTop: "100px" }}>
+<div className="section-header">
+  <p className="eyebrow">Fully Customizable</p>
+  <h2 className="title">Flexible Theming</h2>
+  <p className="description">Customize the entire look and feel with CSS variables. No build step required—just define your variables and watch the table transform instantly.</p>
+</div>
 
-<DemoPreview demo="full" height={700} client:load />
+<DemoPreview demo="theming" height={350} client:load />
 
-## Features
+<LinkCard
+  title="Theming Guide"
+  description="Learn how to customize colors, typography, spacing, and more with CSS variables."
+  href="/seizen-ui/guides/theming/"
+/>
+</div>
 
-<CardGrid stagger>
-  <Card title="CSS Variables Theming" icon="pencil">
-    Customize appearance by simply defining CSS variables. All variables have sensible defaults.
+<div style={{ marginTop: "100px" }}>
+<div className="section-header">
+  <p className="eyebrow">Extensible Architecture</p>
+  <h2 className="title">Plugin System</h2>
+  <p className="description">Every feature is a plugin. Mix and match to build exactly what you need—from simple data grids to complex enterprise dashboards.</p>
+</div>
+
+<Tabs>
+  <TabItem label="Filter">
+    <DemoPreview demo="filter" height={400} client:load />
+  </TabItem>
+  <TabItem label="Column Control">
+    <DemoPreview demo="column-control" height={400} client:load />
+  </TabItem>
+  <TabItem label="Data Export">
+    <DemoPreview demo="data-export" height={550} client:load />
+  </TabItem>
+  <TabItem label="Row Detail">
+    <DemoPreview demo="row-detail" height={500} client:load />
+  </TabItem>
+</Tabs>
+
+<LinkCard
+  title="Plugin Development Guide"
+  description="Build your own plugins with our flexible API. Define custom slots, context menus, and event handlers."
+  href="/seizen-ui/guides/plugins/"
+/>
+</div>
+
+<div style={{ marginTop: "150px" }}>
+## And More...
+
+<CardGrid>
+  <Card title="TypeScript" icon="seti:typescript">
+    Full type safety out of the box with comprehensive type definitions for tables, columns, and plugins.
   </Card>
-  <Card title="TypeScript" icon="setting">
-    Full type safety out of the box with comprehensive type definitions.
+  <Card title="Data Adapters" icon="seti:db">
+    Connect to Supabase, Firestore, Hasura, and more with zero boilerplate using data adapters.
   </Card>
-  <Card title="Data Adapters" icon="document">
-    Connect to Supabase, Firestore, Hasura, and more with zero boilerplate.
-  </Card>
-  <Card title="Plugin System" icon="puzzle">
-    Add search panels, side panels, column customization with a single line.
-  </Card>
-  <Card title="Pagination Built-in" icon="list-format">
+  <Card title="Pagination" icon="list-format">
     Both offset-based and cursor-based pagination supported out of the box.
   </Card>
   <Card title="Event Bus" icon="rocket">
-    Subscribe to table events and plugin-defined custom events.
+    Subscribe to table events and plugin-defined custom events for reactive interactions.
   </Card>
 </CardGrid>
+</div>
+
+<div style={{ marginTop: "150px" }}>
+## Get Started
+
+<LinkCard
+  title="Getting Started Guide"
+  description="Learn how to install and set up Seizen DataTable in your React project."
+  href="/seizen-ui/getting-started/"
+/>
+</div>

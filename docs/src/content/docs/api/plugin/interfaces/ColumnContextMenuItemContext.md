@@ -5,7 +5,7 @@ prev: false
 title: "ColumnContextMenuItemContext"
 ---
 
-Defined in: [contextMenuItem.ts:68](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L68)
+Defined in: [contextMenuItem.ts:68](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L68)
 
 Context passed to columnContextMenuItem factory function
 
@@ -25,7 +25,7 @@ Context passed to columnContextMenuItem factory function
 
 > **column**: `Column`\<`TData`, `unknown`\>
 
-Defined in: [contextMenuItem.ts:70](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L70)
+Defined in: [contextMenuItem.ts:70](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L70)
 
 The column header that was right-clicked
 
@@ -35,7 +35,7 @@ The column header that was right-clicked
 
 > **emit**: \<`K`\>(`event`, `payload`) => `void`
 
-Defined in: [contextMenuItem.ts:76](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L76)
+Defined in: [contextMenuItem.ts:76](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L76)
 
 Emit an event to the EventBus
 
@@ -65,7 +65,7 @@ Emit an event to the EventBus
 
 > **pluginArgs**: `TArgs`
 
-Defined in: [contextMenuItem.ts:74](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L74)
+Defined in: [contextMenuItem.ts:74](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L74)
 
 Plugin configuration args (validated by Zod schema)
 
@@ -75,6 +75,6 @@ Plugin configuration args (validated by Zod schema)
 
 > **table**: `Table`\<`TData`\>
 
-Defined in: [contextMenuItem.ts:72](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L72)
+Defined in: [contextMenuItem.ts:72](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L72)
 
 TanStack Table instance

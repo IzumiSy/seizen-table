@@ -7,7 +7,7 @@ title: "Paginator"
 
 > **Paginator**\<`TData`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/datatable-react/src/table/Paginator.tsx:27](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/table/Paginator.tsx#L27)
+Defined in: [packages/datatable-react/src/table/Paginator.tsx:27](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/table/Paginator.tsx#L27)
 
 Paginator component for navigating through table pages
 Displays at the bottom of the table

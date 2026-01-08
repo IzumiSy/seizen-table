@@ -7,7 +7,7 @@ title: "cellContextMenuItem"
 
 > **cellContextMenuItem**\<`TData`, `TArgs`\>(`id`, `factory`): [`CellContextMenuItemFactory`](/seizen-ui/api/plugin/interfaces/cellcontextmenuitemfactory/)\<`TData`, `TArgs`\>
 
-Defined in: [contextMenuItem.ts:121](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/contextMenuItem.ts#L121)
+Defined in: [contextMenuItem.ts:121](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/contextMenuItem.ts#L121)
 
 Helper function to create a cell context menu item with full context access.
 

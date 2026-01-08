@@ -7,7 +7,7 @@ title: "usePluginContext"
 
 > **usePluginContext**\<`TPluginId`\>(): [`PluginContextValue`](/seizen-ui/api/plugin/interfaces/plugincontextvalue/)\<`TPluginId` *extends* `never` ? [`PluginArgsRegistry`](/seizen-ui/api/plugin/interfaces/pluginargsregistry/)\[`TPluginId`\<`TPluginId`\>\] : `unknown`\>
 
-Defined in: [Context.tsx:303](https://github.com/IzumiSy/seizen-ui/blob/5b5ef328b43263bb239079254d093c7d59f54350/packages/datatable-react/src/plugin/Context.tsx#L303)
+Defined in: [Context.tsx:303](https://github.com/IzumiSy/seizen-ui/blob/1438e15c4c2cea3ef870f9a542c4a18eb9cbd7fe/packages/datatable-react/src/plugin/Context.tsx#L303)
 
 Hook to access table context from within a plugin component.
 

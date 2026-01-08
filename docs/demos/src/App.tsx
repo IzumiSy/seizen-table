@@ -6,6 +6,7 @@ import { ColumnControlDemo } from "./components/ColumnControlDemo";
 import { DataExportDemo } from "./components/DataExportDemo";
 import { RowDetailDemo } from "./components/RowDetailDemo";
 import { FullDemo } from "./components/FullDemo";
+import { ThemingDemo } from "./components/ThemingDemo";
 import * as styles from "./styles.css";
 
 const demos: { path: string; component: FC; title: string }[] = [
@@ -13,6 +14,11 @@ const demos: { path: string; component: FC; title: string }[] = [
     path: "basic",
     component: BasicDemo,
     title: "Basic",
+  },
+  {
+    path: "theming",
+    component: ThemingDemo,
+    title: "Theming",
   },
   {
     path: "filter",
