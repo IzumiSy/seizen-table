@@ -11,9 +11,8 @@
 seizen-ui/
 ├── packages/
 │   ├── datatable-react/          # DataTable component
-│   └── command-palette-react/    # Command palette component
-└── examples/
-    └── vite-app/                 # Vite + React example app
+└── apps/
+    └── example-vite-app/         # Vite + React example app
 ```
 
 ## Setup
@@ -35,7 +34,7 @@ pnpm test
 
 ## Example App
 
-The example app (`examples/vite-app`) demonstrates the usage of Seizen UI components.
+The example app (`apps/example-vite-app`) demonstrates the usage of Seizen UI components.
 
 ```bash
 # Start the example app
