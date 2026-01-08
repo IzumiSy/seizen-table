@@ -1,0 +1,108 @@
+---
+title: Filtering
+description: Add powerful filtering capabilities to your DataTable with type-aware operators and global search.
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import { DemoPreview } from '@components/DemoPreview';
+
+DataTable supports advanced filtering through the `FilterPlugin` from `@izumisy/seizen-datatable-plugins`.
+
+## Try It
+
+Click the filter icon in the sidepanel to open the filter builder. You can also use the search bar to do a global search.
+
+<DemoPreview demo="filter" height={350} client:load />
+
+## Installation
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @izumisy/seizen-datatable-plugins
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @izumisy/seizen-datatable-plugins
+    ```
+  </TabItem>
+</Tabs>
+
+## Basic Usage
+
+```tsx
+import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { FilterPlugin } from "@izumisy/seizen-datatable-plugins/filter";
+
+function MyTable() {
+  const table = useDataTable({
+    data,
+    columns,
+    plugins: [FilterPlugin.configure({ width: 320 })],
+  });
+
+  return <DataTable table={table} />;
+}
+```
+
+The plugin adds:
+- A **sidepanel** with filter builder UI
+- A **global search bar** in the header slot
+- **Context menu items** for quick filtering from cells
+
+## Defining Filterable Columns
+
+Specify filter types in column meta to enable filtering:
+
+```tsx
+const columns: ColumnDef<Person>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+    meta: { filterType: "string" },
+  },
+  {
+    accessorKey: "age",
+    header: "Age",
+    meta: { filterType: "number" },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    meta: {
+      filterType: "enum",
+      filterEnumValues: ["active", "inactive", "pending"],
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created",
+    meta: { filterType: "date" },
+  },
+];
+```
+
+## Filter Types & Operators
+
+| Type | Operators |
+|------|-----------|
+| `string` | Contains, Equals, Starts with, Ends with, Is empty, Is not empty |
+| `number` | `=` `≠` `>` `≥` `<` `≤` |
+| `date` | `=` Before, After |
+| `enum` | Is, Is not |
+
+## Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `width` | `number` | `320` | Width of the sidepanel |
+| `disableGlobalSearch` | `boolean` | `false` | Disable global search in header slot |
+
+## Quick Filter from Context Menu
+
+Right-click on any cell to add a filter with that cell's value pre-filled. This provides a fast way to filter data based on existing values.
+
+<Aside type="tip">
+  Combine filtering with [Column Control](/seizen-ui/features/column-control) for a powerful data exploration experience.
+</Aside>

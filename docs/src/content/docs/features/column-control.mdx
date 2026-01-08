@@ -1,0 +1,82 @@
+---
+title: Column Control
+description: Manage column visibility, ordering, and multi-column sorting in your DataTable.
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import { DemoPreview } from '@components/DemoPreview';
+
+DataTable supports column visibility management and multi-column sorting through the `ColumnControlPlugin` from `@izumisy/seizen-datatable-plugins`.
+
+## Try It
+
+Click the columns icon in the sidepanel to toggle column visibility and manage sorting.
+
+<DemoPreview demo="column-control" height={350} client:load />
+
+## Installation
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @izumisy/seizen-datatable-plugins
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @izumisy/seizen-datatable-plugins
+    ```
+  </TabItem>
+</Tabs>
+
+## Basic Usage
+
+```tsx
+import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { ColumnControlPlugin } from "@izumisy/seizen-datatable-plugins/column-control";
+
+function MyTable() {
+  const table = useDataTable({
+    data,
+    columns,
+    plugins: [ColumnControlPlugin.configure({ width: 280 })],
+  });
+
+  return <DataTable table={table} />;
+}
+```
+
+## Features
+
+### Visibility Tab
+
+- **Toggle visibility** - Show/hide columns with checkboxes
+- **Search** - Quickly find columns by name
+- **Drag & drop** - Reorder columns by dragging
+
+### Sorter Tab
+
+- **Multi-column sorting** - Sort by multiple columns with priority
+- **Direction toggle** - Switch between ascending/descending
+- **Drag & drop** - Change sort priority order
+
+## Context Menu Items
+
+Right-click on a column header to access quick actions:
+
+| Action | Description |
+|--------|-------------|
+| Hide column | Hide the clicked column |
+| Sort ascending | Sort by this column (A→Z, 1→9) |
+| Sort descending | Sort by this column (Z→A, 9→1) |
+| Clear sort | Remove sorting for this column |
+
+## Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `width` | `number` | `280` | Width of the sidepanel |
+
+<Aside type="tip">
+  Column visibility and order are managed via TanStack Table's built-in APIs, so you can also control them programmatically through `table.setColumnVisibility()` and `table.setColumnOrder()`.
+</Aside>
