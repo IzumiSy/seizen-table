@@ -1,0 +1,112 @@
+---
+title: Data Export
+description: Export your DataTable data to CSV, TSV, JSONL, or custom formats.
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import { DataExportDemo } from '@components/demos/DataExportDemo';
+
+DataTable supports data export through the `FileExportPlugin` from `@izumisy/seizen-datatable-plugins`.
+
+## Try It
+
+Click the export icon in the sidepanel to download the table data in CSV, TSV, or JSONL format.
+
+<DataExportDemo client:load />
+
+## Installation
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @izumisy/seizen-datatable-plugins
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @izumisy/seizen-datatable-plugins
+    ```
+  </TabItem>
+</Tabs>
+
+## Basic Usage
+
+```tsx
+import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import {
+  FileExportPlugin,
+  CsvExporter,
+  JsonlExporter,
+  TsvExporter,
+} from "@izumisy/seizen-datatable-plugins/file-export";
+
+function MyTable() {
+  const table = useDataTable({
+    data,
+    columns,
+    plugins: [
+      FileExportPlugin.configure({
+        filename: "my-data",
+        exporters: [CsvExporter, JsonlExporter, TsvExporter],
+      }),
+    ],
+  });
+
+  return <DataTable table={table} />;
+}
+```
+
+## Built-in Exporters
+
+| Exporter | Format | Extension | Description |
+|----------|--------|-----------|-------------|
+| `CsvExporter` | CSV | `.csv` | Comma-separated values |
+| `JsonlExporter` | JSONL | `.jsonl` | JSON Lines (one JSON object per line) |
+| `TsvExporter` | TSV | `.tsv` | Tab-separated values |
+
+## Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `width` | `number` | `300` | Width of the sidepanel |
+| `filename` | `string` | `"export"` | Default filename (without extension) |
+| `includeHeaders` | `boolean` | `true` | Include column headers in export |
+| `exporters` | `Exporter[]` | `[CsvExporter]` | Available export formats |
+
+## Export Behavior
+
+- Exports **visible columns only** (respects column visibility settings)
+- Exports **all rows** matching current filters
+- Users can customize the filename before downloading
+
+## Custom Exporter
+
+Create your own exporter by implementing the `Exporter` interface:
+
+```tsx
+import type { Exporter } from "@izumisy/seizen-datatable-plugins/file-export";
+
+const MarkdownExporter: Exporter = {
+  id: "markdown",
+  name: "Markdown Table",
+  extension: "md",
+  mimeType: "text/markdown",
+  convert: (data, columns, options) => {
+    const headers = columns.map((c) => c.header);
+    const separator = columns.map(() => "---");
+    const rows = data.map((row) =>
+      columns.map((col) => String(row[col.key] ?? ""))
+    );
+
+    return [
+      `| ${headers.join(" | ")} |`,
+      `| ${separator.join(" | ")} |`,
+      ...rows.map((r) => `| ${r.join(" | ")} |`),
+    ].join("\n");
+  },
+};
+```
+
+<Aside type="tip">
+  Combine with [Column Control](/seizen-ui/features/column-control) to let users choose which columns to export by toggling visibility.
+</Aside>

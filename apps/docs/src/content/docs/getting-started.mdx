@@ -4,7 +4,7 @@ description: Learn how to install and use Seizen DataTable in your React project
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
-import LiveCode from '@components/LiveCode';
+import { BasicDemo } from '@components/demos/BasicDemo';
 
 ## Installation
 
@@ -28,27 +28,9 @@ import LiveCode from '@components/LiveCode';
 
 ## Quick Start
 
-Try editing the code below to see the DataTable in action:
+Here's a basic DataTable in action:
 
-<LiveCode client:load code={`
-function Demo() {
-  const columns = [
-    { accessorKey: "name", header: "Name" },
-    { accessorKey: "age", header: "Age" },
-    { accessorKey: "email", header: "Email" },
-  ];
-
-  const data = [
-    { name: "John Doe", age: 30, email: "john@example.com" },
-    { name: "Jane Smith", age: 25, email: "jane@example.com" },
-    { name: "Bob Wilson", age: 35, email: "bob@example.com" },
-  ];
-
-  const table = useDataTable({ data, columns });
-
-  return <DataTable table={table} />;
-}
-`} />
+<BasicDemo client:load />
 
 ## The Hook + Component Pattern
 

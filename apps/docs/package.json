@@ -13,12 +13,12 @@
     "@astrojs/react": "^4.4.2",
     "@astrojs/starlight": "^0.37.2",
     "@izumisy/seizen-datatable-react": "workspace:*",
+    "@izumisy/seizen-datatable-plugins": "workspace:*",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.6.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "react-live": "^4.1.8",
     "sharp": "^0.34.2"
   }
 }
