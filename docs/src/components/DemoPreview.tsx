@@ -10,7 +10,7 @@ export function DemoPreview({ demo, height = 400 }: DemoPreviewProps) {
 
   return (
     <iframe
-      src={`${baseUrl}/#${demo}`}
+      src={`${baseUrl}/?embed#/${demo}`}
       style={{
         width: "100%",
         height: `${height}px`,
