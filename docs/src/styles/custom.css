@@ -17,6 +17,10 @@
   padding-bottom: 2rem;
 }
 
+.hero .actions {
+  gap: 0.75rem;
+}
+
 /* Splash page section spacing */
 [data-template="splash"] .sl-markdown-content h2 {
   margin-block-start: 6rem;
