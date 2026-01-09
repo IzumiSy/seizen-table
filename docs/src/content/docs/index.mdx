@@ -3,86 +3,116 @@ title: Seizen DataTable
 description: A rich, enterprise-grade DataTable component for React, powered by TanStack Table.
 template: splash
 hero:
-  tagline: A rich, enterprise-grade DataTable component for React, powered by TanStack Table.
+  title: |
+    An enterprise-grade <span style="text-decoration: underline; text-decoration-color: #3b82f6; text-decoration-thickness: 8px; text-underline-offset: 8px;">DataTable</span> for React
+  tagline: A rich, enterprise-grade DataTable component supporting flexible theming, powerful plugins, data adapters, and more.
+  actions:
+    - text: Get Started
+      link: /seizen-ui/getting-started/
+      variant: primary
+      icon: right-arrow
+    - text: View Demos
+      link: https://about.izumisy.work/seizen-ui/demos
+      variant: secondary
+      icon: laptop
 ---
 
 import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-<div style={{ marginTop: "50px"}}>
 <DemoPreview demo="full" height={650} client:load />
-</div>
 
-<div style={{ marginTop: "100px" }}>
-<div className="section-header">
-  <p className="eyebrow">Fully Customizable</p>
-  <h2 className="title">Flexible Theming</h2>
-  <p className="description">Customize the entire look and feel with CSS variables. No build step required—just define your variables and watch the table transform instantly.</p>
-</div>
+<div style={{ marginTop: "150px" }}>
+  <div className="section-header">
+    <p className="eyebrow">Fully Customizable</p>
+    <h2 className="title">Flexible Theming</h2>
+    <p className="description">Customize the entire look and feel with CSS variables. No build step required—just define your variables and watch the table transform instantly.</p>
+    <div className="actions">
+      <a href="/seizen-ui/guides/theming/" className="primary">Theming Guide</a>
+    </div>
+  </div>
 
-<DemoPreview demo="theming" height={350} client:load />
-
-<LinkCard
-  title="Theming Guide"
-  description="Learn how to customize colors, typography, spacing, and more with CSS variables."
-  href="/seizen-ui/guides/theming/"
-/>
-</div>
-
-<div style={{ marginTop: "100px" }}>
-<div className="section-header">
-  <p className="eyebrow">Extensible Architecture</p>
-  <h2 className="title">Plugin System</h2>
-  <p className="description">Every feature is a plugin. Mix and match to build exactly what you need—from simple data grids to complex enterprise dashboards.</p>
-</div>
-
-<Tabs>
-  <TabItem label="Filter">
-    <DemoPreview demo="filter" height={400} client:load />
-  </TabItem>
-  <TabItem label="Column Control">
-    <DemoPreview demo="column-control" height={400} client:load />
-  </TabItem>
-  <TabItem label="Data Export">
-    <DemoPreview demo="data-export" height={550} client:load />
-  </TabItem>
-  <TabItem label="Row Detail">
-    <DemoPreview demo="row-detail" height={500} client:load />
-  </TabItem>
-</Tabs>
-
-<LinkCard
-  title="Plugin Development Guide"
-  description="Build your own plugins with our flexible API. Define custom slots, context menus, and event handlers."
-  href="/seizen-ui/guides/plugins/"
-/>
+  <div style={{ marginTop: "50px" }}>
+    <DemoPreview demo="theming" height={350} client:load />
+  </div>
 </div>
 
 <div style={{ marginTop: "150px" }}>
-## And More...
+  <div className="section-header">
+    <p className="eyebrow">Extensible Architecture</p>
+    <h2 className="title">Plugin System</h2>
+    <p className="description">Every feature is a plugin. Mix and match to build exactly what you need—from simple data grids to complex enterprise dashboards.</p>
+    <div className="actions">
+      <a href="/seizen-ui/guides/plugins/" className="primary">Plugin Development Guide</a>
+    </div>
+  </div>
 
-<CardGrid>
-  <Card title="TypeScript" icon="seti:typescript">
-    Full type safety out of the box with comprehensive type definitions for tables, columns, and plugins.
-  </Card>
-  <Card title="Data Adapters" icon="seti:db">
-    Connect to Supabase, Firestore, Hasura, and more with zero boilerplate using data adapters.
-  </Card>
-  <Card title="Pagination" icon="list-format">
-    Both offset-based and cursor-based pagination supported out of the box.
-  </Card>
-  <Card title="Event Bus" icon="rocket">
-    Subscribe to table events and plugin-defined custom events for reactive interactions.
-  </Card>
-</CardGrid>
+  <div style={{ marginTop: "50px" }}>
+    <Tabs>
+      <TabItem label="Filter">
+        <DemoPreview demo="filter" height={400} client:load />
+      </TabItem>
+      <TabItem label="Column Control">
+        <DemoPreview demo="column-control" height={400} client:load />
+      </TabItem>
+      <TabItem label="Data Export">
+        <DemoPreview demo="data-export" height={550} client:load />
+      </TabItem>
+      <TabItem label="Row Detail">
+        <DemoPreview demo="row-detail" height={500} client:load />
+      </TabItem>
+    </Tabs>
+  </div>
 </div>
 
 <div style={{ marginTop: "150px" }}>
-## Get Started
+  <div className="section-header">
+    <p className="eyebrow">Powerful Features</p>
+    <h2 className="title">Built for Production</h2>
+    <p className="description">Everything you need for modern data-driven applications—from type safety to reactive events.</p>
+  </div>
 
-<LinkCard
-  title="Getting Started Guide"
-  description="Learn how to install and set up Seizen DataTable in your React project."
-  href="/seizen-ui/getting-started/"
-/>
+  <CardGrid stagger>
+    <Card title="TypeScript" icon="seti:typescript">
+      Full type safety out of the box with comprehensive type definitions for tables, columns, and plugins.
+    </Card>
+    <Card title="Data Adapters" icon="seti:db">
+      Connect to Supabase, Firestore, Hasura, and more with zero boilerplate using data adapters.
+    </Card>
+    <Card title="Pagination" icon="list-format">
+      Both offset-based and cursor-based pagination supported out of the box.
+    </Card>
+    <Card title="Event Bus" icon="rocket">
+      Subscribe to table events and plugin-defined custom events for reactive interactions.
+    </Card>
+  </CardGrid>
+</div>
+
+<div style={{ marginTop: "150px" }}>
+  <div className="section-header gradient-bg">
+    <p className="eyebrow">Ready to Build?</p>
+    <h2 className="title">Get Started</h2>
+    <p className="description">Learn how to install and set up Seizen DataTable in your React project.</p>
+    <div className="actions">
+      <a href="/seizen-ui/getting-started/" className="primary">Getting Started Guide</a>
+    </div>
+  </div>
+</div>
+
+<div className="page-footer">
+  <span className="copyright">© 2026 Seizen UI. All rights reserved.</span>
+  <div className="footer-links">
+    <a href="https://github.com/IzumiSy" target="_blank" rel="noopener noreferrer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+      </svg>
+      <span>About Me</span>
+    </a>
+    <a href="https://x.com/sy_izumi" target="_blank" rel="noopener noreferrer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      <span>Twitter</span>
+    </a>
+  </div>
 </div>
