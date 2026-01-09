@@ -1,7 +1,9 @@
 # build output
 dist/
+
 # generated types
 .astro/
+src/content/docs/generated/
 
 # dependencies
 node_modules/
@@ -20,5 +22,5 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-
+# TypeScript
 *.tsbuildinfo

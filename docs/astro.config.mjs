@@ -31,7 +31,7 @@ export default defineConfig({
         pluginAPITypeDoc({
           entryPoints: ["../packages/datatable-react/src/plugin/index.ts"],
           tsconfig: "../packages/datatable-react/tsconfig.json",
-          output: "api/plugin",
+          output: "generated/api/plugin",
           sidebar: {
             label: "Reference",
           },
@@ -39,7 +39,7 @@ export default defineConfig({
         datatableAPITypeDoc({
           entryPoints: ["../packages/datatable-react/src/table/index.ts"],
           tsconfig: "../packages/datatable-react/tsconfig.json",
-          output: "api/datatable",
+          output: "generated/api/datatable",
           sidebar: {
             label: "Reference",
           },
