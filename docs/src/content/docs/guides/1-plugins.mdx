@@ -5,13 +5,24 @@ description: Learn how to use and create plugins for Seizen DataTable.
 
 import { Aside } from '@astrojs/starlight/components';
 
-Different use cases require different UI enhancements:
+## Design Philosophy
 
-- Admin dashboards need bulk actions and row detail panels
-- Data exploration apps need advanced filtering and search
-- Analytics tools need column customization and export features
+Seizen DataTable is built on a **plugin-first architecture**. Unlike traditional component libraries that bundle all features into a monolithic package, every feature in Seizen — including official ones — is implemented as a plugin.
 
-The plugin system allows these features to be added modularly.
+This architecture is inspired by modern editor ecosystems like VS Code, where the core remains minimal and all rich functionality comes from extensions. The same principle applies here:
+
+- **The core DataTable does one thing well**: rendering tabular data with essential interactions (sorting, selection, pagination)
+- **Everything else is a plugin**: filtering, row details, column controls, data export, and any custom feature you need
+
+### Why Plugin-First?
+
+**Bundle size optimization** — Your users only download the features they actually use. A simple read-only table ships minimal JavaScript, while a feature-rich admin dashboard includes more.
+
+**Consistent mental model** — Whether you're using an official plugin or building a custom one, the API is identical. There's no "magic" built-in behavior that works differently from user-land code.
+
+**Escape hatches by default** — Since official features use the same plugin primitives available to you, you can always fork, extend, or replace any behavior. Nothing is locked away in private APIs.
+
+**Composability** — Plugins can be combined freely. Need filtering in a side panel with row details in an inline row? Just configure both plugins. The slot system ensures they work together seamlessly.
 
 ## Layout & Slots
 
