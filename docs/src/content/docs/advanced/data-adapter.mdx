@@ -5,51 +5,103 @@ description: Connect your DataTable to any backend with Data Adapters.
 
 import { Aside } from '@astrojs/starlight/components';
 
-## Overview
+## Why Data Adapters?
 
-Enterprise applications fetch data from various sources: GraphQL APIs, REST endpoints, direct SQL queries, etc. The DataAdapter abstraction allows you to:
+Enterprise applications rarely work with static, in-memory data. Real-world scenarios involve:
 
-- Swap data sources without changing table logic
-- Implement pagination, sorting, and filtering at the protocol level
-- Handle caching and optimistic updates consistently
+- **Remote data sources**: REST APIs, GraphQL endpoints, gRPC services
+- **Server-side operations**: Pagination, sorting, and filtering handled by the backend
+- **Complex state management**: Loading states, error handling, caching, optimistic updates
+- **Protocol diversity**: Different backends require different query formats and response handling
 
-## Interface
+Without abstraction, you end up with:
 
-```typescript
-interface DataAdapterOptions<TData, TFilter = unknown> {
-  /**
-   * Initial page size
-   */
-  pageSize?: number;
-
-  /**
-   * Initial filter state
-   */
-  initialFilter?: TFilter;
-
-  /**
-   * Pagination mode
-   * - "offset": Traditional page-based (page index + page size)
-   * - "cursor": Cursor-based (first/after, last/before)
-   * @default "offset"
-   */
-  paginationMode?: "offset" | "cursor";
+```tsx
+// ❌ Tight coupling to specific API format
+function UsersTable() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/users?page=${page}&limit=10`)
+      .then(res => res.json())
+      .then(data => {
+        setData(data.items);
+        setLoading(false);
+      });
+  }, [page]);
+  
+  // ... repeat for sorting, filtering, etc.
 }
 ```
 
-## Pagination States
+This approach has problems:
+- API format is hardcoded throughout the component
+- Switching backends requires rewriting data fetching logic
+- Difficult to test and maintain
+- No reusability across different tables
+
+## The Data Adapter Solution
+
+Data Adapters provide a **protocol-agnostic abstraction** for fetching and managing table data:
+
+```tsx
+// ✅ Clean separation of concerns
+const usersAdapter = GraphQLAdapter.configure({
+  client: apolloClient,
+  query: GET_USERS_QUERY,
+  transform: (data) => ({
+    data: data.users.nodes,
+    totalCount: data.users.totalCount,
+  }),
+});
+
+function UsersTable() {
+  const { state } = useAdapter(usersAdapter);
+  
+  return (
+    <DataTable
+      data={state.data}
+      columns={columns}
+      isLoading={state.isLoading}
+    />
+  );
+}
+```
+
+Benefits:
+- **Swap backends easily**: Change from REST to GraphQL without touching table code
+- **Consistent API**: Same interface regardless of underlying protocol
+- **Built-in state management**: Loading, error, pagination states handled automatically
+- **Testable**: Mock adapters for testing without network calls
+
+## Pagination Modes
+
+Data Adapters support two pagination strategies:
 
 ### Offset Pagination
+
+Traditional page-based pagination. Best for:
+- Datasets where users need to jump to specific pages
+- Backends that support `OFFSET` / `LIMIT` queries
+- When total count is always available
 
 ```typescript
 interface OffsetPaginationState {
   mode: "offset";
-  pageIndex: number;  // Current page index (0-based)
-  pageSize: number;   // Current page size
+  pageIndex: number;  // Current page (0-based)
+  pageSize: number;   // Items per page
 }
 ```
 
 ### Cursor Pagination
+
+Cursor-based pagination (common in GraphQL). Best for:
+- Large or frequently-changing datasets
+- Real-time data where offset would cause duplicates/gaps
+- Backends that use cursor-based queries (Relay-style)
 
 ```typescript
 interface CursorPaginationState {
@@ -62,7 +114,7 @@ interface CursorPaginationState {
 }
 ```
 
-### Pagination Mode Comparison
+### Comparison
 
 | Feature | Offset Mode | Cursor Mode |
 |---------|-------------|-------------|
@@ -97,6 +149,8 @@ const MyCustomAdapter = defineDataAdapter({
     const response = await myApi.getItems({
       page: state.pageIndex,
       limit: state.pageSize,
+      sort: state.sorting,
+      filter: state.filter,
     });
     return {
       data: response.items,
@@ -109,6 +163,8 @@ const MyCustomAdapter = defineDataAdapter({
 ## Built-in Adapters
 
 ### GraphQL Adapter
+
+For Apollo Client or similar GraphQL clients:
 
 ```typescript
 import { GraphQLAdapter } from "@izumisy/seizen-datatable-adapter-graphql";
@@ -130,6 +186,8 @@ const usersAdapter = GraphQLAdapter.configure({
 ```
 
 ### REST/OpenAPI Adapter
+
+For REST APIs:
 
 ```typescript
 import { RESTAdapter } from "@izumisy/seizen-datatable-adapter-rest";
@@ -156,27 +214,21 @@ const usersAdapter = RESTAdapter.configure({
 The adapter instance provides a framework-agnostic API:
 
 ```typescript
-const usersAdapter = GraphQLAdapter.configure({
-  client: apolloClient,
-  query: GET_USERS_QUERY,
-  // ...
-});
-
 // State (readonly)
-usersAdapter.state.data;        // TData[]
-usersAdapter.state.totalCount;  // number
-usersAdapter.state.isLoading;   // boolean
-usersAdapter.state.error;       // Error | null
-usersAdapter.state.pageIndex;   // number
-usersAdapter.state.pageSize;    // number
+adapter.state.data;        // TData[]
+adapter.state.totalCount;  // number
+adapter.state.isLoading;   // boolean
+adapter.state.error;       // Error | null
+adapter.state.pageIndex;   // number
+adapter.state.pageSize;    // number
 
 // Actions
-usersAdapter.fetch();                    // Fetch data
-usersAdapter.refetch();                  // Refetch current page
-usersAdapter.setPageIndex(2);            // Go to page
-usersAdapter.setPageSize(20);            // Change page size
-usersAdapter.setFilter({ status: "active" });  // Set filter
-usersAdapter.setSorting([{ id: "name", desc: false }]);  // Set sorting
+adapter.fetch();                    // Fetch data
+adapter.refetch();                  // Refetch current page
+adapter.setPageIndex(2);            // Go to page
+adapter.setPageSize(20);            // Change page size
+adapter.setFilter({ status: "active" });  // Set filter
+adapter.setSorting([{ id: "name", desc: false }]);  // Set sorting
 ```
 
 ## Usage with DataTable

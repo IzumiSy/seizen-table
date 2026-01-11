@@ -1,6 +1,6 @@
 ---
 title: Row Detail
-description: Display detailed information about a selected row in a sidepanel.
+description: Display detailed information about a selected row in a side panel.
 ---
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
@@ -10,7 +10,7 @@ DataTable supports row detail view through the `RowDetailPlugin` from `@izumisy/
 
 ## Try It
 
-Click on any row to see its details in the sidepanel.
+Click on any row to see its details in the side panel.
 
 <DemoPreview demo="row-detail" height={350} client:load />
 
@@ -42,7 +42,7 @@ function MyTable() {
     plugins: [RowDetailPlugin.configure({ width: 350 })],
   });
 
-  // Open sidepanel when a row is clicked
+  // Open side panel when a row is clicked
   useDataTableEvent(table, "row-click", (row) => {
     table.plugin.open("row-detail", { row });
   });
@@ -56,7 +56,7 @@ function MyTable() {
 1. User clicks on a table row
 2. The `row-click` event is emitted
 3. Your event handler opens the row-detail plugin with the clicked row
-4. The sidepanel displays all fields of the row
+4. The side panel displays all fields of the row
 
 ## Features
 
@@ -68,7 +68,7 @@ function MyTable() {
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `width` | `number` | `320` | Width of the sidepanel |
+| `width` | `number` | `320` | Width of the side panel |
 
 ## Opening Programmatically
 

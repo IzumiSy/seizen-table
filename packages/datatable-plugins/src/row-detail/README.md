@@ -1,6 +1,6 @@
 # RowDetailPlugin
 
-Displays detailed information about a clicked row in a sidepanel.
+Displays detailed information about a clicked row in a side panel.
 
 ## Import
 
@@ -17,7 +17,7 @@ const table = useDataTable({
   plugins: [RowDetailPlugin.configure({ width: 350 })],
 });
 
-// Open sidepanel when row is clicked
+// Open side panel when row is clicked
 useDataTableEvent(table, "row-click", (row) => {
   table.plugin.open("row-detail", { row });
 });
@@ -27,7 +27,7 @@ useDataTableEvent(table, "row-click", (row) => {
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `width` | `number` | `320` | Width of the sidepanel |
+| `width` | `number` | `320` | Width of the side panel |
 
 ## Features
 

@@ -31,7 +31,7 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
  * Schema for File Export plugin configuration
  */
 const FileExportSchema = z.object({
-  /** Width of the sidepanel */
+  /** Width of the side panel */
   width: z.number().default(300),
   /** Default filename (without extension) */
   filename: z.string().default("export"),
@@ -344,7 +344,7 @@ export const FileExportPlugin = definePlugin({
   name: "Export",
   args: FileExportSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "File Export",
       render: FileExportRenderer,

@@ -20,7 +20,7 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
  * Schema for RowDetail plugin configuration
  */
 const RowDetailSchema = z.object({
-  /** Width of the sidepanel */
+  /** Width of the side panel */
   width: z.number().default(320),
 });
 
@@ -121,7 +121,7 @@ function formatValue(value: unknown): string {
 /**
  * RowDetail Plugin
  *
- * Displays detailed information about a clicked row in a sidepanel.
+ * Displays detailed information about a clicked row in a side panel.
  * Uses openArgs to receive the initial row data, and EventBus for
  * subsequent row clicks while the panel is open.
  *
@@ -145,7 +145,7 @@ export const RowDetailPlugin = definePlugin({
   name: "Details",
   args: RowDetailSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "Row Details",
       render: RowDetailRenderer,

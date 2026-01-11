@@ -40,7 +40,7 @@ export interface PluginInternalState {
  */
 export interface PluginControl {
   /**
-   * Open a plugin's sidepanel.
+   * Open a plugin's side panel.
    *
    * When a plugin registers its args type via module augmentation,
    * the args parameter becomes type-safe.
@@ -64,7 +64,7 @@ export interface PluginControl {
   ) => void;
 
   /**
-   * Close the currently open plugin's sidepanel.
+   * Close the currently open plugin's side panel.
    */
   close: () => void;
 

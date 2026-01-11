@@ -16,7 +16,7 @@ const table = useDataTable({
   columns,
   plugins: [
     AllSlotsDemo.configure({
-      sidepanelTitle: "Demo Panel",
+      sidePanelTitle: "Demo Panel",
       enableCellHighlight: true,
       primaryColor: "#8b5cf6",
     }),
@@ -31,7 +31,7 @@ table.plugin.open("all-slots-demo", { id: rowId });
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `sidepanelTitle` | `string` | `"All Slots Demo"` | Title shown in sidepanel |
+| `sidePanelTitle` | `string` | `"All Slots Demo"` | Title shown in side panel |
 | `enableCellHighlight` | `boolean` | `true` | Highlight numeric cells |
 | `primaryColor` | `string` | `"#3b82f6"` | Primary color for styling |
 
@@ -39,7 +39,7 @@ table.plugin.open("all-slots-demo", { id: rowId });
 
 | Slot | Description |
 |------|-------------|
-| `sidepanel` | Shows plugin info, stats, and row click counter |
+| `sidePanel` | Shows plugin info, stats, and row click counter |
 | `header` | Displays record count and selection info |
 | `footer` | Shows column names |
 | `cell` | Custom numeric highlighting |

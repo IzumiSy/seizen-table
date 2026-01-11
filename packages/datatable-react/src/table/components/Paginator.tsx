@@ -1,5 +1,5 @@
-import type { DataTableInstance } from "./useDataTable";
-import * as styles from "./styles.css";
+import type { DataTableInstance } from "../useDataTable";
+import * as styles from "../styles.css";
 
 export interface PaginatorProps<TData> {
   table: DataTableInstance<TData>;

@@ -1,0 +1,305 @@
+---
+title: Compound Components
+description: Build custom DataTable layouts with compound components and plugin slots.
+---
+
+Seizen DataTable provides multiple levels of API abstraction. Choose the level that fits your needs—from zero-config to fully custom rendering.
+
+## Choosing an API Level
+
+| Feature | Level 1 (High) | Level 2 (Mid) | Level 3 (Low) |
+|---------|----------------|---------------|---------------|
+| **Setup Complexity** | Minimal | Moderate | High |
+| **Customization** | Limited | High | Complete |
+| **Plugin Support** | ✅ Yes | ✅ Yes | ❌ No |
+| **Context Menus** | ✅ Yes | ✅ Yes | ❌ No |
+| **Layout Control** | ❌ No | ✅ Yes | ✅ Yes |
+| **Best For** | Quick setup | Custom layouts with plugins | Completely custom UI |
+
+### Level 1: High-Level API
+
+The simplest approach—just pass a table instance and configuration:
+
+```tsx
+import { DataTable, useDataTable } from "@izumisy/seizen-datatable-react";
+
+function MyComponent() {
+  const table = useDataTable({ data, columns });
+  return <DataTable table={table} paginate={{ enable: true }} />;
+}
+```
+
+### Level 2: Compound Components
+
+Build custom layouts using compound components while keeping plugin support:
+
+```tsx
+import { DataTable, DataTablePlugins, useDataTable } from "@izumisy/seizen-datatable-react";
+
+function MyComponent() {
+  const table = useDataTable({ data, columns, plugins: [MyPlugin] });
+  
+  return (
+    <DataTable.Root table={table}>
+      <DataTablePlugins.SidePanel position="left" />
+      <DataTable.Content>
+        <DataTablePlugins.Header />
+        <DataTable.Table>
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+        <DataTablePlugins.Footer />
+        <DataTable.Paginator sizeOptions={[10, 25, 50]} />
+      </DataTable.Content>
+      <DataTablePlugins.SidePanel position="right" />
+    </DataTable.Root>
+  );
+}
+```
+
+### Level 3: Low-Level API (TanStack Table Direct)
+
+For maximum control, use TanStack Table API directly:
+
+```tsx
+import { useDataTable, flexRender } from "@izumisy/seizen-datatable-react";
+
+function CustomTable({ data, columns }) {
+  const table = useDataTable({ data, columns });
+  const tanstack = table._tanstackTable;
+
+  return (
+    <table>
+      <thead>
+        {tanstack.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <th key={header.id}>
+                {flexRender(header.column.columnDef.header, header.getContext())}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {tanstack.getRowModel().rows.map((row) => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+```
+
+:::caution
+Level 3 loses plugin support and context menus. Use Level 2 if you need those features.
+:::
+
+---
+
+## Component Reference
+
+### DataTable Components
+
+Core table structure components:
+
+| Component | HTML Element | Description |
+|-----------|--------------|-------------|
+| `DataTable.Root` | `<div>` | Provider wrapper (required, provides context) |
+| `DataTable.Content` | `<div>` | Main content area (between side panels) |
+| `DataTable.Table` | `<table>` | Pure `<table>` element wrapper |
+| `DataTable.Header` | `<thead>` | Column headers with sorting and context menu |
+| `DataTable.Body` | `<tbody>` | Row rendering with render props support |
+| `DataTable.Row` | `<tr>` | Individual row with click handlers |
+| `DataTable.Cell` | `<td>` | Individual cell with context menu support |
+| `DataTable.Paginator` | `<div>` | Pagination controls |
+
+### DataTablePlugins
+
+Plugin-provided UI slots:
+
+| Component | Description |
+|-----------|-------------|
+| `DataTablePlugins.SidePanel` | Left/right side panels for plugin content |
+| `DataTablePlugins.Header` | Plugin header slots (e.g., filter bars) |
+| `DataTablePlugins.Footer` | Plugin footer slots |
+| `DataTablePlugins.InlineRow` | Expandable row content (e.g., row details) |
+| `DataTablePlugins.CellSlot` | Custom cell rendering from plugins |
+
+### Component Hierarchy
+
+```
+DataTable.Root (providers + context)
+├─ DataTablePlugins.SidePanel (position: "left")
+├─ DataTable.Content (main content area)
+│  ├─ DataTablePlugins.Header (plugin-provided toolbars)
+│  ├─ DataTable.Table
+│  │  ├─ DataTable.Header
+│  │  └─ DataTable.Body
+│  │     ├─ DataTable.Row
+│  │     │  └─ DataTable.Cell
+│  │     └─ DataTablePlugins.InlineRow (plugin-provided expandable rows)
+│  ├─ DataTablePlugins.Footer (plugin-provided footers)
+│  └─ DataTable.Paginator
+└─ DataTablePlugins.SidePanel (position: "right")
+```
+
+---
+
+## Customization
+
+### Custom Row Rendering
+
+`DataTable.Body` supports render props for custom row rendering:
+
+```tsx
+<DataTable.Body>
+  {(row) => (
+    <>
+      <DataTable.Row
+        row={row}
+        className={row.original.isVIP ? "vip-row" : ""}
+        onClick={(row) => console.log("Clicked:", row.original)}
+      />
+      <DataTablePlugins.InlineRow 
+        row={row} 
+        colSpan={row.getVisibleCells().length} 
+      />
+    </>
+  )}
+</DataTable.Body>
+```
+
+When no children are provided, `DataTable.Body` automatically renders `DataTable.Row` and `DataTablePlugins.InlineRow` for each row.
+
+**Opting out of InlineRow:**
+
+```tsx
+<DataTable.Body>
+  {(row) => <DataTable.Row row={row} />}
+</DataTable.Body>
+```
+
+### Custom Cell Content
+
+`DataTable.Cell` supports custom children:
+
+```tsx
+// Default: uses plugin CellSlot automatically
+<DataTable.Cell cell={cell} row={row} />
+
+// Custom content without plugin support
+<DataTable.Cell cell={cell} row={row}>
+  <span className="custom">{cell.getValue()}</span>
+</DataTable.Cell>
+
+// Custom content with plugin support
+<DataTable.Cell cell={cell} row={row}>
+  <DataTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
+    <span className="custom">{cell.getValue()}</span>
+  </DataTablePlugins.CellSlot>
+</DataTable.Cell>
+```
+
+### Adding Custom Elements
+
+You can add custom elements anywhere in the layout:
+
+```tsx
+<DataTable.Root table={table}>
+  <DataTablePlugins.SidePanel position="left" />
+  <DataTable.Content>
+    {/* Custom toolbar */}
+    <div className="custom-toolbar">
+      <button>Export</button>
+      <button>Refresh</button>
+    </div>
+    
+    <DataTablePlugins.Header />
+    
+    <DataTable.Table>
+      <DataTable.Header />
+      <DataTable.Body />
+    </DataTable.Table>
+    
+    <DataTablePlugins.Footer />
+    
+    {/* Custom footer content */}
+    <div className="table-info">
+      Showing {table.getData().length} records
+    </div>
+    
+    <DataTable.Paginator />
+  </DataTable.Content>
+  <DataTablePlugins.SidePanel position="right" />
+</DataTable.Root>
+```
+
+---
+
+## Advanced: Using Hooks
+
+For completely custom rendering while keeping context menu support, use the provided hooks inside `DataTable.Root`.
+
+### Available Hooks
+
+| Hook | Description |
+|------|-------------|
+| `useDataTableContext()` | Get the table instance from context |
+| `useContextMenu()` | Get `handleCellContextMenu` and `handleColumnContextMenu` functions |
+
+### Example
+
+```tsx
+import { 
+  DataTable, 
+  useDataTableContext,
+  useContextMenu,
+  flexRender 
+} from "@izumisy/seizen-datatable-react";
+
+function CustomTableBody() {
+  const table = useDataTableContext();
+  const { handleCellContextMenu } = useContextMenu();
+  
+  return (
+    <>
+      {table._tanstackTable.getRowModel().rows.map((row) => (
+        <tr
+          key={row.id}
+          onClick={() => table.eventBus.emit("row-click", row.original)}
+        >
+          {row.getVisibleCells().map((cell) => (
+            <td
+              key={cell.id}
+              onContextMenu={(e) => 
+                handleCellContextMenu(e, cell, cell.column, row)
+              }
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  );
+}
+
+// Usage (must be inside DataTable.Root)
+<DataTable.Root table={table}>
+  <DataTable.Content>
+    <DataTable.Table>
+      <DataTable.Header />
+      <tbody>
+        <CustomTableBody />
+      </tbody>
+    </DataTable.Table>
+  </DataTable.Content>
+</DataTable.Root>
+```

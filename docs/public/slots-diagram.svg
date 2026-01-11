@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="system-ui, -apple-system, sans-serif">
+  <desc>DataTable Layout: The component has 5 plugin slots - sidepanel (left/right vertical panels), header (above table body), footer (below table), cell (custom cell rendering), and inlineRow (expandable row below each table row).</desc>
+  
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#818cf8;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="sideGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="inlineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="footerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#f472b6;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="cellGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.1"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Main content area background -->
+  <rect x="10" y="10" width="740" height="400" rx="8" fill="white"/>
+  
+  <!-- Table header -->
+  <rect x="90" y="20" width="500" height="32" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="130" y="41" fill="#6b7280" font-size="11" font-weight="600">NAME</text>
+  <text x="240" y="41" fill="#6b7280" font-size="11" font-weight="600">EMAIL</text>
+  <text x="380" y="41" fill="#6b7280" font-size="11" font-weight="600">DEPARTMENT</text>
+  <text x="510" y="41" fill="#6b7280" font-size="11" font-weight="600">STATUS</text>
+  
+  <!-- Table Row 1 -->
+  <rect x="90" y="87" width="500" height="40" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <circle cx="110" cy="107" r="12" fill="#e5e7eb" stroke="#d1d5db" stroke-width="1"/>
+  <text x="110" y="111" text-anchor="middle" fill="#6b7280" font-size="9" font-weight="600">AJ</text>
+  <text x="130" y="111" fill="#374151" font-size="11">Alice Johnson</text>
+  <text x="240" y="111" fill="#6b7280" font-size="11">alice@example.com</text>
+  <text x="380" y="111" fill="#6b7280" font-size="10">Engineering</text>
+  <text x="510" y="111" fill="#6b7280" font-size="11">Active</text>
+  
+  <!-- Table Row 2 -->
+  <rect x="90" y="127" width="500" height="40" fill="#fafafa" stroke="#e5e7eb" stroke-width="1"/>
+  <circle cx="110" cy="147" r="12" fill="#e5e7eb" stroke="#d1d5db" stroke-width="1"/>
+  <text x="110" y="151" text-anchor="middle" fill="#6b7280" font-size="9" font-weight="600">BS</text>
+  <text x="130" y="151" fill="#374151" font-size="11">Bob Smith</text>
+  <text x="240" y="151" fill="#6b7280" font-size="11">bob@example.com</text>
+  <text x="380" y="151" fill="#6b7280" font-size="10">Design</text>
+  <text x="510" y="151" fill="#6b7280" font-size="11">Active</text>
+  
+  <!-- Table Row 3 -->
+  <rect x="90" y="212" width="500" height="40" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="240" y="236" fill="#6b7280" font-size="11">carol@example.com</text>
+  <text x="380" y="236" fill="#6b7280" font-size="10">Engineering</text>
+  <text x="510" y="236" fill="#6b7280" font-size="11">Active</text>
+  
+  <!-- Table Row 4 -->
+  <rect x="90" y="252" width="500" height="40" fill="#fafafa" stroke="#e5e7eb" stroke-width="1"/>
+  <circle cx="110" cy="272" r="12" fill="#e5e7eb" stroke="#d1d5db" stroke-width="1"/>
+  <text x="110" y="276" text-anchor="middle" fill="#6b7280" font-size="9" font-weight="600">DB</text>
+  <text x="130" y="276" fill="#374151" font-size="11">David Brown</text>
+  <text x="240" y="276" fill="#6b7280" font-size="11">david@example.com</text>
+  <text x="380" y="276" fill="#6b7280" font-size="10">Marketing</text>
+  <text x="510" y="276" fill="#6b7280" font-size="11">Inactive</text>
+  
+  <!-- More rows indicator -->
+  <rect x="90" y="292" width="500" height="30" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="340" y="312" text-anchor="middle" fill="#9ca3af" font-size="12">...</text>
+  
+  <!-- ===== SLOT OVERLAYS (drawn last to be on top) ===== -->
+  
+  <!-- Left Sidepanel -->
+  <rect x="20" y="20" width="70" height="337" rx="6" fill="url(#sideGrad)" stroke="#34d399" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="55" y="190" text-anchor="middle" fill="#059669" font-size="11" font-weight="600" transform="rotate(-90 55 190)">sidePanel (left)</text>
+  
+  <!-- Header Slot (between table header and body) -->
+  <rect x="90" y="52" width="500" height="35" rx="4" fill="url(#headerGrad)" stroke="#818cf8" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="340" y="75" text-anchor="middle" fill="#6366f1" font-size="12" font-weight="600">header slot</text>
+  
+  <!-- Inline Row Slot (expanded) -->
+  <rect x="90" y="167" width="500" height="45" rx="4" fill="url(#inlineGrad)" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="340" y="195" text-anchor="middle" fill="#d97706" font-size="11" font-weight="600">inlineRow slot (expanded row detail)</text>
+  
+  <!-- Cell Slot (on Table Row 3) -->
+  <rect x="90" y="212" width="120" height="40" fill="url(#cellGrad)" stroke="#3b82f6" stroke-width="2" stroke-dasharray="3,2"/>
+  <text x="150" y="236" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="600">cell slot</text>
+  
+  <!-- Footer Slot -->
+  <rect x="90" y="322" width="500" height="35" rx="4" fill="url(#footerGrad)" stroke="#f472b6" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="340" y="345" text-anchor="middle" fill="#db2777" font-size="12" font-weight="600">footer slot</text>
+  
+  <!-- Right Sidepanel -->
+  <rect x="590" y="20" width="70" height="337" rx="6" fill="url(#sideGrad)" stroke="#34d399" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="625" y="190" text-anchor="middle" fill="#059669" font-size="11" font-weight="600" transform="rotate(90 625 190)">sidePanel (right)</text>
+</svg>
