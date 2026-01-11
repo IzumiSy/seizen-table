@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
-import { SidepanelSlotRenderer } from "../../plugin/SlotRenderer";
 import * as styles from "../styles.css";
 
 export interface DataTableContentProps {
   /**
-   * Child components (DataTable.Table, DataTable.Pagination, or custom elements)
+   * Child components (DataTable.Table, DataTable.Pagination, DataTablePlugins.*, or custom elements)
    */
   children: ReactNode;
 }
@@ -12,44 +11,36 @@ export interface DataTableContentProps {
 /**
  * Main content container that arranges children vertically.
  *
- * This component handles the layout between sidepanels and main content area,
- * allowing you to compose Table, Pagination, and other elements freely.
+ * This is a pure layout component. Use DataTablePlugins.SidePanel,
+ * DataTablePlugins.Header, and DataTablePlugins.Footer to add plugin content.
  *
- * @example
+ * @example Basic usage
  * ```tsx
  * <DataTable.Root table={table}>
  *   <DataTable.Content>
  *     <DataTable.Table>
- *       <DataTable.Header table={table} />
- *       <DataTable.Body table={table} />
+ *       <thead><DataTable.Header /></thead>
+ *       <tbody><DataTable.Body /></tbody>
  *     </DataTable.Table>
- *     <DataTable.Pagination table={table} />
+ *     <DataTable.Paginator />
  *   </DataTable.Content>
  * </DataTable.Root>
  * ```
  *
- * @example With custom elements
+ * @example With plugin slots
  * ```tsx
  * <DataTable.Root table={table}>
+ *   <DataTablePlugins.SidePanel position="left" />
  *   <DataTable.Content>
- *     <div className="custom-toolbar">Toolbar</div>
+ *     <DataTablePlugins.Header />
  *     <DataTable.Table>...</DataTable.Table>
- *     <DataTable.Pagination table={table} />
+ *     <DataTablePlugins.Footer />
+ *     <DataTable.Paginator />
  *   </DataTable.Content>
+ *   <DataTablePlugins.SidePanel position="right" />
  * </DataTable.Root>
  * ```
  */
 export function DataTableContent({ children }: DataTableContentProps) {
-  return (
-    <>
-      {/* Left Sidepanel */}
-      <SidepanelSlotRenderer position="left-sider" />
-
-      {/* Main Content: vertical layout for table, pagination, and other elements */}
-      <div className={styles.mainContent}>{children}</div>
-
-      {/* Right Sidepanel */}
-      <SidepanelSlotRenderer position="right-sider" />
-    </>
-  );
+  return <div className={styles.mainContent}>{children}</div>;
 }

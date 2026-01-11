@@ -34,9 +34,9 @@ export type SlotType = "sidepanel" | "header" | "footer" | "cell" | "inlineRow";
 // =============================================================================
 
 /**
- * Sidepanel slot configuration
+ * SidePanel slot configuration
  */
-export interface SidepanelSlot {
+export interface SidePanelSlot {
   position: PluginPosition;
   /** Header content displayed at the top of the panel */
   header?: string | ReactNode;
@@ -94,7 +94,7 @@ export interface ContextMenuItemsSlot<TData = unknown> {
  * Plugin slots configuration
  */
 export interface PluginSlots<TData = unknown> {
-  sidepanel?: SidepanelSlot;
+  sidepanel?: SidePanelSlot;
   header?: HeaderSlot;
   footer?: FooterSlot;
   cell?: CellSlot<TData>;
@@ -123,16 +123,16 @@ export interface DataTablePlugin<TData = unknown> {
 /**
  * Type guard to check if a plugin has a sidepanel slot
  */
-export function hasSidepanelSlot(plugin: DataTablePlugin<any>): boolean {
+export function hasSidePanelSlot(plugin: DataTablePlugin<any>): boolean {
   return plugin.slots.sidepanel !== undefined;
 }
 
 /**
  * Get sidepanel configuration from a plugin
  */
-export function getSidepanelSlot(
+export function getSidePanelSlot(
   plugin: DataTablePlugin<any>
-): SidepanelSlot | undefined {
+): SidePanelSlot | undefined {
   return plugin.slots.sidepanel;
 }
 
@@ -164,7 +164,7 @@ interface BasePluginOptions<TSchema extends z.ZodType> {
  * Slot render function definitions for defineSlotPlugin
  */
 export interface DefinePluginSlots<TData, TSchema extends z.ZodType> {
-  /** Sidepanel slot - renders in left or right sidepanel */
+  /** SidePanel slot - renders in left or right sidepanel */
   sidepanel?: {
     position: PluginPosition;
     header?: string | ((context: PluginContext<z.infer<TSchema>>) => ReactNode);
@@ -221,7 +221,7 @@ export type DefinePluginOptions<
  * This function creates a plugin factory with a `configure` method that validates
  * configuration at runtime using the provided Zod schema.
  *
- * @example Slot Plugin with Sidepanel
+ * @example Slot Plugin with SidePanel
  * ```tsx
  * import { z } from "zod";
  * import { definePlugin, cellContextMenuItem, usePluginContext } from "@izumisy/seizen-datatable-react/plugin";
@@ -231,9 +231,9 @@ export type DefinePluginOptions<
  *   enableExport: z.boolean().default(true),
  * });
  *
- * function createSidepanelRenderer(context: PluginContext<z.infer<typeof BulkActionsSchema>>) {
+ * function createSidePanelRenderer(context: PluginContext<z.infer<typeof BulkActionsSchema>>) {
  *   const { args } = context;
- *   return function SidepanelContent() {
+ *   return function SidePanelContent() {
  *     const { selectedRows } = usePluginContext();
  *     if (selectedRows.length === 0) return null;
  *     return (
@@ -253,7 +253,7 @@ export type DefinePluginOptions<
  *   slots: {
  *     sidepanel: {
  *       position: "right-sider",
- *       render: createSidepanelRenderer,
+ *       render: createSidePanelRenderer,
  *     },
  *   },
  *   contextMenuItems: {

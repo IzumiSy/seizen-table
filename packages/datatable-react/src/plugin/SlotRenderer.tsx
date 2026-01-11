@@ -3,9 +3,9 @@ import type { Cell, Column, Row } from "@tanstack/react-table";
 import type {
   DataTablePlugin,
   PluginPosition,
-  SidepanelSlot,
+  SidePanelSlot,
 } from "./definePlugin";
-import { getSidepanelSlot } from "./definePlugin";
+import { getSidePanelSlot } from "./definePlugin";
 import { usePluginContext } from "./Context";
 import * as styles from "./styles.css";
 
@@ -19,20 +19,20 @@ interface PluginRendererProps {
 /**
  * Get sidepanel plugins with their slot configuration for a specific position
  */
-function getSidepanelPluginsForPosition(
+function getSidePanelPluginsForPosition(
   plugins: DataTablePlugin<any>[],
   position: PluginPosition
-): Array<{ plugin: DataTablePlugin<any>; slot: SidepanelSlot }> {
+): Array<{ plugin: DataTablePlugin<any>; slot: SidePanelSlot }> {
   return plugins
     .map((plugin) => {
-      const slot = getSidepanelSlot(plugin);
+      const slot = getSidePanelSlot(plugin);
       if (slot && slot.position === position) {
         return { plugin, slot };
       }
       return null;
     })
     .filter(
-      (item): item is { plugin: DataTablePlugin<any>; slot: SidepanelSlot } =>
+      (item): item is { plugin: DataTablePlugin<any>; slot: SidePanelSlot } =>
         item !== null
     );
 }
@@ -40,14 +40,14 @@ function getSidepanelPluginsForPosition(
 /**
  * Renders sidepanel plugins for a specific position
  */
-export function SidepanelSlotRenderer({ position }: PluginRendererProps) {
+export function SidePanelSlotRenderer({ position }: PluginRendererProps) {
   const { table } = usePluginContext();
   const plugins = table.plugins;
   const activePluginId = table.plugin.getActiveId();
   const setActive = table.plugin.setActive;
 
   // Get sidepanel plugins for this position
-  const sidepanelPlugins = getSidepanelPluginsForPosition(plugins, position);
+  const sidepanelPlugins = getSidePanelPluginsForPosition(plugins, position);
 
   // Memoize plugin components to maintain stable references
   const pluginComponents = useMemo(() => {
@@ -119,11 +119,6 @@ export function SidepanelSlotRenderer({ position }: PluginRendererProps) {
     </div>
   );
 }
-
-/**
- * @deprecated Use SidepanelSlotRenderer instead
- */
-export const PluginRenderer = SidepanelSlotRenderer;
 
 // =============================================================================
 // Header Slot Renderer

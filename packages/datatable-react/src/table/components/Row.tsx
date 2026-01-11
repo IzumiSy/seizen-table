@@ -1,7 +1,6 @@
 import type { Row } from "@tanstack/react-table";
 import { useDataTableContext } from "./Root";
 import { DataTableCell } from "./Cell";
-import { InlineRowSlotRenderer } from "../../plugin/SlotRenderer";
 import * as styles from "../styles.css";
 
 export interface DataTableRowProps<TData> {
@@ -87,22 +86,18 @@ export function DataTableRow<TData>({
   const rowClassName = className ? `${styles.tr} ${className}` : styles.tr;
 
   return (
-    <>
-      <tr
-        className={rowClassName}
-        data-selected={row.getIsSelected() || undefined}
-        onClick={handleClick}
-      >
-        {renderCell
-          ? row.getVisibleCells().map(renderCell)
-          : row
-              .getVisibleCells()
-              .map((cell) => (
-                <DataTableCell key={cell.id} cell={cell} row={row} />
-              ))}
-      </tr>
-      {/* Inline Row Slot - renders below matching row */}
-      <InlineRowSlotRenderer row={row} colSpan={row.getVisibleCells().length} />
-    </>
+    <tr
+      className={rowClassName}
+      data-selected={row.getIsSelected() || undefined}
+      onClick={handleClick}
+    >
+      {renderCell
+        ? row.getVisibleCells().map(renderCell)
+        : row
+            .getVisibleCells()
+            .map((cell) => (
+              <DataTableCell key={cell.id} cell={cell} row={row} />
+            ))}
+    </tr>
   );
 }

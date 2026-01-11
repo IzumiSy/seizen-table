@@ -1,7 +1,6 @@
 import type { DataTableInstance } from "./useDataTable";
 import {
   DataTableRoot,
-  DataTableContent,
   DataTableTable,
   DataTableHeader as DataTableHeaderComponent,
   DataTableBody,
@@ -9,6 +8,7 @@ import {
   DataTableCell as DataTableCellComponent,
 } from "./components";
 import { Paginator } from "./components/Paginator";
+import { DataTablePlugins } from "../plugin/DataTablePlugins";
 
 export interface PaginateOptions {
   /**
@@ -52,27 +52,36 @@ export interface DataTableProps<TData> {
  * - DataTable.Body
  * - DataTable.Row
  * - DataTable.Cell
- * - DataTable.Paginator (alias of Paginator)
+ * - DataTable.Paginator
+ *
+ * For plugin UI slots, use DataTablePlugins:
+ * - DataTablePlugins.SidePanel
+ * - DataTablePlugins.Header
+ * - DataTablePlugins.Footer
+ * - DataTablePlugins.InlineRow
+ * - DataTablePlugins.CellSlot
  *
  * @example High-level usage (all-in-one)
  * ```tsx
  * <DataTable table={table} paginate={{ enable: true }} />
  * ```
  *
- * @example Mid-level usage (compound components)
+ * @example Mid-level usage (compound components with plugins)
  * ```tsx
  * <DataTable.Root table={table}>
- *   <DataTable.Content>
- *     <DataTable.Table>
- *       <thead>
- *         <DataTable.Header />
- *       </thead>
- *       <tbody>
- *         <DataTable.Body />
- *       </tbody>
- *     </DataTable.Table>
- *     <DataTable.Paginator />
- *   </DataTable.Content>
+ *   <DataTablePlugins.SidePanel position="left" />
+ *   <DataTablePlugins.Header />
+ *   <DataTable.Table>
+ *     <thead>
+ *       <DataTable.Header />
+ *     </thead>
+ *     <tbody>
+ *       <DataTable.Body />
+ *     </tbody>
+ *   </DataTable.Table>
+ *   <DataTablePlugins.Footer />
+ *   <DataTable.Paginator />
+ *   <DataTablePlugins.SidePanel position="right" />
  * </DataTable.Root>
  * ```
  */
@@ -86,19 +95,21 @@ export function DataTable<TData>({
 
   return (
     <DataTableRoot table={table} className={className}>
-      <DataTableContent>
-        <DataTableTable>
-          <thead>
-            <DataTableHeaderComponent />
-          </thead>
-          <tbody>
-            <DataTableBody />
-          </tbody>
-        </DataTableTable>
-        {paginateEnabled && (
-          <Paginator table={table} sizeOptions={paginateSizeOptions} />
-        )}
-      </DataTableContent>
+      <DataTablePlugins.SidePanel position="left" />
+      <DataTablePlugins.Header />
+      <DataTableTable>
+        <thead>
+          <DataTableHeaderComponent />
+        </thead>
+        <tbody>
+          <DataTableBody />
+        </tbody>
+      </DataTableTable>
+      <DataTablePlugins.Footer />
+      {paginateEnabled && (
+        <Paginator table={table} sizeOptions={paginateSizeOptions} />
+      )}
+      <DataTablePlugins.SidePanel position="right" />
     </DataTableRoot>
   );
 }
@@ -112,7 +123,6 @@ export function DataTable<TData>({
  */
 DataTable.Root = DataTableRoot;
 DataTable.Table = DataTableTable;
-DataTable.Content = DataTableContent;
 DataTable.Header = DataTableHeaderComponent;
 DataTable.Body = DataTableBody;
 DataTable.Row = DataTableRowComponent;

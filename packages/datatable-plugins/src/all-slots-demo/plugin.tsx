@@ -36,12 +36,12 @@ type AllSlotsDemoConfig = z.infer<typeof AllSlotsDemoSchema>;
 // =============================================================================
 
 /**
- * Sidepanel slot - Shows plugin info and controls
+ * SidePanel slot - Shows plugin info and controls
  */
-function createSidepanelRenderer(context: PluginContext<AllSlotsDemoConfig>) {
+function createSidePanelRenderer(context: PluginContext<AllSlotsDemoConfig>) {
   const { args } = context;
 
-  return function SidepanelContent() {
+  return function SidePanelContent() {
     const { data, selectedRows, useEvent } =
       usePluginContext<"all-slots-demo">();
     const [clickCount, setClickCount] = useState(0);
@@ -291,7 +291,7 @@ export const AllSlotsDemo = definePlugin<
     sidepanel: {
       position: "right-sider",
       header: "All Slots Demo",
-      render: createSidepanelRenderer,
+      render: createSidePanelRenderer,
     },
     header: {
       render: createHeaderRenderer,

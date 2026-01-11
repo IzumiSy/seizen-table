@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import { flexRender, type Cell, type Row } from "@tanstack/react-table";
 import { useContextMenu } from "../useContextMenu";
-import { CellSlotRenderer } from "../../plugin/SlotRenderer";
+import { CellSlot } from "../../plugin/DataTablePlugins";
 import * as styles from "../styles.css";
 
 export interface DataTableCellProps<TData> {
@@ -28,6 +29,13 @@ export interface DataTableCellProps<TData> {
     cell: Cell<TData, unknown>,
     row: Row<TData>
   ) => void;
+
+  /**
+   * Custom cell content.
+   * If provided, replaces the default CellSlot rendering.
+   * Use DataTablePlugins.CellSlot inside children if you want plugin support.
+   */
+  children?: ReactNode;
 }
 
 /**
@@ -57,13 +65,20 @@ export interface DataTableCellProps<TData> {
  * />
  * ```
  *
- * @example Custom styling
+ * @example Custom cell content with plugin support
  * ```tsx
- * <DataTable.Cell
- *   cell={cell}
- *   row={row}
- *   className="custom-cell"
- * />
+ * <DataTable.Cell cell={cell} row={row}>
+ *   <DataTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
+ *     <CustomContent value={cell.getValue()} />
+ *   </DataTablePlugins.CellSlot>
+ * </DataTable.Cell>
+ * ```
+ *
+ * @example Custom cell content without plugin support
+ * ```tsx
+ * <DataTable.Cell cell={cell} row={row}>
+ *   <span>{cell.getValue()}</span>
+ * </DataTable.Cell>
  * ```
  */
 export function DataTableCell<TData>({
@@ -71,6 +86,7 @@ export function DataTableCell<TData>({
   row,
   className,
   onContextMenu,
+  children,
 }: DataTableCellProps<TData>) {
   const { handleCellContextMenu } = useContextMenu<TData>();
 
@@ -84,11 +100,21 @@ export function DataTableCell<TData>({
 
   const cellClassName = className ? `${styles.td} ${className}` : styles.td;
 
+  // Custom children - user takes full control of content
+  if (children !== undefined) {
+    return (
+      <td className={cellClassName} onContextMenu={handleContextMenu}>
+        {children}
+      </td>
+    );
+  }
+
+  // Default rendering with CellSlot
   return (
     <td className={cellClassName} onContextMenu={handleContextMenu}>
-      <CellSlotRenderer cell={cell} column={cell.column} row={row}>
+      <CellSlot cell={cell} column={cell.column} row={row}>
         {flexRender(cell.column.columnDef.cell, cell.getContext())}
-      </CellSlotRenderer>
+      </CellSlot>
     </td>
   );
 }

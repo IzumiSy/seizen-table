@@ -9,13 +9,13 @@
 // definePlugin
 export {
   definePlugin,
-  hasSidepanelSlot,
-  getSidepanelSlot,
+  hasSidePanelSlot,
+  getSidePanelSlot,
 } from "./definePlugin";
 export type {
   // Slot types
   SlotType,
-  SidepanelSlot,
+  SidePanelSlot,
   HeaderSlot,
   FooterSlot,
   CellSlot,
@@ -60,13 +60,20 @@ export { DEFAULT_FILTER_OPERATORS, FILTER_OPERATOR_LABELS } from "./Context";
 
 // Slot Renderers
 export {
-  SidepanelSlotRenderer,
+  SidePanelSlotRenderer,
   HeaderSlotRenderer,
   FooterSlotRenderer,
   CellSlotRenderer,
   InlineRowSlotRenderer,
-  PluginRenderer, // deprecated alias
 } from "./SlotRenderer";
+
+// DataTablePlugins compound components
+export { DataTablePlugins } from "./DataTablePlugins";
+export type {
+  SidePanelProps,
+  InlineRowProps,
+  CellSlotProps,
+} from "./DataTablePlugins";
 
 // PluginControl (for type-safe plugin.open())
 export type { PluginArgsRegistry } from "./usePluginControl";

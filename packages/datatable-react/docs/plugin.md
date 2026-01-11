@@ -119,9 +119,9 @@ const MultiSlotSchema = z.object({
 
 type MultiSlotConfig = z.infer<typeof MultiSlotSchema>;
 
-// Sidepanel renderer
-function createSidepanelRenderer(context: PluginContext<MultiSlotConfig>) {
-  return function SidepanelContent() {
+// SidePanel renderer
+function createSidePanelRenderer(context: PluginContext<MultiSlotConfig>) {
+  return function SidePanelContent() {
     const { data } = usePluginContext();
     return <div>Total: {data.length} rows</div>;
   };
@@ -185,7 +185,7 @@ export const MultiSlotPlugin = definePlugin({
     sidepanel: {
       position: "right-sider",
       header: "Multi Slot Plugin",
-      render: createSidepanelRenderer,
+      render: createSidePanelRenderer,
     },
     header: {
       render: createHeaderRenderer,

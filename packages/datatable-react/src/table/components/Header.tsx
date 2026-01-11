@@ -1,7 +1,6 @@
 import { flexRender } from "@tanstack/react-table";
 import { useDataTableContext } from "./Root";
 import { useContextMenu } from "../useContextMenu";
-import { HeaderSlotRenderer } from "../../plugin/SlotRenderer";
 import * as styles from "../styles.css";
 
 /**
@@ -59,15 +58,6 @@ export function DataTableHeader() {
           ))}
         </tr>
       ))}
-      {/* Header Slot - between thead rows and tbody */}
-      <tr>
-        <th
-          colSpan={tanstack.getAllColumns().length}
-          style={{ padding: 0, border: "none" }}
-        >
-          <HeaderSlotRenderer />
-        </th>
-      </tr>
     </>
   );
 }

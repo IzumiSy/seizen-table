@@ -29,7 +29,7 @@ const fallback = {
   sidepanelTabActiveBg: "#ffffff",
 };
 
-// Sidepanel container
+// SidePanel container
 export const sidepanel = style({
   display: "flex",
   selectors: {

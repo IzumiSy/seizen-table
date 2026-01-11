@@ -63,11 +63,13 @@ export interface DataTableRootProps<TData> {
  * @example
  * ```tsx
  * <DataTable.Root table={table}>
+ *   <DataTablePlugins.Header />
  *   <DataTable.Table>
- *     <DataTable.Header />
- *     <DataTable.Body />
+ *     <thead><DataTable.Header /></thead>
+ *     <tbody><DataTable.Body /></tbody>
  *   </DataTable.Table>
- *   <DataTable.Pagination />
+ *   <DataTablePlugins.Footer />
+ *   <DataTable.Paginator />
  * </DataTable.Root>
  * ```
  */
