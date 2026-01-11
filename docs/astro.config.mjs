@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 import { createStarlightTypeDocPlugin } from "starlight-typedoc";
+import starlightLlmsTxt from "starlight-llms-txt";
 
 const demosUrl =
   process.env.NODE_ENV === "development" ? "http://localhost:5184" : "/demos/";
@@ -28,6 +29,9 @@ export default defineConfig({
       title: "Seizen DataTable",
       customCss: ["./src/styles/custom.css"],
       plugins: [
+        starlightLlmsTxt({
+          rawContent: true,
+        }),
         pluginAPITypeDoc({
           entryPoints: ["../packages/datatable-react/src/plugin/index.ts"],
           tsconfig: "../packages/datatable-react/tsconfig.json",
