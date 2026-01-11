@@ -33,6 +33,7 @@ const fallback = {
 // Container for the entire DataTable with sidepanels
 export const container = style({
   display: "flex",
+  flexDirection: "column",
   fontFamily: `var(--szui-font-family, ${fallback.fontFamily})`,
   fontSize: `var(--szui-font-size, ${fallback.fontSize})`,
   lineHeight: `var(--szui-line-height, ${fallback.lineHeight})`,
@@ -40,6 +41,14 @@ export const container = style({
   backgroundColor: `var(--szui-color-bg, ${fallback.colorBg})`,
   border: `var(--szui-border-width, ${fallback.borderWidth}) solid var(--szui-border-color, ${fallback.borderColor})`,
   borderRadius: `var(--szui-border-radius, ${fallback.borderRadius})`,
+  overflow: "hidden",
+});
+
+// Main content wrapper (contains table and pagination, excludes sidepanels)
+export const mainContent = style({
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
   overflow: "hidden",
 });
 

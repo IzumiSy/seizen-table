@@ -2,8 +2,23 @@ export { DataTable } from "./DataTable";
 export { Paginator } from "./Paginator";
 export { useDataTable } from "./useDataTable";
 export { useDataTableEvent } from "./useDataTableEvent";
+export { useDataTableContext } from "./components/Root";
 export type { DataTableProps, PaginateOptions } from "./DataTable";
 export type { PaginatorProps } from "./Paginator";
+
+// Compound component types
+export type {
+  DataTableRootProps,
+  DataTableContentProps,
+  DataTableTableProps,
+  DataTableHeaderProps,
+  DataTableBodyProps,
+  DataTableRowProps,
+  DataTableCellProps,
+} from "./DataTable";
+
+// Hooks
+export { useContextMenuHandlers } from "./hooks";
 
 // Types
 export type {

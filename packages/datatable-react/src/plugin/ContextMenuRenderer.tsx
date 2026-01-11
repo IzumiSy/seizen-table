@@ -41,7 +41,7 @@ export type ContextMenuState<TData> =
   | ColumnContextMenuState<TData>
   | null;
 
-interface ContextMenuContextValue<TData> {
+export interface ContextMenuContextValue<TData> {
   menuState: ContextMenuState<TData>;
   openCellMenu: (
     cell: Cell<TData, unknown>,
@@ -57,9 +57,8 @@ interface ContextMenuContextValue<TData> {
 // Context
 // =============================================================================
 
-const ContextMenuContext = createContext<ContextMenuContextValue<any> | null>(
-  null
-);
+export const ContextMenuContext =
+  createContext<ContextMenuContextValue<any> | null>(null);
 
 export function useContextMenu<TData>(): ContextMenuContextValue<TData> {
   const ctx = useContext(ContextMenuContext);

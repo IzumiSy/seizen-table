@@ -3,9 +3,209 @@ title: Advanced
 description: Advanced usage patterns for Seizen DataTable.
 ---
 
-## Custom Table Rendering
+## Three Levels of Abstraction
 
-For full control over table rendering, access the TanStack Table instance directly:
+Seizen DataTable provides three levels of API abstraction. Choose the level that best fits your needs:
+
+### Level 1: High-Level API (All-in-One)
+
+The simplest approach - just pass a table instance and configuration:
+
+```tsx
+import { DataTable, useDataTable } from "@izumisy/seizen-datatable-react";
+
+function MyComponent() {
+  const table = useDataTable({ data, columns });
+  
+  return <DataTable table={table} paginate={{ enable: true }} />;
+}
+```
+
+**When to use**: Quick setup, standard layouts, minimal customization needed.
+
+### Level 2: Compound Components (Mid-Level)
+
+Build custom layouts using compound components while keeping plugin support:
+
+```tsx
+import { DataTable, useDataTable } from "@izumisy/seizen-datatable-react";
+
+function MyComponent() {
+  const table = useDataTable({ data, columns, plugins: [MyPlugin] });
+  
+  return (
+    <DataTable.Root table={table}>
+      <DataTable.MainContent>
+        <DataTable.Table>
+          <thead>
+            <DataTable.Header />
+          </thead>
+          <tbody>
+            <DataTable.Body />
+          </tbody>
+        </DataTable.Table>
+        <DataTable.Paginator sizeOptions={[10, 25, 50]} />
+      </DataTable.MainContent>
+    </DataTable.Root>
+  );
+}
+```
+
+**When to use**: Custom layouts, reordering components, conditional rendering, but still want plugins and context menus.
+
+**Note**: Most compound components automatically get the table instance from `DataTable.Root` via context, so you don't need to pass `table` prop to each component.
+
+#### Available Compound Components
+
+- **`DataTable.Root`**: Provider wrapper (required for all compound components, provides context)
+- **`DataTable.MainContent`**: Layout container for table and pagination (handles sidepanels)
+- **`DataTable.Table`**: Pure table element with footer slot
+- **`DataTable.Header`**: Default header rendering with context menus
+- **`DataTable.Body`**: Default body rendering with all features
+- **`DataTable.Row`**: Individual row with click handlers and inline slots
+- **`DataTable.Cell`**: Individual cell with context menu support
+- **`DataTable.Paginator`**: Pagination controls (alias of `Paginator`)
+
+#### Custom Row Rendering Example
+
+```tsx
+import { DataTable, useDataTable, flexRender } from "@izumisy/seizen-datatable-react";
+
+function CustomRowsTable() {
+  const table = useDataTable({ data, columns });
+  
+  return (
+    <DataTable.Root table={table}>
+      <DataTable.MainContent>
+        <DataTable.Table>
+          <thead>
+            <DataTable.Header />
+          </thead>
+          <tbody>
+            {table._tanstackTable.getRowModel().rows.map((row) => (
+              <DataTable.Row
+                key={row.id}
+                row={row}
+                className={row.original.isVIP ? "vip-row" : ""}
+                onClick={(row) => console.log("Clicked:", row.original)}
+              />
+            ))}
+          </tbody>
+        </DataTable.Table>
+        <DataTable.Paginator />
+      </DataTable.MainContent>
+    </DataTable.Root>
+  );
+}
+```
+
+#### Adding Custom Elements
+
+You can add custom elements between or around table components:
+
+```tsx
+<DataTable.Root table={table}>
+  <DataTable.MainContent>
+    <div className="custom-toolbar">
+      <button>Export</button>
+      <button>Refresh</button>
+    </div>
+    <DataTable.Table>
+      <thead><DataTable.Header table={table} /></thead>
+      <tbody><DataTable.Body table={table} /></tbody>
+    </DataTable.TMainContent>
+        <DataTable.Table>
+          <thead>
+            <DataTable.Header table={table} />
+          </thead>
+          <tbody>
+            <CustomTableBody table={table} />
+          </tbody>
+        </DataTable.Table>
+      </DataTable.MainContent Handlers Hook
+
+For completely custom cell rendering with context menu support:
+
+```tsx
+import { 
+  DataTable, 
+  useDataTable, 
+  useContextMenuHandlers,
+  flexRender 
+} from "@izumisy/seizen-datatable-react";
+
+function CustomCellsTable() {
+  const table = useDataTable({ data, columns });
+  
+  return (
+    <DataTable.Root table={table}>
+      <DataTable.Table>
+        <thead>
+          <DataTable.Header table={table} />
+        </thead>
+        <tbody>
+          <CustomTableBody table={table} />
+        </tbody>
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+
+function CustomTableBody({ table }) {
+  const handlers = useContextMenuHandlers();
+  
+  return (
+    <>
+#### Component Hierarchy
+
+The typical component hierarchy is:
+```
+DataTable.Root (providers + context)
+└─ DataTable.MainContent (layout with sidepanels)
+   ├─ [optional: custom toolbar]
+   ├─ DataTable.Table (pure table)
+   │  ├─ thead
+   │  │  └─ DataTable.Header (uses context)
+   │  └─ tbody
+   │     └─ DataTable.Body (uses context)
+   ├─ DataTable.Paginator (uses context)
+   └─ [optional: custom footer]
+```
+        <tr
+          key={row.id}
+          onClick={() => table.eventBus.emit("row-click", row.original)}
+        >
+          {row.getVisibleCells().map((cell) => (
+            <td
+              key={cell.id}
+              className="custom-cell"
+              onContextMenu={(e) => 
+                handlers.handleCellContextMenu(e, cell, cell.column, row)
+              }
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  );
+}
+```
+
+**Available Hooks**:
+- **`useDataTableContext()`**: Get the table instance from context (no need to pass `table` prop)
+- **`useContextMenuHandlers()`**: Get `handleCellContextMenu` and `handleColumnContextMenu` functions
+
+**Note**: `DataTable.Table` accepts a `pagination` prop to render pagination below the table. If you need the pagination outside the table wrapper, you can use `<DataTable.Pagination />` as a separate component, but it won't be properly positioned within the table's main content area.
+
+### Level 3: Low-Level API (TanStack Table Direct)
+
+For maximum control, use TanStack Table API directly without DataTable components:
+
+### Level 3: Low-Level API (TanStack Table Direct)
+
+For maximum control, use TanStack Table API directly without DataTable components:
 
 ```tsx
 import { useDataTable, flexRender, type ColumnDef } from "@izumisy/seizen-datatable-react";
@@ -50,5 +250,22 @@ function CustomTable<TData>({
   );
 }
 ```
+
+**When to use**: Complete custom UI, no plugins needed, performance-critical scenarios.
+
+**Note**: This approach loses plugin support and context menus. Use Level 2 (Compound Components) if you need those features.
+
+## Summary: Choosing the Right Level
+
+| Feature | Level 1 (High) | Level 2 (Mid) | Level 3 (Low) |
+|---------|----------------|---------------|---------------|
+| **Setup Complexity** | Minimal | Moderate | High |
+| **Customization** | Limited | High | Complete |
+| **Plugin Support** | ✅ Yes | ✅ Yes | ❌ No |
+| **Context Menus** | ✅ Yes | ✅ Yes | ❌ No |
+| **Layout Control** | ❌ No | ✅ Yes | ✅ Yes |
+| **Best For** | Quick setup | Custom layouts with plugins | Completely custom UI |
+
+**Recommendation**: Start with Level 1, move to Level 2 when you need custom layouts but want to keep plugin features, and only use Level 3 when building a completely custom table from scratch.
 
 This approach gives you complete control over the HTML structure while still leveraging the DataTable's state management and plugin system.
