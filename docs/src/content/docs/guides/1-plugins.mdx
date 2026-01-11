@@ -52,17 +52,16 @@ DataTable provides 5 slots where plugins can render UI components:
 
 ```tsx
 import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
-import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
+import { RowDetailPlugin } from "@izumisy/seizen-datatable-plugins/row-detail";
+import { FilterPlugin } from "@izumisy/seizen-datatable-plugins/filter";
 
 function UsersTable() {
   const table = useDataTable({
     data,
     columns,
     plugins: [
-      // These will appear as vertical tabs in the side panel
-      RowDetail.configure({ render: (row) => <UserDetail user={row} /> }),
-      FilterBuilder.configure({ filterableColumns: ["name", "email"] }),
+      RowDetailPlugin.configure({ width: 350 }),
+      FilterPlugin.configure({ width: 320 }),
     ],
   });
 
@@ -79,23 +78,45 @@ All plugin development utilities are exported from a dedicated subpath:
 ```tsx
 import {
   definePlugin,
-  contextMenuItem,
   usePluginContext,
+  cellContextMenuItem,
+  columnContextMenuItem,
   type PluginContext,
   type PluginContextValue,
+  type PluginColumnInfo,
 } from "@izumisy/seizen-datatable-react/plugin";
 ```
 
-### Plugin Types
+### Plugin Structure Overview
 
-There are two types of plugins:
+A plugin is created using `definePlugin()` which returns a factory with a `configure()` method:
 
-1. **Slot Plugin** - Renders UI in one or more slots (sidePanel, header, footer, cell, inlineRow)
-2. **Context Menu Only Plugin** - Only adds items to the row context menu (no slot UI)
+```tsx
+import { z } from "zod";
+import { definePlugin } from "@izumisy/seizen-datatable-react/plugin";
 
-## Slot Plugin Example
+const MyPluginSchema = z.object({
+  // Configuration options with Zod validation
+  width: z.number().default(300),
+});
 
-Use `definePlugin` with the `slots` option to create a plugin that uses one or more slots.
+export const MyPlugin = definePlugin({
+  id: "my-plugin",           // Unique identifier
+  name: "My Plugin",         // Display name (shown in side panel tabs)
+  args: MyPluginSchema,      // Zod schema for configuration
+  slots: { /* ... */ },      // UI slots (sidePanel, header, footer, cell, inlineRow)
+  contextMenuItems: { /* ... */ },  // Optional context menu items
+});
+
+// Usage
+MyPlugin.configure({ width: 400 })
+```
+
+## Slots Reference
+
+### SidePanel Slot
+
+Renders in a vertical tab panel on the left or right side of the table.
 
 ```tsx
 import { z } from "zod";
@@ -105,102 +126,189 @@ import {
   type PluginContext,
 } from "@izumisy/seizen-datatable-react/plugin";
 
-const MultiSlotSchema = z.object({
-  primaryColor: z.string().default("#3b82f6"),
+const SidePanelSchema = z.object({
+  width: z.number().default(320),
 });
 
-type MultiSlotConfig = z.infer<typeof MultiSlotSchema>;
+type SidePanelConfig = z.infer<typeof SidePanelSchema>;
 
-// SidePanel renderer
-function createSidePanelRenderer(context: PluginContext<MultiSlotConfig>) {
-  return function SidePanelContent() {
-    const { data } = usePluginContext();
-    return <div>Total: {data.length} rows</div>;
-  };
-}
-
-// Header renderer
-function createHeaderRenderer(context: PluginContext<MultiSlotConfig>) {
+function createSidePanelRenderer(context: PluginContext<SidePanelConfig>) {
   const { args } = context;
-  return function HeaderContent() {
+
+  return function SidePanelContent() {
+    const { data, selectedRows, useEvent } = usePluginContext();
+
+    // Subscribe to row clicks
+    useEvent("row-click", (row) => {
+      console.log("Row clicked:", row);
+    });
+
     return (
-      <div style={{ borderLeft: `3px solid ${args.primaryColor}` }}>
-        Header content
+      <div style={{ width: args.width, padding: 16 }}>
+        <p>Total rows: {data.length}</p>
+        <p>Selected: {selectedRows.length}</p>
       </div>
     );
   };
 }
 
-export const MultiSlotPlugin = definePlugin({
-  id: "multi-slot",
-  name: "Multi Slot",
-  args: MultiSlotSchema,
+export const MySidePanelPlugin = definePlugin({
+  id: "my-side-panel",
+  name: "My Panel",
+  args: SidePanelSchema,
   slots: {
     sidePanel: {
-      position: "right-sider",
-      header: "Multi Slot Plugin",
+      position: "right-sider",  // or "left-sider"
+      header: "Panel Title",    // Can also be a function: (context) => ReactNode
       render: createSidePanelRenderer,
-    },
-    header: {
-      render: createHeaderRenderer,
     },
   },
 });
 ```
 
-## Context Menu Only Plugin
+### Header & Footer Slots
 
-Omit `slots` to create a plugin that only adds context menu items.
+Render above or below the table body. All plugins with these slots render sequentially.
 
 ```tsx
-import { z } from "zod";
-import { definePlugin, contextMenuItem } from "@izumisy/seizen-datatable-react/plugin";
-
-const RowActionsSchema = z.object({
-  enableCopyId: z.boolean().default(true),
-  enableDelete: z.boolean().default(false),
+export const HeaderFooterPlugin = definePlugin({
+  id: "header-footer",
+  name: "Header Footer",
+  args: z.object({}),
+  slots: {
+    header: {
+      render: (context) => function HeaderContent() {
+        const { data } = usePluginContext();
+        return <div>Showing {data.length} records</div>;
+      },
+    },
+    footer: {
+      render: (context) => function FooterContent() {
+        return <div>Footer content here</div>;
+      },
+    },
+  },
 });
+```
 
-export const RowActionsPlugin = definePlugin({
-  id: "row-actions",
-  name: "Row Actions",
-  args: RowActionsSchema,
-  contextMenu: {
-    items: [
-      contextMenuItem("copy-id", (ctx) => ({
-        label: "Copy ID",
-        onClick: () => navigator.clipboard.writeText(String(ctx.row.id)),
-        visible: ctx.pluginArgs.enableCopyId,
+### Cell & InlineRow Slots
+
+Custom renderers for cells and expandable rows. Only the first matching plugin renders.
+
+```tsx
+export const CellPlugin = definePlugin({
+  id: "custom-cell",
+  name: "Custom Cell",
+  args: z.object({}),
+  slots: {
+    cell: {
+      // Receives TanStack Table's Cell, Column, and Row
+      render: (context) => (cell, column, row) => {
+        const value = cell.getValue();
+        return <span style={{ color: "blue" }}>{String(value)}</span>;
+      },
+    },
+    inlineRow: {
+      // Renders below a row when expanded
+      render: (context) => (row) => {
+        return <div>Details for row {row.id}</div>;
+      },
+    },
+  },
+});
+```
+
+## Context Menu Items
+
+Plugins can add items to cell and column header context menus using `cellContextMenuItem` and `columnContextMenuItem`.
+
+### Cell Context Menu
+
+```tsx
+import {
+  definePlugin,
+  cellContextMenuItem,
+} from "@izumisy/seizen-datatable-react/plugin";
+
+export const CellActionsPlugin = definePlugin({
+  id: "cell-actions",
+  name: "Cell Actions",
+  args: z.object({
+    enableCopy: z.boolean().default(true),
+  }),
+  slots: {},
+  contextMenuItems: {
+    cell: [
+      cellContextMenuItem("copy-value", (ctx) => ({
+        label: "Copy value",
+        onClick: () => navigator.clipboard.writeText(String(ctx.value)),
+        visible: ctx.pluginArgs.enableCopy && ctx.value != null,
       })),
-      contextMenuItem("delete", (ctx) => ({
-        label: `Delete ${ctx.selectedRows.length > 1 ? `${ctx.selectedRows.length} items` : "item"}`,
-        onClick: () => handleDelete(ctx.selectedRows.length > 0 ? ctx.selectedRows : [ctx.row]),
-        visible: ctx.pluginArgs.enableDelete,
-        disabled: ctx.selectedRows.length === 0,
+      cellContextMenuItem("filter-by-value", (ctx) => ({
+        label: `Filter by "${ctx.value}"`,
+        onClick: () => ctx.column.setFilterValue(ctx.value),
       })),
     ],
   },
 });
 ```
 
+The `ctx` object provides access to the clicked cell, column, row, cell value, selected rows, table instance, plugin configuration, and an `emit` function for EventBus.
+
+### Column Context Menu
+
+```tsx
+import {
+  definePlugin,
+  columnContextMenuItem,
+} from "@izumisy/seizen-datatable-react/plugin";
+
+export const ColumnActionsPlugin = definePlugin({
+  id: "column-actions",
+  name: "Column Actions",
+  args: z.object({}),
+  slots: {},
+  contextMenuItems: {
+    column: [
+      columnContextMenuItem("hide-column", (ctx) => ({
+        label: "Hide column",
+        onClick: () => ctx.column.toggleVisibility(false),
+      })),
+      columnContextMenuItem("sort-asc", (ctx) => ({
+        label: "Sort ascending",
+        onClick: () => ctx.column.toggleSorting(false),
+        visible: ctx.column.getCanSort(),
+      })),
+      columnContextMenuItem("sort-desc", (ctx) => ({
+        label: "Sort descending",
+        onClick: () => ctx.column.toggleSorting(true),
+        visible: ctx.column.getCanSort(),
+      })),
+    ],
+  },
+});
+```
+
+The `ctx` object provides access to the clicked column, table instance, plugin configuration, and an `emit` function for EventBus.
+
 ## Plugin Context (`usePluginContext`)
 
-Inside your plugin component, use `usePluginContext` to access table data and APIs.
+Inside plugin components, use `usePluginContext()` to access table data and APIs.
 
 ```tsx
 const {
-  table,         // DataTable instance
-  data,          // Current table data (unknown[])
-  columns,       // Column info ({ key, header }[])
-  selectedRows,  // Currently selected rows (unknown[])
-  openArgs,      // Arguments passed via table.plugin.open()
-  useEvent,      // Hook to subscribe to events
+  table,         // DataTableInstance - table methods and state
+  data,          // unknown[] - current table data
+  columns,       // PluginColumnInfo[] - column info with filter metadata
+  selectedRows,  // unknown[] - currently selected rows
+  openArgs,      // TOpenArgs | undefined - args passed via table.plugin.open()
+  useEvent,      // Hook to subscribe to EventBus events
 } = usePluginContext();
 ```
 
 ### `openArgs` - Receiving Initial Data
 
-When a plugin is opened with `table.plugin.open(pluginId, args)`, the `args` are available via `openArgs`:
+When a plugin is opened via `table.plugin.open(pluginId, args)`, the args are available through `openArgs`:
 
 ```tsx
 // Application side
@@ -211,6 +319,211 @@ const { openArgs } = usePluginContext<"row-detail">();
 const initialRow = openArgs?.row;
 ```
 
+### Event Subscription with `useEvent`
+
+Subscribe to built-in and custom events:
+
+```tsx
+const { useEvent } = usePluginContext();
+
+// Built-in events
+useEvent("row-click", (row) => {
+  console.log("Row clicked:", row);
+});
+
+useEvent("selection-change", (selectedRows) => {
+  console.log("Selection changed:", selectedRows);
+});
+
+useEvent("filter-change", (filterState) => {
+  console.log("Filters changed:", filterState);
+});
+```
+
+Built-in events include `data-change`, `selection-change`, `filter-change`, `sorting-change`, `pagination-change`, `row-click`, `cell-context-menu`, and `column-context-menu`.
+
+## Type-Safe Plugin Args (Module Augmentation)
+
+For type-safe `openArgs`, extend the `PluginArgsRegistry` interface:
+
+```tsx
+// In your plugin file
+declare module "@izumisy/seizen-datatable-react/plugin" {
+  interface PluginArgsRegistry {
+    "my-plugin": { row: MyRowType; mode: "view" | "edit" };
+  }
+}
+
+// Now openArgs is typed correctly
+const { openArgs } = usePluginContext<"my-plugin">();
+// openArgs is typed as { row: MyRowType; mode: "view" | "edit" } | undefined
+```
+
+## Custom Events (Module Augmentation)
+
+Plugins can define custom events using module augmentation on `EventBusRegistry`. This enables type-safe inter-plugin communication.
+
+### Defining Custom Events
+
+```tsx
+// In your plugin file
+declare module "@izumisy/seizen-datatable-react/plugin" {
+  interface EventBusRegistry {
+    /** Request to add a filter from context menu */
+    "filter:add-request": {
+      columnKey: string;
+      value: unknown;
+    };
+    /** Notify that export is complete */
+    "export:complete": {
+      format: "csv" | "json";
+      rowCount: number;
+    };
+  }
+}
+```
+
+### Emitting Custom Events
+
+Use the `emit` function from context menu handlers:
+
+```tsx
+cellContextMenuItem("add-filter", (ctx) => ({
+  label: `Filter by "${ctx.value}"`,
+  onClick: () => {
+    ctx.emit("filter:add-request", {
+      columnKey: ctx.column.id,
+      value: ctx.value,
+    });
+  },
+}))
+```
+
+### Subscribing to Custom Events
+
+```tsx
+function MyPluginContent() {
+  const { useEvent } = usePluginContext();
+
+  useEvent("filter:add-request", ({ columnKey, value }) => {
+    console.log(`Add filter: ${columnKey} = ${value}`);
+    // Handle the filter request
+  });
+
+  useEvent("export:complete", ({ format, rowCount }) => {
+    console.log(`Exported ${rowCount} rows as ${format}`);
+  });
+
+  return <div>...</div>;
+}
+```
+
 <Aside type="tip">
-  See the [live example](/seizen-ui/examples/) to explore plugins in action.
+  Custom events are useful for decoupling plugins. For example, a context menu plugin can emit a filter request, and the filter plugin can subscribe to it without direct dependency.
+</Aside>
+
+## Complete Example
+
+Here's a complete plugin that combines slots, context menu items, and custom events:
+
+```tsx
+import { useState } from "react";
+import { z } from "zod";
+import {
+  definePlugin,
+  usePluginContext,
+  cellContextMenuItem,
+  type PluginContext,
+} from "@izumisy/seizen-datatable-react/plugin";
+
+// Type-safe plugin args
+declare module "@izumisy/seizen-datatable-react/plugin" {
+  interface PluginArgsRegistry {
+    "bulk-actions": { initialSelection?: unknown[] };
+  }
+  interface EventBusRegistry {
+    "bulk-actions:delete": { rows: unknown[] };
+  }
+}
+
+const BulkActionsSchema = z.object({
+  enableDelete: z.boolean().default(true),
+  enableExport: z.boolean().default(true),
+});
+
+type BulkActionsConfig = z.infer<typeof BulkActionsSchema>;
+
+function createSidePanelRenderer(context: PluginContext<BulkActionsConfig>) {
+  const { args } = context;
+
+  return function BulkActionsPanel() {
+    const { selectedRows, openArgs, useEvent } = usePluginContext<"bulk-actions">();
+    const [lastDeleted, setLastDeleted] = useState<number>(0);
+
+    // Subscribe to delete events
+    useEvent("bulk-actions:delete", ({ rows }) => {
+      setLastDeleted(rows.length);
+    });
+
+    if (selectedRows.length === 0) {
+      return (
+        <div style={{ padding: 16, color: "#9ca3af" }}>
+          Select rows to see bulk actions
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ padding: 16 }}>
+        <p>{selectedRows.length} rows selected</p>
+        {args.enableDelete && (
+          <button onClick={() => console.log("Delete", selectedRows)}>
+            Delete Selected
+          </button>
+        )}
+        {args.enableExport && (
+          <button onClick={() => console.log("Export", selectedRows)}>
+            Export Selected
+          </button>
+        )}
+        {lastDeleted > 0 && <p>Last deleted: {lastDeleted} rows</p>}
+      </div>
+    );
+  };
+}
+
+export const BulkActionsPlugin = definePlugin({
+  id: "bulk-actions",
+  name: "Bulk Actions",
+  args: BulkActionsSchema,
+  slots: {
+    sidePanel: {
+      position: "right-sider",
+      header: "Bulk Actions",
+      render: createSidePanelRenderer,
+    },
+  },
+  contextMenuItems: {
+    cell: [
+      cellContextMenuItem("add-to-selection", (ctx) => ({
+        label: "Add to bulk selection",
+        onClick: () => {
+          ctx.row.toggleSelected(true);
+        },
+        visible: !ctx.row.getIsSelected(),
+      })),
+      cellContextMenuItem("delete-row", (ctx) => ({
+        label: "Delete row",
+        onClick: () => {
+          ctx.emit("bulk-actions:delete", { rows: [ctx.row.original] });
+        },
+        visible: ctx.pluginArgs.enableDelete,
+      })),
+    ],
+  },
+});
+```
+
+<Aside type="tip">
+  See the [live demo](/seizen-ui/demos/) to explore plugins in action.
 </Aside>
