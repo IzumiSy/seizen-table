@@ -1,6 +1,7 @@
 import type { DataTableInstance } from "./useDataTable";
 import {
   DataTableRoot,
+  DataTableContent,
   DataTableTable,
   DataTableHeader as DataTableHeaderComponent,
   DataTableBody,
@@ -96,19 +97,21 @@ export function DataTable<TData>({
   return (
     <DataTableRoot table={table} className={className}>
       <DataTablePlugins.SidePanel position="left" />
-      <DataTablePlugins.Header />
-      <DataTableTable>
-        <thead>
-          <DataTableHeaderComponent />
-        </thead>
-        <tbody>
-          <DataTableBody />
-        </tbody>
-      </DataTableTable>
-      <DataTablePlugins.Footer />
-      {paginateEnabled && (
-        <Paginator table={table} sizeOptions={paginateSizeOptions} />
-      )}
+      <DataTableContent>
+        <DataTablePlugins.Header />
+        <DataTableTable>
+          <thead>
+            <DataTableHeaderComponent />
+          </thead>
+          <tbody>
+            <DataTableBody />
+          </tbody>
+        </DataTableTable>
+        <DataTablePlugins.Footer />
+        {paginateEnabled && (
+          <Paginator table={table} sizeOptions={paginateSizeOptions} />
+        )}
+      </DataTableContent>
       <DataTablePlugins.SidePanel position="right" />
     </DataTableRoot>
   );
@@ -122,6 +125,7 @@ export function DataTable<TData>({
  * Compound components for building custom DataTable layouts
  */
 DataTable.Root = DataTableRoot;
+DataTable.Content = DataTableContent;
 DataTable.Table = DataTableTable;
 DataTable.Header = DataTableHeaderComponent;
 DataTable.Body = DataTableBody;

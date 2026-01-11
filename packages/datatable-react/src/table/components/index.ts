@@ -1,4 +1,5 @@
 export { DataTableRoot, useDataTableContext } from "./Root";
+export { DataTableContent } from "./Content";
 export { DataTableTable } from "./Table";
 export { DataTableHeader } from "./Header";
 export { DataTableBody } from "./Body";

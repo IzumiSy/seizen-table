@@ -17,27 +17,9 @@ The plugin system allows these features to be added modularly.
 
 DataTable provides 5 slots where plugins can render UI components:
 
-```
-┌───────┬─────────────────────────────────────────────┬───────┐
-│ [N]   │  ┌─────────────────────────────────────┐    │ [D]   │
-│ [a]   │  │         Header Slot                 │    │ [e]   │
-│ [v]   │  └─────────────────────────────────────┘    │ [t]   │
-│ [i]   │  ┌─────────────────────────────────────┐    │ [a]   │
-│ [g]   │  │         Table Row 1                 │    │ [i]   │
-│ [a]   │  ├─────────────────────────────────────┤    │ [l]   │
-│ [t]   │  │  Inline Row Slot (when opened)      │    │ [s]   │
-│ [e]   │  ├─────────────────────────────────────┤    ├───────┤
-│       │  │         Table Row 2                 │    │ [F]   │
-│   ↑   │  │         ...                         │    │ [i]   │
-│ left- │  └─────────────────────────────────────┘    │ [l]   │
-│ sider │  ┌─────────────────────────────────────┐    │ [t]   │
-│       │  │         Footer Slot                 │    │ [e]   │
-│       │  └─────────────────────────────────────┘    │ [r]   │
-│       │                                             │   ↑   │
-│       │                                             │ right-│
-│       │                                             │ sider │
-└───────┴─────────────────────────────────────────────┴───────┘
-```
+![DataTable plugin slots layout](/seizen-ui/slots-diagram.svg)
+
+{/* Accessible description for AI/screen readers: DataTable layout has left and right sidepanels, a header slot above the table body, an inlineRow slot that expands below each row, a cell slot for custom cell rendering, and a footer slot below the table. */}
 
 ### Available Slots
 

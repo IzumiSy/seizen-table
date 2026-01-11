@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="system-ui, -apple-system, sans-serif">
+  <desc>DataTable Layout: The component has 5 plugin slots - sidepanel (left/right vertical panels), header (above table body), footer (below table), cell (custom cell rendering), and inlineRow (expandable row below each table row).</desc>
+  
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#818cf8;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="sideGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="inlineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="footerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#f472b6;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="cellGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.1"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Main container -->
+  <rect x="10" y="10" width="780" height="380" rx="8" fill="none" stroke="#374151" stroke-width="2"/>
+  
+  <!-- Left Sidepanel -->
+  <rect x="10" y="10" width="80" height="380" rx="8" fill="url(#sideGrad)" stroke="#34d399" stroke-width="2"/>
+  <text x="50" y="200" text-anchor="middle" fill="#059669" font-size="12" font-weight="600" transform="rotate(-90 50 200)">sidePanel (left)</text>
+  
+  <!-- Right Sidepanel -->
+  <rect x="710" y="10" width="80" height="380" rx="8" fill="url(#sideGrad)" stroke="#34d399" stroke-width="2"/>
+  <text x="750" y="200" text-anchor="middle" fill="#059669" font-size="12" font-weight="600" transform="rotate(90 750 200)">sidePanel (right)</text>
+  
+  <!-- Main content area -->
+  <rect x="100" y="20" width="600" height="360" rx="4" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  
+  <!-- Header Slot -->
+  <rect x="110" y="30" width="580" height="50" rx="4" fill="url(#headerGrad)" stroke="#818cf8" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="400" y="60" text-anchor="middle" fill="#6366f1" font-size="14" font-weight="600">header slot</text>
+  
+  <!-- Table area -->
+  <rect x="110" y="90" width="580" height="220" rx="4" fill="white" stroke="#d1d5db" stroke-width="1"/>
+  
+  <!-- Table header -->
+  <rect x="110" y="90" width="580" height="35" rx="4" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+  <text x="180" y="113" fill="#374151" font-size="12" font-weight="600">Column A</text>
+  <text x="320" y="113" fill="#374151" font-size="12" font-weight="600">Column B</text>
+  <text x="460" y="113" fill="#374151" font-size="12" font-weight="600">Column C</text>
+  <text x="600" y="113" fill="#374151" font-size="12" font-weight="600">Column D</text>
+  
+  <!-- Table Row 1 -->
+  <rect x="110" y="125" width="580" height="35" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="180" y="148" fill="#6b7280" font-size="12">Data 1</text>
+  <text x="320" y="148" fill="#6b7280" font-size="12">Data 2</text>
+  <text x="460" y="148" fill="#6b7280" font-size="12">Data 3</text>
+  <text x="600" y="148" fill="#6b7280" font-size="12">Data 4</text>
+  
+  <!-- Inline Row Slot (expanded) -->
+  <rect x="110" y="160" width="580" height="50" rx="4" fill="url(#inlineGrad)" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="400" y="190" text-anchor="middle" fill="#d97706" font-size="12" font-weight="600">inlineRow slot (expanded)</text>
+  
+  <!-- Table Row 2 -->
+  <rect x="110" y="210" width="580" height="35" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="180" y="233" fill="#6b7280" font-size="12">Data 5</text>
+  <text x="320" y="233" fill="#6b7280" font-size="12">Data 6</text>
+  <text x="460" y="233" fill="#6b7280" font-size="12">Data 7</text>
+  <text x="600" y="233" fill="#6b7280" font-size="12">Data 8</text>
+  
+  <!-- Table Row 3 -->
+  <rect x="110" y="245" width="580" height="35" fill="#fafafa" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="180" y="268" fill="#6b7280" font-size="12">Data 9</text>
+  <text x="320" y="268" fill="#6b7280" font-size="12">Data 10</text>
+  <text x="600" y="268" fill="#6b7280" font-size="12">Data 12</text>
+  
+  <!-- More rows indicator -->
+  <text x="400" y="300" text-anchor="middle" fill="#9ca3af" font-size="12">...</text>
+  
+  <!-- Footer Slot -->
+  <rect x="110" y="320" width="580" height="50" rx="4" fill="url(#footerGrad)" stroke="#f472b6" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="400" y="350" text-anchor="middle" fill="#db2777" font-size="14" font-weight="600">footer slot</text>
+  
+  <!-- Cell slot indicator (on a cell) -->
+  <rect x="440" y="245" width="100" height="35" rx="4" fill="url(#cellGrad)" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="490" y="268" text-anchor="middle" fill="#2563eb" font-size="10" font-weight="600">cell slot</text>
+</svg>
