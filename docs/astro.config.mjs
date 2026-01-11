@@ -55,12 +55,12 @@ export default defineConfig({
       sidebar: [
         { label: "Getting Started", slug: "getting-started" },
         {
-          label: "Features",
-          autogenerate: { directory: "features" },
-        },
-        {
           label: "Guides",
           autogenerate: { directory: "guides" },
+        },
+        {
+          label: "Features",
+          autogenerate: { directory: "features" },
         },
         {
           label: "Advanced",

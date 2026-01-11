@@ -54,8 +54,42 @@ function BasicDemo() {
 }
 ```
 
+## Enable Features
+
+Seizen DataTable follows a **plugin-first architecture** — all features, including official ones, are provided as plugins. This keeps the core lightweight while allowing you to add only what you need.
+
+```tsx
+import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { RowDetail } from "@izumisy/seizen-datatable-plugins/row-detail";
+import { Filter } from "@izumisy/seizen-datatable-plugins/filter";
+
+function MyTable() {
+  const table = useDataTable({
+    data,
+    columns,
+    plugins: [
+      RowDetail.configure({ ... }),
+      Filter.configure({ ... }),
+    ],
+  });
+
+  return <DataTable table={table} />;
+}
+```
+
+### Official Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| [Row Detail](/seizen-ui/features/row-detail/) | Expandable panel to show detailed row information |
+| [Filtering](/seizen-ui/features/filtering/) | Build complex filters with an intuitive UI |
+| [Column Control](/seizen-ui/features/column-control/) | Toggle column visibility and reorder columns |
+| [Data Export](/seizen-ui/features/data-export/) | Export table data to CSV, JSON, and more |
+
+Learn more about the [Plugin System](/seizen-ui/guides/1-plugins/) to create your own custom plugins.
+
 ## Next Steps
 
-- Learn about the [Plugin System](/seizen-ui/guides/plugins/) to add features like filtering, row details, and more
+- Learn about the [Plugin System](/seizen-ui/guides/1-plugins/) to add features like filtering, row details, and more
 - Explore [Data Adapters](/seizen-ui/reference/data-adapter/) for connecting to various data sources
 - Check out [Theming](/seizen-ui/guides/theming/) to customize the appearance
