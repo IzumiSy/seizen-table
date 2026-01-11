@@ -10,17 +10,6 @@ import {
 } from "./components";
 import { Paginator } from "./components/Paginator";
 
-// Re-export compound component types
-export type {
-  DataTableRootProps,
-  DataTableContentProps,
-  DataTableTableProps,
-  DataTableHeaderProps,
-  DataTableBodyProps,
-  DataTableRowProps,
-  DataTableCellProps,
-} from "./components";
-
 export interface PaginateOptions {
   /**
    * Whether to enable pagination

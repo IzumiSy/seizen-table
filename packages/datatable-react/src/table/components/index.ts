@@ -9,7 +9,5 @@ export { DataTableCell } from "./Cell";
 export type { DataTableRootProps } from "./Root";
 export type { DataTableContentProps } from "./MainContent";
 export type { DataTableTableProps } from "./Table";
-export type { DataTableHeaderProps } from "./Header";
-export type { DataTableBodyProps } from "./Body";
 export type { DataTableRowProps } from "./Row";
 export type { DataTableCellProps } from "./Cell";

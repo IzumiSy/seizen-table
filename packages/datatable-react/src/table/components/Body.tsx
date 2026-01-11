@@ -2,27 +2,6 @@ import { Fragment } from "react";
 import { useDataTableContext } from "./Root";
 import { DataTableRow } from "./Row";
 
-export interface DataTableBodyProps {
-  /**
-   * Custom row renderer (optional).
-   * If provided, this function will be called for each row instead of using the default DataTable.Row component.
-   *
-   * @example
-   * ```tsx
-   * <DataTable.Body
-   *   renderRow={(row) => (
-   *     <tr key={row.id} className="custom-row">
-   *       {row.getVisibleCells().map(cell => (
-   *         <td key={cell.id}>{cell.getValue()}</td>
-   *       ))}
-   *     </tr>
-   *   )}
-   * />
-   * ```
-   */
-  renderRow?: (row: any) => React.ReactNode;
-}
-
 /**
  * Default table body component.
  *
@@ -47,19 +26,15 @@ export interface DataTableBodyProps {
  * </tbody>
  * ```
  */
-export function DataTableBody({ renderRow }: DataTableBodyProps) {
+export function DataTableBody() {
   const tableFromContext = useDataTableContext();
   const table = tableFromContext;
   const tanstack = table._tanstackTable;
   const rows = tanstack.getRowModel().rows;
 
-  if (renderRow) {
-    return <>{rows.map(renderRow)}</>;
-  }
-
   return (
     <>
-      {rows.map((row: any) => (
+      {rows.map((row) => (
         <Fragment key={row.id}>
           <DataTableRow row={row} />
         </Fragment>

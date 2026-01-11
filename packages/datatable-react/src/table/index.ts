@@ -11,11 +11,9 @@ export type {
   DataTableRootProps,
   DataTableContentProps,
   DataTableTableProps,
-  DataTableHeaderProps,
-  DataTableBodyProps,
   DataTableRowProps,
   DataTableCellProps,
-} from "./DataTable";
+} from "./components";
 
 // Hooks
 export { useContextMenu } from "./useContextMenu";
@@ -26,13 +24,6 @@ export type {
   DataTableInstance,
   UseDataTableOptions,
 } from "./useDataTable";
-
-// Event types (re-export from plugin)
-export type {
-  DataTableEventMap,
-  DataTableEventName,
-  EventBus,
-} from "../plugin/useEventBus";
 
 // Re-export PluginArgsRegistry for module augmentation
 // This ensures that module augmentation on "@izumisy/seizen-datatable-react/plugin"

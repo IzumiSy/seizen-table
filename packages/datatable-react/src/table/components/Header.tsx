@@ -4,10 +4,6 @@ import { useContextMenu } from "../useContextMenu";
 import { HeaderSlotRenderer } from "../../plugin/SlotRenderer";
 import * as styles from "../styles.css";
 
-export interface DataTableHeaderProps {
-  // No props needed - uses context
-}
-
 /**
  * Default table header component.
  *
