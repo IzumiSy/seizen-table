@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { FooterSlotRenderer } from "../../plugin/SlotRenderer";
+import { Footer } from "../../plugin/DataTablePlugins";
 import * as styles from "../styles.css";
 
 export interface DataTableTableProps {
@@ -45,7 +45,7 @@ export function DataTableTable({ children }: DataTableTableProps) {
     <div className={styles.tableWrapper}>
       <table className={styles.table}>{children}</table>
       {/* Footer Slot - below the table */}
-      <FooterSlotRenderer />
+      <Footer />
     </div>
   );
 }

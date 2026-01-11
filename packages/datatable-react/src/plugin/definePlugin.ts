@@ -4,7 +4,7 @@ import type { Cell, Column, Row } from "@tanstack/react-table";
 import type {
   CellContextMenuItemFactory,
   ColumnContextMenuItemFactory,
-} from "./contextMenuItem";
+} from "./contextMenu";
 
 // =============================================================================
 // Plugin Types

@@ -32,15 +32,19 @@ export type {
   DefinePluginOptions,
 } from "./definePlugin";
 
-// contextMenuItem
-export { cellContextMenuItem, columnContextMenuItem } from "./contextMenuItem";
+// Context Menu
+export {
+  cellContextMenuItem,
+  columnContextMenuItem,
+  useContextMenuHandlers,
+} from "./contextMenu";
 export type {
   ContextMenuItemEntry,
   CellContextMenuItemContext,
   CellContextMenuItemFactory,
   ColumnContextMenuItemContext,
   ColumnContextMenuItemFactory,
-} from "./contextMenuItem";
+} from "./contextMenu";
 
 // PluginContext
 export { usePluginContext, PluginContextProvider } from "./Context";
@@ -57,15 +61,6 @@ export type {
   ColumnFilterMeta,
 } from "./Context";
 export { DEFAULT_FILTER_OPERATORS, FILTER_OPERATOR_LABELS } from "./Context";
-
-// Slot Renderers
-export {
-  SidePanelSlotRenderer,
-  HeaderSlotRenderer,
-  FooterSlotRenderer,
-  CellSlotRenderer,
-  InlineRowSlotRenderer,
-} from "./SlotRenderer";
 
 // DataTablePlugins compound components
 export { DataTablePlugins } from "./DataTablePlugins";

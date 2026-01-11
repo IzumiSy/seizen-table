@@ -14,8 +14,8 @@ export type {
   DataTableCellProps,
 } from "./components";
 
-// Hooks
-export { useContextMenu } from "./useContextMenu";
+// Hooks - re-export from plugin for convenience
+export { useContextMenuHandlers } from "../plugin/contextMenu";
 
 // Types
 export type {

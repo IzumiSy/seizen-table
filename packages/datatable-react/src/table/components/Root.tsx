@@ -1,7 +1,7 @@
 import { createContext, useContext, type ReactNode } from "react";
 import type { DataTableInstance } from "../useDataTable";
 import { PluginContextProvider } from "../../plugin/Context";
-import { ContextMenuProvider } from "../../plugin/ContextMenuRenderer";
+import { ContextMenuProvider } from "../../plugin/contextMenu";
 import * as styles from "../styles.css";
 
 // =============================================================================
