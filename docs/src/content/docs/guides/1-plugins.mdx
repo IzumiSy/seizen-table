@@ -69,8 +69,6 @@ function UsersTable() {
 }
 ```
 
----
-
 ## Creating Custom Plugins
 
 ### Import Path
@@ -113,8 +111,6 @@ export const MyPlugin = definePlugin({
 // Usage
 MyPlugin.configure({ width: 400 })
 ```
-
----
 
 ## Slots Reference
 
@@ -222,8 +218,6 @@ export const CellPlugin = definePlugin({
 });
 ```
 
----
-
 ## Context Menu Items
 
 Plugins can add items to cell and column header context menus using `cellContextMenuItem` and `columnContextMenuItem`.
@@ -297,8 +291,6 @@ export const ColumnActionsPlugin = definePlugin({
 
 The `ctx` object provides access to the clicked column, table instance, plugin configuration, and an `emit` function for EventBus.
 
----
-
 ## Plugin Context (`usePluginContext`)
 
 Inside plugin components, use `usePluginContext()` to access table data and APIs.
@@ -350,8 +342,6 @@ useEvent("filter-change", (filterState) => {
 
 Built-in events include `data-change`, `selection-change`, `filter-change`, `sorting-change`, `pagination-change`, `row-click`, `cell-context-menu`, and `column-context-menu`.
 
----
-
 ## Type-Safe Plugin Args (Module Augmentation)
 
 For type-safe `openArgs`, extend the `PluginArgsRegistry` interface:
@@ -368,8 +358,6 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
 const { openArgs } = usePluginContext<"my-plugin">();
 // openArgs is typed as { row: MyRowType; mode: "view" | "edit" } | undefined
 ```
-
----
 
 ## Custom Events (Module Augmentation)
 
@@ -433,8 +421,6 @@ function MyPluginContent() {
 <Aside type="tip">
   Custom events are useful for decoupling plugins. For example, a context menu plugin can emit a filter request, and the filter plugin can subscribe to it without direct dependency.
 </Aside>
-
----
 
 ## Complete Example
 
