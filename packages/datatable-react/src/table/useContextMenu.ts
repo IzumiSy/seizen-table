@@ -3,7 +3,7 @@ import type { Cell, Column, Row } from "@tanstack/react-table";
 import {
   ContextMenuContext,
   type ContextMenuContextValue,
-} from "../../plugin/ContextMenuRenderer";
+} from "../plugin/ContextMenuRenderer";
 
 /**
  * Hook to get context menu handlers for table cells and column headers.
@@ -15,7 +15,7 @@ import {
  *
  * @example
  * ```tsx
- * const handlers = useContextMenuHandlers<Person>();
+ * const handlers = useContextMenu<Person>();
  *
  * <td onContextMenu={(e) => handlers.handleCellContextMenu(e, cell, column, row)}>
  *   {content}
@@ -28,14 +28,14 @@ import {
  *
  * @returns Object with handleCellContextMenu and handleColumnContextMenu functions
  */
-export function useContextMenuHandlers<TData>() {
+export function useContextMenu<TData>() {
   const ctx = useContext(
     ContextMenuContext
   ) as ContextMenuContextValue<TData> | null;
 
   if (!ctx) {
     throw new Error(
-      "useContextMenuHandlers must be used within a context menu provider (DataTable.Root or ContextMenuProvider)"
+      "useContextMenu must be used within a context menu provider (DataTable.Root or ContextMenuProvider)"
     );
   }
 

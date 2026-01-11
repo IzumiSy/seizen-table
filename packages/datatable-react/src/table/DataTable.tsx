@@ -8,7 +8,7 @@ import {
   DataTableRow as DataTableRowComponent,
   DataTableCell as DataTableCellComponent,
 } from "./components";
-import { Paginator } from "./Paginator";
+import { Paginator } from "./components/Paginator";
 
 // Re-export compound component types
 export type {

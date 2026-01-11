@@ -1,5 +1,5 @@
 import { flexRender, type Cell, type Row } from "@tanstack/react-table";
-import { useContextMenuHandlers } from "../hooks";
+import { useContextMenu } from "../useContextMenu";
 import { CellSlotRenderer } from "../../plugin/SlotRenderer";
 import * as styles from "../styles.css";
 
@@ -72,7 +72,7 @@ export function DataTableCell<TData>({
   className,
   onContextMenu,
 }: DataTableCellProps<TData>) {
-  const { handleCellContextMenu } = useContextMenuHandlers<TData>();
+  const { handleCellContextMenu } = useContextMenu<TData>();
 
   const handleContextMenu = (e: React.MouseEvent<HTMLTableCellElement>) => {
     if (onContextMenu) {

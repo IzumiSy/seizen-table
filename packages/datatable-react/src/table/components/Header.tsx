@@ -1,6 +1,6 @@
 import { flexRender } from "@tanstack/react-table";
 import { useDataTableContext } from "./Root";
-import { useContextMenuHandlers } from "../hooks";
+import { useContextMenu } from "../useContextMenu";
 import { HeaderSlotRenderer } from "../../plugin/SlotRenderer";
 import * as styles from "../styles.css";
 
@@ -41,7 +41,7 @@ export interface DataTableHeaderProps {
 export function DataTableHeader() {
   const table = useDataTableContext();
   const tanstack = table._tanstackTable;
-  const { handleColumnContextMenu } = useContextMenuHandlers();
+  const { handleColumnContextMenu } = useContextMenu();
 
   return (
     <>
