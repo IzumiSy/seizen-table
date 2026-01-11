@@ -1,7 +1,16 @@
 import { useState, useEffect } from "react";
 import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
 
-const themes = {
+const colorThemes = {
+  custom: {
+    "--szui-color-text": "#eceff4",
+    "--szui-color-bg": "#2e3440",
+    "--szui-header-bg": "#3b4252",
+    "--szui-header-color": "#88c0d0",
+    "--szui-border-color": "#4c566a",
+    "--szui-row-hover-bg": "#3b4252",
+    "--szui-row-selected-bg": "#434c5e",
+  },
   light: {
     "--szui-color-text": "#1f2937",
     "--szui-color-bg": "#ffffff",
@@ -20,36 +29,28 @@ const themes = {
     "--szui-row-hover-bg": "#1f2937",
     "--szui-row-selected-bg": "#1e3a5f",
   },
-  monokai: {
-    "--szui-color-text": "#f8f8f2",
-    "--szui-color-bg": "#272822",
-    "--szui-header-bg": "#1e1f1c",
-    "--szui-header-color": "#a6e22e",
-    "--szui-border-color": "#3e3d32",
-    "--szui-row-hover-bg": "#3e3d32",
-    "--szui-row-selected-bg": "#49483e",
+} as const;
+
+const spacingThemes = {
+  compact: {
+    "--szui-cell-padding-x": "0.5rem",
+    "--szui-cell-padding-y": "0.375rem",
+    "--szui-table-gap": "0",
   },
-  dracula: {
-    "--szui-color-text": "#f8f8f2",
-    "--szui-color-bg": "#282a36",
-    "--szui-header-bg": "#21222c",
-    "--szui-header-color": "#bd93f9",
-    "--szui-border-color": "#44475a",
-    "--szui-row-hover-bg": "#44475a",
-    "--szui-row-selected-bg": "#6272a4",
+  default: {
+    "--szui-cell-padding-x": "12px",
+    "--szui-cell-padding-y": "10px",
+    "--szui-table-gap": "0",
   },
-  nord: {
-    "--szui-color-text": "#eceff4",
-    "--szui-color-bg": "#2e3440",
-    "--szui-header-bg": "#3b4252",
-    "--szui-header-color": "#88c0d0",
-    "--szui-border-color": "#4c566a",
-    "--szui-row-hover-bg": "#3b4252",
-    "--szui-row-selected-bg": "#434c5e",
+  comfortable: {
+    "--szui-cell-padding-x": "1.5rem",
+    "--szui-cell-padding-y": "1rem",
+    "--szui-table-gap": "0.25rem",
   },
 } as const;
 
-type ThemeName = keyof typeof themes;
+type ColorThemeName = keyof typeof colorThemes;
+type SpacingThemeName = keyof typeof spacingThemes;
 
 const columns = [
   { accessorKey: "name", header: "Name" },
@@ -90,11 +91,15 @@ const data = [
 ];
 
 export function ThemingDemo() {
-  const [currentTheme, setCurrentTheme] = useState<ThemeName>("light");
+  const [colorTheme, setColorTheme] = useState<ColorThemeName>("custom");
+  const [spacingTheme, setSpacingTheme] = useState<SpacingThemeName>("compact");
   const table = useDataTable({ data, columns });
 
   useEffect(() => {
-    const theme = themes[currentTheme];
+    const theme = {
+      ...colorThemes[colorTheme],
+      ...spacingThemes[spacingTheme],
+    };
     Object.entries(theme).forEach(([key, value]) => {
       document.documentElement.style.setProperty(key, value);
     });
@@ -104,36 +109,102 @@ export function ThemingDemo() {
         document.documentElement.style.removeProperty(key);
       });
     };
-  }, [currentTheme]);
+  }, [colorTheme, spacingTheme]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-        {(Object.keys(themes) as ThemeName[]).map((themeName) => (
-          <button
-            key={themeName}
-            onClick={() => setCurrentTheme(themeName)}
-            style={{
-              padding: "0.5rem 1rem",
-              borderRadius: "6px",
-              border:
-                currentTheme === themeName
-                  ? "2px solid #6366f1"
-                  : "1px solid #d1d5db",
-              background: currentTheme === themeName ? "#eef2ff" : "#fff",
-              color: currentTheme === themeName ? "#4f46e5" : "#374151",
-              fontWeight: currentTheme === themeName ? 600 : 400,
-              cursor: "pointer",
-              textTransform: "capitalize",
-              transition: "all 0.15s ease",
-            }}
-          >
-            {themeName}
-          </button>
-        ))}
-      </div>
+    <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
       <div
         style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1.5rem",
+          minWidth: "200px",
+        }}
+      >
+        <div>
+          <h3
+            style={{
+              margin: "0 0 0.5rem 0",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              color: "#6b7280",
+            }}
+          >
+            Color Theme
+          </h3>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          >
+            {(Object.keys(colorThemes) as ColorThemeName[]).map((themeName) => (
+              <button
+                key={themeName}
+                onClick={() => setColorTheme(themeName)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  border:
+                    colorTheme === themeName
+                      ? "2px solid #6366f1"
+                      : "1px solid #d1d5db",
+                  background: colorTheme === themeName ? "#eef2ff" : "#fff",
+                  color: colorTheme === themeName ? "#4f46e5" : "#374151",
+                  fontWeight: colorTheme === themeName ? 600 : 400,
+                  cursor: "pointer",
+                  textTransform: "capitalize",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                {themeName}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3
+            style={{
+              margin: "0 0 0.5rem 0",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              color: "#6b7280",
+            }}
+          >
+            Spacing Theme
+          </h3>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          >
+            {(Object.keys(spacingThemes) as SpacingThemeName[]).map(
+              (themeName) => (
+                <button
+                  key={themeName}
+                  onClick={() => setSpacingTheme(themeName)}
+                  style={{
+                    padding: "0.5rem 1rem",
+                    borderRadius: "6px",
+                    border:
+                      spacingTheme === themeName
+                        ? "2px solid #6366f1"
+                        : "1px solid #d1d5db",
+                    background: spacingTheme === themeName ? "#eef2ff" : "#fff",
+                    color: spacingTheme === themeName ? "#4f46e5" : "#374151",
+                    fontWeight: spacingTheme === themeName ? 600 : 400,
+                    cursor: "pointer",
+                    textTransform: "capitalize",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {themeName}
+                </button>
+              )
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          flex: 1,
           borderRadius: "8px",
           overflow: "hidden",
         }}
