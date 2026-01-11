@@ -21,13 +21,18 @@ export type PluginPosition = "left-sider" | "right-sider";
 /**
  * Slot types available for plugins to render components.
  *
- * - `sidepanel`: IDE-style vertical tab sidepanel (left or right)
+ * - `side-panel`: IDE-style vertical tab side panel (left or right)
  * - `header`: Renders between table header and body rows
  * - `footer`: Renders below the table
  * - `cell`: Custom cell renderer applied to all columns (first match wins)
- * - `inlineRow`: Renders below a specific row when opened (first match wins)
+ * - `inline-row`: Renders below a specific row when opened (first match wins)
  */
-export type SlotType = "sidepanel" | "header" | "footer" | "cell" | "inlineRow";
+export type SlotType =
+  | "side-panel"
+  | "header"
+  | "footer"
+  | "cell"
+  | "inline-row";
 
 // =============================================================================
 // Slot Definitions
@@ -40,7 +45,7 @@ export interface SidePanelSlot {
   position: PluginPosition;
   /** Header content displayed at the top of the panel */
   header?: string | ReactNode;
-  /** Render function for sidepanel content */
+  /** Render function for side panel content */
   render: () => ReactNode;
 }
 
@@ -94,7 +99,7 @@ export interface ContextMenuItemsSlot<TData = unknown> {
  * Plugin slots configuration
  */
 export interface PluginSlots<TData = unknown> {
-  sidepanel?: SidePanelSlot;
+  sidePanel?: SidePanelSlot;
   header?: HeaderSlot;
   footer?: FooterSlot;
   cell?: CellSlot<TData>;
@@ -112,7 +117,7 @@ export interface PluginSlots<TData = unknown> {
 export interface DataTablePlugin<TData = unknown> {
   /** Unique plugin identifier */
   id: string;
-  /** Plugin display name (used as vertical tab label for sidepanel plugins) */
+  /** Plugin display name (used as vertical tab label for side panel plugins) */
   name: string;
   /** Slot configurations */
   slots: PluginSlots<TData>;
@@ -121,19 +126,19 @@ export interface DataTablePlugin<TData = unknown> {
 }
 
 /**
- * Type guard to check if a plugin has a sidepanel slot
+ * Type guard to check if a plugin has a side panel slot
  */
 export function hasSidePanelSlot(plugin: DataTablePlugin<any>): boolean {
-  return plugin.slots.sidepanel !== undefined;
+  return plugin.slots.sidePanel !== undefined;
 }
 
 /**
- * Get sidepanel configuration from a plugin
+ * Get side panel configuration from a plugin
  */
 export function getSidePanelSlot(
   plugin: DataTablePlugin<any>
 ): SidePanelSlot | undefined {
-  return plugin.slots.sidepanel;
+  return plugin.slots.sidePanel;
 }
 
 // =============================================================================
@@ -154,7 +159,7 @@ export interface PluginContext<TArgs> {
 interface BasePluginOptions<TSchema extends z.ZodType> {
   /** Unique plugin identifier */
   id: string;
-  /** Plugin display name (used as vertical tab label for sidepanel plugins) */
+  /** Plugin display name (used as vertical tab label for side panel plugins) */
   name: string;
   /** Zod schema for configuration validation */
   args: TSchema;
@@ -164,8 +169,8 @@ interface BasePluginOptions<TSchema extends z.ZodType> {
  * Slot render function definitions for defineSlotPlugin
  */
 export interface DefinePluginSlots<TData, TSchema extends z.ZodType> {
-  /** SidePanel slot - renders in left or right sidepanel */
-  sidepanel?: {
+  /** SidePanel slot - renders in left or right side panel */
+  sidePanel?: {
     position: PluginPosition;
     header?: string | ((context: PluginContext<z.infer<TSchema>>) => ReactNode);
     render: (context: PluginContext<z.infer<TSchema>>) => () => ReactNode;
@@ -251,7 +256,7 @@ export type DefinePluginOptions<
  *   name: "Bulk Actions",
  *   args: BulkActionsSchema,
  *   slots: {
- *     sidepanel: {
+ *     sidePanel: {
  *       position: "right-sider",
  *       render: createSidePanelRenderer,
  *     },
@@ -281,17 +286,17 @@ export function definePlugin<TData, TSchema extends z.ZodType>(
 
       const slots: PluginSlots<TData> = {};
 
-      // Build sidepanel slot
-      if (options.slots.sidepanel) {
-        const sidepanelDef = options.slots.sidepanel;
+      // Build SidePanel slot
+      if (options.slots.sidePanel) {
+        const sidePanelDef = options.slots.sidePanel;
         const header =
-          typeof sidepanelDef.header === "function"
-            ? sidepanelDef.header(context)
-            : sidepanelDef.header;
-        slots.sidepanel = {
-          position: sidepanelDef.position,
+          typeof sidePanelDef.header === "function"
+            ? sidePanelDef.header(context)
+            : sidePanelDef.header;
+        slots.sidePanel = {
+          position: sidePanelDef.position,
           header,
-          render: sidepanelDef.render(context),
+          render: sidePanelDef.render(context),
         };
       }
 

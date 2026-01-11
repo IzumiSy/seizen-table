@@ -233,7 +233,7 @@ function UsersTable() {
 ```
 
 **Planned Plugins:**
-- **RowDetail** - Row details in a sidepanel
+- **RowDetail** - Row details in a side panel
 - **FilterBuilder** - Advanced filtering UI
 - **ColumnCustomizer** - Show/hide and reorder columns
 

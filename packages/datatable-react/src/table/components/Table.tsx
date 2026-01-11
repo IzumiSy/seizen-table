@@ -13,7 +13,7 @@ export interface DataTableTableProps {
  * Table component that renders the HTML table with footer slot.
  *
  * This component should be used inside DataTable.MainContent to handle
- * the layout with sidepanels.
+ * the layout with side panels.
  *
  * @example With MainContent and Pagination
  * ```tsx

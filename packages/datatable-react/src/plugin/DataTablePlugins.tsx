@@ -14,16 +14,16 @@ import {
 
 export interface SidePanelProps {
   /**
-   * Position of the sidepanel
+   * Position of the side panel
    */
   position: "left" | "right";
 }
 
 /**
- * Renders plugin sidepanels for the specified position.
+ * Renders plugin side panels for the specified position.
  *
  * Place this component outside of DataTable.Content to position
- * sidepanels to the left or right of the main table content.
+ * side panels to the left or right of the main table content.
  *
  * @example
  * ```tsx

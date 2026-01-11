@@ -1,6 +1,6 @@
 # ColumnControlPlugin
 
-Provides a sidepanel with column visibility controls and multi-column sorting.
+Provides a side panel with column visibility controls and multi-column sorting.
 
 ## Import
 
@@ -22,7 +22,7 @@ const table = useDataTable({
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `width` | `number` | `280` | Width of the sidepanel |
+| `width` | `number` | `280` | Width of the side panel |
 
 ## Features
 

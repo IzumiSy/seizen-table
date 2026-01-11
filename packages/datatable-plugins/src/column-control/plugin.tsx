@@ -15,14 +15,14 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
   interface EventBusRegistry {
     /**
      * Request to hide a column from context menu.
-     * ColumnControlPlugin subscribes to this to sync sidepanel state.
+     * ColumnControlPlugin subscribes to this to sync side panel state.
      */
     "column:hide-request": {
       columnId: string;
     };
     /**
      * Request to sort a column from context menu.
-     * ColumnControlPlugin subscribes to this to sync sidepanel state.
+     * ColumnControlPlugin subscribes to this to sync side panel state.
      */
     "column:sort-request": {
       columnId: string;
@@ -35,7 +35,7 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
  * Schema for ColumnControl plugin configuration
  */
 const ColumnControlSchema = z.object({
-  /** Width of the sidepanel */
+  /** Width of the side panel */
   width: z.number().default(280),
 });
 
@@ -655,7 +655,7 @@ function ColumnControlRenderer(context: PluginContext<ColumnControlConfig>) {
 /**
  * ColumnControl Plugin
  *
- * Provides a sidepanel with two tabs:
+ * Provides a side panel with two tabs:
  * - Visibility: Toggle column visibility and reorder columns via drag & drop
  * - Sorter: Add/remove sorting per column with asc/desc control and drag & drop priority
  *
@@ -675,7 +675,7 @@ export const ColumnControlPlugin = definePlugin({
   name: "Columns",
   args: ColumnControlSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "Column Settings",
       render: ColumnControlRenderer,

@@ -19,7 +19,7 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
   interface EventBusRegistry {
     /**
      * Request to add a filter from context menu.
-     * FilterPlugin subscribes to this to sync sidepanel state.
+     * FilterPlugin subscribes to this to sync side panel state.
      */
     "filter:add-request": {
       columnKey: string;
@@ -32,7 +32,7 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
  * Schema for Filter plugin configuration
  */
 const FilterPluginSchema = z.object({
-  /** Width of the sidepanel */
+  /** Width of the side panel */
   width: z.number().optional().default(320),
   /** Disable global search in header slot */
   disableGlobalSearch: z.boolean().optional().default(false),
@@ -761,7 +761,7 @@ function FilterRenderer(context: PluginContext<FilterPluginConfig>) {
 /**
  * Filter Plugin
  *
- * Provides a sidepanel for adding column filters with type-aware operators.
+ * Provides a side panel for adding column filters with type-aware operators.
  * Only columns with `meta.filterType` defined are filterable.
  *
  * Supported filter types:
@@ -809,7 +809,7 @@ export const FilterPlugin = definePlugin({
   name: "Filter",
   args: FilterPluginSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "Filters",
       render: FilterRenderer,
@@ -827,7 +827,7 @@ export const FilterPlugin = definePlugin({
         return {
           label: `Filter by "${displayValue}"`,
           onClick: () => {
-            // Emit event to sync with sidepanel
+            // Emit event to sync with side panel
             ctx.emit("filter:add-request", {
               columnKey: ctx.column.id,
               value: ctx.value,

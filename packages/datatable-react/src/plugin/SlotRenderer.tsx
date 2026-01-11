@@ -17,7 +17,7 @@ interface PluginRendererProps {
 }
 
 /**
- * Get sidepanel plugins with their slot configuration for a specific position
+ * Get side panel plugins with their slot configuration for a specific position
  */
 function getSidePanelPluginsForPosition(
   plugins: DataTablePlugin<any>[],
@@ -38,7 +38,7 @@ function getSidePanelPluginsForPosition(
 }
 
 /**
- * Renders sidepanel plugins for a specific position
+ * Renders side panel plugins for a specific position
  */
 export function SidePanelSlotRenderer({ position }: PluginRendererProps) {
   const { table } = usePluginContext();
@@ -46,42 +46,42 @@ export function SidePanelSlotRenderer({ position }: PluginRendererProps) {
   const activePluginId = table.plugin.getActiveId();
   const setActive = table.plugin.setActive;
 
-  // Get sidepanel plugins for this position
-  const sidepanelPlugins = getSidePanelPluginsForPosition(plugins, position);
+  // Get side panel plugins for this position
+  const sidePanelPlugins = getSidePanelPluginsForPosition(plugins, position);
 
   // Memoize plugin components to maintain stable references
   const pluginComponents = useMemo(() => {
-    return sidepanelPlugins.map(({ plugin, slot }) => ({
+    return sidePanelPlugins.map(({ plugin, slot }) => ({
       id: plugin.id,
       name: plugin.name,
       // Use header if provided, otherwise fallback to name
       header: slot.header ?? plugin.name,
       Component: slot.render,
     }));
-  }, [sidepanelPlugins]);
+  }, [sidePanelPlugins]);
 
-  if (sidepanelPlugins.length === 0) {
+  if (sidePanelPlugins.length === 0) {
     return null;
   }
 
   const dataPosition = position === "left-sider" ? "left" : "right";
   // Check if the active plugin belongs to this position
-  const isActiveHere = sidepanelPlugins.some(
+  const isActiveHere = sidePanelPlugins.some(
     ({ plugin }) => plugin.id === activePluginId
   );
 
   return (
-    <div className={styles.sidepanel} data-position={dataPosition}>
+    <div className={styles.sidePanel} data-position={dataPosition}>
       {/* Vertical tabs */}
-      <div className={styles.sidepanelTabs}>
+      <div className={styles.sidePanelTabs}>
         {pluginComponents.map(({ id, name }) => (
           <button
             key={id}
-            className={styles.sidepanelTab}
+            className={styles.sidePanelTab}
             data-active={activePluginId === id || undefined}
             onClick={() => setActive(activePluginId === id ? null : id)}
           >
-            <span className={styles.sidepanelTabLabel}>{name}</span>
+            <span className={styles.sidePanelTabLabel}>{name}</span>
           </button>
         ))}
       </div>
@@ -90,28 +90,28 @@ export function SidePanelSlotRenderer({ position }: PluginRendererProps) {
       {pluginComponents.map(({ id, header, Component }) => (
         <div
           key={id}
-          className={styles.sidepanelContent}
+          className={styles.sidePanelContent}
           style={{
             display: isActiveHere && activePluginId === id ? "flex" : "none",
           }}
         >
-          <div className={styles.sidepanelHeader}>
-            <div className={styles.sidepanelHeaderContent}>
+          <div className={styles.sidePanelHeader}>
+            <div className={styles.sidePanelHeaderContent}>
               {typeof header === "string" ? (
-                <h3 className={styles.sidepanelHeaderTitle}>{header}</h3>
+                <h3 className={styles.sidePanelHeaderTitle}>{header}</h3>
               ) : (
                 header
               )}
             </div>
             <button
-              className={styles.sidepanelCloseButton}
+              className={styles.sidePanelCloseButton}
               onClick={() => setActive(null)}
               aria-label="Close"
             >
               ×
             </button>
           </div>
-          <div className={styles.sidepanelBody}>
+          <div className={styles.sidePanelBody}>
             <Component />
           </div>
         </div>

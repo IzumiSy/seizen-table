@@ -22,15 +22,15 @@ const fallback = {
   borderWidth: "1px",
   cellPaddingX: "12px",
   cellPaddingY: "10px",
-  sidepanelBg: "#f9fafb",
-  sidepanelWidth: "35px",
-  sidepanelTabBg: "transparent",
-  sidepanelTabHoverBg: "#e5e7eb",
-  sidepanelTabActiveBg: "#ffffff",
+  sidePanelBg: "#f9fafb",
+  sidePanelWidth: "35px",
+  sidePanelTabBg: "transparent",
+  sidePanelTabHoverBg: "#e5e7eb",
+  sidePanelTabActiveBg: "#ffffff",
 };
 
 // SidePanel container
-export const sidepanel = style({
+export const sidePanel = style({
   display: "flex",
   selectors: {
     '&[data-position="left"]': {
@@ -43,17 +43,17 @@ export const sidepanel = style({
 });
 
 // Vertical tabs container
-export const sidepanelTabs = style({
+export const sidePanelTabs = style({
   display: "flex",
   flexDirection: "column",
-  width: `var(--szui-sidepanel-width, ${fallback.sidepanelWidth})`,
+  width: `var(--szui-sidepanel-width, ${fallback.sidePanelWidth})`,
   flexShrink: 0,
-  backgroundColor: `var(--szui-sidepanel-bg, ${fallback.sidepanelBg})`,
+  backgroundColor: `var(--szui-sidepanel-bg, ${fallback.sidePanelBg})`,
   borderLeft: `var(--szui-border-width, ${fallback.borderWidth}) solid var(--szui-border-color, ${fallback.borderColor})`,
 });
 
 // Content area (header + body)
-export const sidepanelContent = style({
+export const sidePanelContent = style({
   display: "flex",
   flexDirection: "column",
   overflow: "hidden",
@@ -61,7 +61,7 @@ export const sidepanelContent = style({
 });
 
 // Header bar with title and close button
-export const sidepanelHeader = style({
+export const sidePanelHeader = style({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -72,14 +72,14 @@ export const sidepanelHeader = style({
 });
 
 // Wrapper for header content (title or custom ReactNode)
-export const sidepanelHeaderContent = style({
+export const sidePanelHeaderContent = style({
   flex: 1,
   minWidth: 0,
   writingMode: "horizontal-tb",
 });
 
 // Default title style when header is a string
-export const sidepanelHeaderTitle = style({
+export const sidePanelHeaderTitle = style({
   margin: 0,
   fontSize: `var(--szui-font-size, ${fallback.fontSize})`,
   fontWeight: "600",
@@ -87,7 +87,7 @@ export const sidepanelHeaderTitle = style({
 });
 
 // Close button
-export const sidepanelCloseButton = style({
+export const sidePanelCloseButton = style({
   background: "none",
   border: "none",
   cursor: "pointer",
@@ -103,33 +103,33 @@ export const sidepanelCloseButton = style({
 });
 
 // Scrollable body area
-export const sidepanelBody = style({
+export const sidePanelBody = style({
   flex: 1,
   overflow: "auto",
 });
 
 // Individual tab button
-export const sidepanelTab = style({
+export const sidePanelTab = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   padding: "12px 8px",
   cursor: "pointer",
   border: "none",
-  backgroundColor: `var(--szui-sidepanel-tab-bg, ${fallback.sidepanelTabBg})`,
+  backgroundColor: `var(--szui-sidepanel-tab-bg, ${fallback.sidePanelTabBg})`,
   borderBottom: `var(--szui-border-width, ${fallback.borderWidth}) solid var(--szui-border-color, ${fallback.borderColor})`,
   selectors: {
     "&:hover": {
-      backgroundColor: `var(--szui-sidepanel-tab-hover-bg, ${fallback.sidepanelTabHoverBg})`,
+      backgroundColor: `var(--szui-sidepanel-tab-hover-bg, ${fallback.sidePanelTabHoverBg})`,
     },
     "&[data-active]": {
-      backgroundColor: `var(--szui-sidepanel-tab-active-bg, ${fallback.sidepanelTabActiveBg})`,
+      backgroundColor: `var(--szui-sidepanel-tab-active-bg, ${fallback.sidePanelTabActiveBg})`,
     },
   },
 });
 
 // Vertical tab label text
-export const sidepanelTabLabel = style({
+export const sidePanelTabLabel = style({
   writingMode: "vertical-lr",
   textOrientation: "mixed",
   fontSize: `var(--szui-header-font-size, ${fallback.headerFontSize})`,
@@ -161,7 +161,7 @@ export const footerSlot = style({
 // =============================================================================
 
 export const inlineRow = style({
-  backgroundColor: `var(--szui-sidepanel-bg, ${fallback.sidepanelBg})`,
+  backgroundColor: `var(--szui-sidepanel-bg, ${fallback.sidePanelBg})`,
 });
 
 export const inlineRowCell = style({
@@ -232,7 +232,7 @@ export const contextMenuItem = style({
   textAlign: "left",
   selectors: {
     "&:hover": {
-      backgroundColor: `var(--szui-sidepanel-tab-hover-bg, ${fallback.sidepanelTabHoverBg})`,
+      backgroundColor: `var(--szui-sidepanel-tab-hover-bg, ${fallback.sidePanelTabHoverBg})`,
     },
     "&[data-disabled]": {
       opacity: 0.5,

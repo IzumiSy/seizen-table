@@ -30,7 +30,7 @@ const fallback = {
   rowSelectedBg: "#eff6ff",
 };
 
-// Container for the entire DataTable with sidepanels
+// Container for the entire DataTable with side panels
 export const container = style({
   display: "flex",
   flexDirection: "row",
@@ -44,7 +44,7 @@ export const container = style({
   overflow: "hidden",
 });
 
-// Main content wrapper (contains table and pagination, excludes sidepanels)
+// Main content wrapper (contains table and pagination, excludes side panels)
 export const mainContent = style({
   flex: 1,
   display: "flex",

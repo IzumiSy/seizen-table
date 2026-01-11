@@ -182,7 +182,7 @@ export const MultiSlotPlugin = definePlugin({
   name: "Multi Slot",
   args: MultiSlotSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "Multi Slot Plugin",
       render: createSidePanelRenderer,
@@ -449,7 +449,7 @@ export const RowDetailPlugin = definePlugin({
   name: "Details",
   args: RowDetailSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "Row Details",
       render: RowDetailRenderer,
@@ -516,7 +516,7 @@ export const FileExportPlugin = definePlugin({
   name: "Export",
   args: FileExportSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       render: FileExportRenderer,
     },

@@ -1,6 +1,6 @@
 # FilterPlugin
 
-Provides a sidepanel for adding column filters with type-aware operators.
+Provides a side panel for adding column filters with type-aware operators.
 
 ## Import
 
@@ -22,7 +22,7 @@ const table = useDataTable({
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `width` | `number` | `320` | Width of the sidepanel |
+| `width` | `number` | `320` | Width of the side panel |
 | `disableGlobalSearch` | `boolean` | `false` | Disable global search in header slot |
 
 ## Supported Filter Types

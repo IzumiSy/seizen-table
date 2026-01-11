@@ -32,7 +32,7 @@ const table = useDataTable({
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `width` | `number` | `300` | Width of the sidepanel |
+| `width` | `number` | `300` | Width of the side panel |
 | `filename` | `string` | `"export"` | Default filename (without extension) |
 | `includeHeaders` | `boolean` | `true` | Include headers in export |
 | `exporters` | `Exporter[]` | `[CsvExporter]` | Available exporters |

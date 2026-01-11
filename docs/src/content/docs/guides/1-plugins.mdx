@@ -19,13 +19,13 @@ DataTable provides 5 slots where plugins can render UI components:
 
 ![DataTable plugin slots layout](/seizen-ui/slots-diagram.svg)
 
-{/* Accessible description for AI/screen readers: DataTable layout has left and right sidepanels, a header slot above the table body, an inlineRow slot that expands below each row, a cell slot for custom cell rendering, and a footer slot below the table. */}
+{/* Accessible description for AI/screen readers: DataTable layout has left and right side panels, a header slot above the table body, an inlineRow slot that expands below each row, a cell slot for custom cell rendering, and a footer slot below the table. */}
 
 ### Available Slots
 
 | Slot | Description | Rendering Strategy |
 |------|-------------|-------------------|
-| `sidepanel` | IDE-style vertical tab panel (left or right) | Tab-based toggle |
+| `sidePanel` | IDE-style vertical tab panel (left or right) | Tab-based toggle |
 | `header` | Between table header row and body rows | Sequential (all plugins) |
 | `footer` | Below the table | Sequential (all plugins) |
 | `cell` | Custom cell renderer for all columns | First match wins |
@@ -33,7 +33,7 @@ DataTable provides 5 slots where plugins can render UI components:
 
 ### Slot Rendering Strategies
 
-- **Tab-based toggle**: Only one sidepanel can be active at a time per position
+- **Tab-based toggle**: Only one side panel can be active at a time per position
 - **Sequential**: All plugins with this slot render in registration order
 - **First match wins**: Only the first plugin with this slot renders
 
@@ -49,7 +49,7 @@ function UsersTable() {
     data,
     columns,
     plugins: [
-      // These will appear as vertical tabs in the sidepanel
+      // These will appear as vertical tabs in the side panel
       RowDetail.configure({ render: (row) => <UserDetail user={row} /> }),
       FilterBuilder.configure({ filterableColumns: ["name", "email"] }),
     ],
@@ -79,7 +79,7 @@ import {
 
 There are two types of plugins:
 
-1. **Slot Plugin** - Renders UI in one or more slots (sidepanel, header, footer, cell, inlineRow)
+1. **Slot Plugin** - Renders UI in one or more slots (sidePanel, header, footer, cell, inlineRow)
 2. **Context Menu Only Plugin** - Only adds items to the row context menu (no slot UI)
 
 ## Slot Plugin Example
@@ -125,7 +125,7 @@ export const MultiSlotPlugin = definePlugin({
   name: "Multi Slot",
   args: MultiSlotSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "Multi Slot Plugin",
       render: createSidePanelRenderer,

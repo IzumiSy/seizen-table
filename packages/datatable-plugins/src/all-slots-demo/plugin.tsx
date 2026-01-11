@@ -21,8 +21,8 @@ declare module "@izumisy/seizen-datatable-react/plugin" {
  * Schema for AllSlotsDemo plugin configuration
  */
 const AllSlotsDemoSchema = z.object({
-  /** Label shown in sidepanel */
-  sidepanelTitle: z.string().default("All Slots Demo"),
+  /** Label shown in side panel */
+  sidePanelTitle: z.string().default("All Slots Demo"),
   /** Whether to enable cell highlighting */
   enableCellHighlight: z.boolean().default(true),
   /** Primary color for styling */
@@ -53,7 +53,7 @@ function createSidePanelRenderer(context: PluginContext<AllSlotsDemoConfig>) {
     return (
       <div style={{ padding: "16px", width: 280 }}>
         <h4 style={{ margin: "0 0 16px", color: args.primaryColor }}>
-          {args.sidepanelTitle}
+          {args.sidePanelTitle}
         </h4>
 
         <div style={{ marginBottom: "12px" }}>
@@ -75,7 +75,7 @@ function createSidePanelRenderer(context: PluginContext<AllSlotsDemoConfig>) {
         >
           <strong>About this plugin:</strong>
           <p style={{ margin: "8px 0 0" }}>
-            This plugin demonstrates all 5 slot types: sidepanel, header,
+            This plugin demonstrates all 5 slot types: sidePanel, header,
             footer, cell, and inlineRow.
           </p>
         </div>
@@ -254,7 +254,7 @@ function createInlineRowRenderer(context: PluginContext<AllSlotsDemoConfig>) {
  * AllSlotsDemo Plugin
  *
  * A demonstration plugin that uses all 5 slot types:
- * - sidepanel: Shows plugin info and stats
+ * - sidePanel: Shows plugin info and stats
  * - header: Shows record count and selection info
  * - footer: Shows column info
  * - cell: Custom numeric highlighting
@@ -269,7 +269,7 @@ function createInlineRowRenderer(context: PluginContext<AllSlotsDemoConfig>) {
  *   columns,
  *   plugins: [
  *     AllSlotsDemo.configure({
- *       sidepanelTitle: "Demo Panel",
+ *       sidePanelTitle: "Demo Panel",
  *       enableCellHighlight: true,
  *       primaryColor: "#8b5cf6",
  *     }),
@@ -288,7 +288,7 @@ export const AllSlotsDemo = definePlugin<
   name: "All Slots",
   args: AllSlotsDemoSchema,
   slots: {
-    sidepanel: {
+    sidePanel: {
       position: "right-sider",
       header: "All Slots Demo",
       render: createSidePanelRenderer,
