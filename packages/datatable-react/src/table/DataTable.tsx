@@ -73,12 +73,8 @@ export interface DataTableProps<TData> {
  *   <DataTablePlugins.SidePanel position="left" />
  *   <DataTablePlugins.Header />
  *   <DataTable.Table>
- *     <thead>
- *       <DataTable.Header />
- *     </thead>
- *     <tbody>
- *       <DataTable.Body />
- *     </tbody>
+ *     <DataTable.Header />
+ *     <DataTable.Body />
  *   </DataTable.Table>
  *   <DataTablePlugins.Footer />
  *   <DataTable.Paginator />
@@ -100,12 +96,8 @@ export function DataTable<TData>({
       <DataTableContent>
         <DataTablePlugins.Header />
         <DataTableTable>
-          <thead>
-            <DataTableHeaderComponent />
-          </thead>
-          <tbody>
-            <DataTableBody />
-          </tbody>
+          <DataTableHeaderComponent />
+          <DataTableBody />
         </DataTableTable>
         <DataTablePlugins.Footer />
         {paginateEnabled && (

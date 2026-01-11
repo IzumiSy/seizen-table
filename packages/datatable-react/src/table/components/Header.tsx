@@ -9,13 +9,10 @@ import * as styles from "../styles.css";
  * Renders:
  * - Column headers with sorting support
  * - Context menu on right-click
- * - Header slot (for plugin content between header and body)
  *
  * @example
  * ```tsx
- * <thead>
- *   <DataTable.Header />
- * </thead>
+ * <DataTable.Header />
  * ```
  *
  * For full control, you can render headers manually:
@@ -39,7 +36,7 @@ export function DataTableHeader() {
   const { handleColumnContextMenu } = useContextMenuHandlers();
 
   return (
-    <>
+    <thead>
       {tanstack.getHeaderGroups().map((headerGroup) => (
         <tr key={headerGroup.id}>
           {headerGroup.headers.map((header) => (
@@ -58,6 +55,6 @@ export function DataTableHeader() {
           ))}
         </tr>
       ))}
-    </>
+    </thead>
   );
 }

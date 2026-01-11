@@ -23,32 +23,26 @@ export interface DataTableBodyProps<TData = unknown> {
  *
  * @example Default usage (includes InlineRow automatically)
  * ```tsx
- * <tbody>
- *   <DataTable.Body />
- * </tbody>
+ * <DataTable.Body />
  * ```
  *
  * @example Custom row rendering with render props
  * ```tsx
- * <tbody>
- *   <DataTable.Body>
- *     {(row) => (
- *       <>
- *         <DataTable.Row key={row.id} row={row} className="custom" />
- *         <DataTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
- *       </>
- *     )}
- *   </DataTable.Body>
- * </tbody>
+ * <DataTable.Body>
+ *   {(row) => (
+ *     <>
+ *       <DataTable.Row key={row.id} row={row} className="custom" />
+ *       <DataTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
+ *     </>
+ *   )}
+ * </DataTable.Body>
  * ```
  *
  * @example Without InlineRow (opt-out)
  * ```tsx
- * <tbody>
- *   <DataTable.Body>
- *     {(row) => <DataTable.Row key={row.id} row={row} />}
- *   </DataTable.Body>
- * </tbody>
+ * <DataTable.Body>
+ *   {(row) => <DataTable.Row key={row.id} row={row} />}
+ * </DataTable.Body>
  * ```
  */
 export function DataTableBody<TData>({ children }: DataTableBodyProps<TData>) {
@@ -60,23 +54,23 @@ export function DataTableBody<TData>({ children }: DataTableBodyProps<TData>) {
   // Custom rendering via render props
   if (children) {
     return (
-      <>
+      <tbody>
         {rows.map((row) => (
           <Fragment key={row.id}>{children(row)}</Fragment>
         ))}
-      </>
+      </tbody>
     );
   }
 
   // Default rendering with InlineRow support
   return (
-    <>
+    <tbody>
       {rows.map((row) => (
         <Fragment key={row.id}>
           <DataTableRow row={row} />
           <InlineRow row={row} colSpan={row.getVisibleCells().length} />
         </Fragment>
       ))}
-    </>
+    </tbody>
   );
 }

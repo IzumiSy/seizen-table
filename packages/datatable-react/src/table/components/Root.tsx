@@ -15,15 +15,6 @@ const DataTableContext = createContext<DataTableInstance<any> | null>(null);
  *
  * This hook allows compound components to access the table instance
  * without explicitly passing it as a prop.
- *
- * @example
- * ```tsx
- * function CustomComponent() {
- *   const table = useDataTableContext();
- *   const data = table.getData();
- *   return <div>Total: {data.length}</div>;
- * }
- * ```
  */
 export function useDataTableContext<TData = any>(): DataTableInstance<TData> {
   const context = useContext(DataTableContext);
@@ -59,19 +50,6 @@ export interface DataTableRootProps<TData> {
  * This component wraps children with:
  * - PluginContextProvider: Makes table state available to plugins
  * - ContextMenuProvider: Manages context menu state and rendering
- *
- * @example
- * ```tsx
- * <DataTable.Root table={table}>
- *   <DataTablePlugins.Header />
- *   <DataTable.Table>
- *     <thead><DataTable.Header /></thead>
- *     <tbody><DataTable.Body /></tbody>
- *   </DataTable.Table>
- *   <DataTablePlugins.Footer />
- *   <DataTable.Paginator />
- * </DataTable.Root>
- * ```
  */
 export function DataTableRoot<TData>({
   table,

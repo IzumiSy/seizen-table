@@ -42,17 +42,15 @@ function MyComponent() {
   return (
     <DataTable.Root table={table}>
       <DataTablePlugins.SidePanel position="left" />
-      <DataTablePlugins.Header />
-      <DataTable.Table>
-        <thead>
+      <DataTable.Content>
+        <DataTablePlugins.Header />
+        <DataTable.Table>
           <DataTable.Header />
-        </thead>
-        <tbody>
           <DataTable.Body />
-        </tbody>
-      </DataTable.Table>
-      <DataTablePlugins.Footer />
-      <DataTable.Paginator sizeOptions={[10, 25, 50]} />
+        </DataTable.Table>
+        <DataTablePlugins.Footer />
+        <DataTable.Paginator sizeOptions={[10, 25, 50]} />
+      </DataTable.Content>
       <DataTablePlugins.SidePanel position="right" />
     </DataTable.Root>
   );
@@ -111,15 +109,16 @@ Level 3 loses plugin support and context menus. Use Level 2 if you need those fe
 
 Core table structure components:
 
-| Component | Description |
-|-----------|-------------|
-| `DataTable.Root` | Provider wrapper (required, provides context) |
-| `DataTable.Table` | Pure `<table>` element wrapper |
-| `DataTable.Header` | Column headers with sorting and context menu |
-| `DataTable.Body` | Row rendering with render props support |
-| `DataTable.Row` | Individual row with click handlers |
-| `DataTable.Cell` | Individual cell with context menu support |
-| `DataTable.Paginator` | Pagination controls |
+| Component | HTML Element | Description |
+|-----------|--------------|-------------|
+| `DataTable.Root` | `<div>` | Provider wrapper (required, provides context) |
+| `DataTable.Content` | `<div>` | Main content area (between side panels) |
+| `DataTable.Table` | `<table>` | Pure `<table>` element wrapper |
+| `DataTable.Header` | `<thead>` | Column headers with sorting and context menu |
+| `DataTable.Body` | `<tbody>` | Row rendering with render props support |
+| `DataTable.Row` | `<tr>` | Individual row with click handlers |
+| `DataTable.Cell` | `<td>` | Individual cell with context menu support |
+| `DataTable.Paginator` | `<div>` | Pagination controls |
 
 ### DataTablePlugins
 
@@ -137,19 +136,18 @@ Plugin-provided UI slots:
 
 ```
 DataTable.Root (providers + context)
-├─ DataTablePlugins.SidePanel position="left"
-├─ DataTablePlugins.Header (plugin-provided toolbars)
-├─ DataTable.Table
-│  ├─ <thead>
-│  │  └─ DataTable.Header
-│  └─ <tbody>
-│     └─ DataTable.Body
-│        ├─ DataTable.Row
-│        │  └─ DataTable.Cell
-│        └─ DataTablePlugins.InlineRow
-├─ DataTablePlugins.Footer (plugin-provided footers)
-├─ DataTable.Paginator
-└─ DataTablePlugins.SidePanel position="right"
+├─ DataTablePlugins.SidePanel (position: "left")
+├─ DataTable.Content (main content area)
+│  ├─ DataTablePlugins.Header (plugin-provided toolbars)
+│  ├─ DataTable.Table
+│  │  ├─ DataTable.Header
+│  │  └─ DataTable.Body
+│  │     ├─ DataTable.Row
+│  │     │  └─ DataTable.Cell
+│  │     └─ DataTablePlugins.InlineRow (plugin-provided expandable rows)
+│  ├─ DataTablePlugins.Footer (plugin-provided footers)
+│  └─ DataTable.Paginator
+└─ DataTablePlugins.SidePanel (position: "right")
 ```
 
 ---
@@ -216,28 +214,29 @@ You can add custom elements anywhere in the layout:
 ```tsx
 <DataTable.Root table={table}>
   <DataTablePlugins.SidePanel position="left" />
-  
-  {/* Custom toolbar */}
-  <div className="custom-toolbar">
-    <button>Export</button>
-    <button>Refresh</button>
-  </div>
-  
-  <DataTablePlugins.Header />
-  
-  <DataTable.Table>
-    <thead><DataTable.Header /></thead>
-    <tbody><DataTable.Body /></tbody>
-  </DataTable.Table>
-  
-  <DataTablePlugins.Footer />
-  
-  {/* Custom footer content */}
-  <div className="table-info">
-    Showing {table.getData().length} records
-  </div>
-  
-  <DataTable.Paginator />
+  <DataTable.Content>
+    {/* Custom toolbar */}
+    <div className="custom-toolbar">
+      <button>Export</button>
+      <button>Refresh</button>
+    </div>
+    
+    <DataTablePlugins.Header />
+    
+    <DataTable.Table>
+      <DataTable.Header />
+      <DataTable.Body />
+    </DataTable.Table>
+    
+    <DataTablePlugins.Footer />
+    
+    {/* Custom footer content */}
+    <div className="table-info">
+      Showing {table.getData().length} records
+    </div>
+    
+    <DataTable.Paginator />
+  </DataTable.Content>
   <DataTablePlugins.SidePanel position="right" />
 </DataTable.Root>
 ```
@@ -294,11 +293,13 @@ function CustomTableBody() {
 
 // Usage (must be inside DataTable.Root)
 <DataTable.Root table={table}>
-  <DataTable.Table>
-    <thead><DataTable.Header /></thead>
-    <tbody>
-      <CustomTableBody />
-    </tbody>
-  </DataTable.Table>
+  <DataTable.Content>
+    <DataTable.Table>
+      <DataTable.Header />
+      <tbody>
+        <CustomTableBody />
+      </tbody>
+    </DataTable.Table>
+  </DataTable.Content>
 </DataTable.Root>
 ```

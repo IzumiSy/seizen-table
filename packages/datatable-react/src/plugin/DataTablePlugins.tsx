@@ -371,30 +371,6 @@ export function CellSlot<TData>({
  *
  * These components render content provided by DataTable plugins.
  * Use them to compose custom layouts with plugin integration.
- *
- * @example Full custom layout
- * ```tsx
- * <DataTable.Root table={table}>
- *   <DataTablePlugins.SidePanel position="left" />
- *   <DataTablePlugins.Header />
- *   <DataTable.Table>
- *     <thead><DataTable.Header /></thead>
- *     <tbody>
- *       <DataTable.Body>
- *         {(row) => (
- *           <>
- *             <DataTable.Row row={row} />
- *             <DataTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
- *           </>
- *         )}
- *       </DataTable.Body>
- *     </tbody>
- *   </DataTable.Table>
- *   <DataTablePlugins.Footer />
- *   <DataTable.Paginator />
- *   <DataTablePlugins.SidePanel position="right" />
- * </DataTable.Root>
- * ```
  */
 export const DataTablePlugins = {
   SidePanel,
