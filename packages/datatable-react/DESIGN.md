@@ -2,8 +2,6 @@
 
 This document outlines the architecture and design decisions for `@izumisy/seizen-datatable-react`.
 
-## Overview
-
 The DataTable is designed as a modular, enterprise-grade table component with three core pillars:
 
 1. **Core** - Headless table logic powered by TanStack Table
