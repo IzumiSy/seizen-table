@@ -1,22 +1,44 @@
+import {
+  BasicDemo,
+  FilterDemo,
+  ColumnControlDemo,
+  DataExportDemo,
+  RowDetailDemo,
+  FullDemo,
+  ThemingDemo,
+  type DemoName,
+} from "@izumisy/seizen-table-example";
+
 interface DemoPreviewProps {
-  demo: string;
+  demo: DemoName;
   height?: number;
 }
 
+const demoComponents: Record<DemoName, React.ComponentType> = {
+  basic: BasicDemo,
+  theming: ThemingDemo,
+  filter: FilterDemo,
+  "column-control": ColumnControlDemo,
+  "data-export": DataExportDemo,
+  "row-detail": RowDetailDemo,
+  full: FullDemo,
+};
+
 export function DemoPreview({ demo, height = 400 }: DemoPreviewProps) {
-  const baseUrl = import.meta.env.DEV
-    ? "http://localhost:5184"
-    : "/seizen-table/demos";
+  const DemoComponent = demoComponents[demo];
+
+  if (!DemoComponent) {
+    return <div>Unknown demo: {demo}</div>;
+  }
 
   return (
-    <iframe
-      src={`${baseUrl}/?embed#/${demo}`}
+    <div
       style={{
-        width: "100%",
-        height: `${height}px`,
-        border: "none",
+        minHeight: `${height}px`,
         marginBlock: "1rem",
       }}
-    />
+    >
+      <DemoComponent />
+    </div>
   );
 }

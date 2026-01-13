@@ -1,12 +1,8 @@
-// @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 import { createStarlightTypeDocPlugin } from "starlight-typedoc";
 import starlightLlmsTxt from "starlight-llms-txt";
-
-const demosUrl =
-  process.env.NODE_ENV === "development" ? "http://localhost:5184" : "/demos/";
 
 const [pluginAPITypeDoc, pluginAPITypeDocSidebarGroup] =
   createStarlightTypeDocPlugin();
@@ -75,11 +71,6 @@ export default defineConfig({
         {
           label: "Advanced",
           autogenerate: { directory: "advanced" },
-        },
-        {
-          label: "Demos",
-          link: demosUrl,
-          attrs: { target: "_blank" },
         },
         {
           label: "Table API",
