@@ -60,7 +60,7 @@ export interface SeizenTableProps<TData> {
  * - SeizenTablePlugins.Header
  * - SeizenTablePlugins.Footer
  * - SeizenTablePlugins.InlineRow
- * - SeizenTablePlugins.CellSlot
+ * - SeizenTablePlugins.Cell
  *
  * @example High-level usage (all-in-one)
  * ```tsx

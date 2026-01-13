@@ -299,10 +299,10 @@ export function InlineRow<TData>({ row, colSpan }: InlineRowProps<TData>) {
 }
 
 // =============================================================================
-// CellSlot
+// Cell
 // =============================================================================
 
-export interface CellSlotProps<TData> {
+export interface CellProps<TData> {
   /**
    * The TanStack Table Cell object
    */
@@ -333,18 +333,13 @@ export interface CellSlotProps<TData> {
  * @example
  * ```tsx
  * <SeizenTable.Cell cell={cell} row={row}>
- *   <SeizenTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
+ *   <SeizenTablePlugins.Cell cell={cell} column={cell.column} row={row}>
  *     {flexRender(cell.column.columnDef.cell, cell.getContext())}
- *   </SeizenTablePlugins.CellSlot>
+ *   </SeizenTablePlugins.Cell>
  * </SeizenTable.Cell>
  * ```
  */
-export function CellSlot<TData>({
-  cell,
-  column,
-  row,
-  children,
-}: CellSlotProps<TData>) {
+export function Cell<TData>({ cell, column, row, children }: CellProps<TData>) {
   const { table } = usePluginContext();
   const plugins = table.plugins;
 
@@ -377,5 +372,5 @@ export const SeizenTablePlugins = {
   Header,
   Footer,
   InlineRow,
-  CellSlot,
+  Cell,
 } as const;

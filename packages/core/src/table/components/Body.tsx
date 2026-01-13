@@ -7,7 +7,7 @@ import { InlineRow } from "../../plugin/SeizenTablePlugins";
 export interface TableBodyProps<TData = unknown> {
   /**
    * Custom row renderer function (render props pattern).
-   * If not provided, uses default Table.Row rendering with InlineRow support.
+   * If not provided, uses default SeizenTable.Row rendering with InlineRow support.
    *
    * @param row - The TanStack Table Row object
    * @returns ReactNode to render for this row
@@ -18,7 +18,7 @@ export interface TableBodyProps<TData = unknown> {
 /**
  * Default table body component.
  *
- * Renders all rows using Table.Row component by default.
+ * Renders all rows using SeizenTable.Row component by default.
  * You can provide a render function as children for full control.
  *
  * @example Default usage (includes InlineRow automatically)
@@ -31,8 +31,8 @@ export interface TableBodyProps<TData = unknown> {
  * <Table.Body>
  *   {(row) => (
  *     <>
- *       <Table.Row key={row.id} row={row} className="custom" />
- *       <TablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
+ *       <SeizenTable.Row key={row.id} row={row} className="custom" />
+ *       <SeizenTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
  *     </>
  *   )}
  * </Table.Body>
@@ -41,7 +41,7 @@ export interface TableBodyProps<TData = unknown> {
  * @example Without InlineRow (opt-out)
  * ```tsx
  * <Table.Body>
- *   {(row) => <Table.Row key={row.id} row={row} />}
+ *   {(row) => <SeizenTable.Row key={row.id} row={row} />}
  * </Table.Body>
  * ```
  */

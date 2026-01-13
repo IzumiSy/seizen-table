@@ -128,7 +128,7 @@ Plugin-provided UI slots:
 | `SeizenTablePlugins.Header` | Plugin header slots (e.g., filter bars) |
 | `SeizenTablePlugins.Footer` | Plugin footer slots |
 | `SeizenTablePlugins.InlineRow` | Expandable row content (e.g., row details) |
-| `SeizenTablePlugins.CellSlot` | Custom cell rendering from plugins |
+| `SeizenTablePlugins.Cell` | Custom cell rendering from plugins |
 
 ### Component Hierarchy
 
@@ -187,7 +187,7 @@ When no children are provided, `SeizenTable.Body` automatically renders `SeizenT
 `SeizenTable.Cell` supports custom children:
 
 ```tsx
-// Default: uses plugin CellSlot automatically
+// Default: uses plugin Cell automatically
 <SeizenTable.Cell cell={cell} row={row} />
 
 // Custom content without plugin support
@@ -197,9 +197,9 @@ When no children are provided, `SeizenTable.Body` automatically renders `SeizenT
 
 // Custom content with plugin support
 <SeizenTable.Cell cell={cell} row={row}>
-  <SeizenTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
+  <SeizenTablePlugins.Cell cell={cell} column={cell.column} row={row}>
     <span className="custom">{cell.getValue()}</span>
-  </SeizenTablePlugins.CellSlot>
+  </SeizenTablePlugins.Cell>
 </SeizenTable.Cell>
 ```
 

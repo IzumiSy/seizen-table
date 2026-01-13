@@ -66,7 +66,7 @@ export { SeizenTablePlugins } from "./SeizenTablePlugins";
 export type {
   SidePanelProps,
   InlineRowProps,
-  CellSlotProps,
+  CellProps,
 } from "./SeizenTablePlugins";
 
 // PluginControl (for type-safe plugin.open())
