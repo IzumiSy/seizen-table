@@ -342,6 +342,8 @@ useEvent("filter-change", (filterState) => {
 
 Built-in events include `data-change`, `selection-change`, `filter-change`, `sorting-change`, `pagination-change`, `row-click`, `cell-context-menu`, and `column-context-menu`.
 
+For more details on the event system, see the [Event System guide](/seizen-table/guides/3-events/).
+
 ## Type-Safe Plugin Args (Module Augmentation)
 
 For type-safe `openArgs`, extend the `PluginArgsRegistry` interface:
@@ -419,7 +421,7 @@ function MyPluginContent() {
 ```
 
 <Aside type="tip">
-  Custom events are useful for decoupling plugins. For example, a context menu plugin can emit a filter request, and the filter plugin can subscribe to it without direct dependency.
+  Custom events are useful for decoupling plugins. For example, a context menu plugin can emit a filter request, and the filter plugin can subscribe to it without direct dependency. See the [Event System guide](/seizen-table/guides/3-events/#custom-events-with-module-augmentation) for more details.
 </Aside>
 
 ## Complete Example

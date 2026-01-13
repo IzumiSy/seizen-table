@@ -13,6 +13,7 @@
 
 /* Hero section spacing */
 .hero {
+  grid-template-columns: 8fr 3fr;
   padding-top: 3rem;
   padding-bottom: 3rem;
 }
