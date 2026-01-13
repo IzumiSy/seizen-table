@@ -9,7 +9,6 @@ export type { PaginatorProps } from "./components/Paginator";
 // Compound component types
 export type {
   TableRootProps,
-  TableTableProps,
   TableRowProps,
   TableCellProps,
 } from "./components";

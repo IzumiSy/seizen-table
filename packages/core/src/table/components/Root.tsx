@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext } from "react";
 import type { SeizenTableInstance } from "../useSeizenTable";
 import { PluginContextProvider } from "../../plugin/Context";
 import { ContextMenuProvider } from "../../plugin/contextMenu";
