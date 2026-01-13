@@ -1,0 +1,207 @@
+---
+title: Event System
+description: Learn how to use the type-safe event system for communication between components and plugins.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Seizen Table includes a built-in event bus that enables communication between the table, plugins, and your application code. The event system is designed to be:
+
+- **Type-safe** — Full TypeScript support with module augmentation for custom events
+- **Decoupled** — Components communicate without direct dependencies
+- **Extensible** — Plugins can define and emit their own custom events
+
+![Event flow diagram](/seizen-table/event-flow.svg)
+
+{/* Accessible description: Plugin A emits an event to the Event Bus (pub/sub), which then distributes it to Plugin B, Plugin C (both using useEvent), and App Code (using useSeizenTableEvent). */}
+
+## Subscribing to Events
+
+Use the `useSeizenTableEvent` hook to subscribe to events from your application code:
+
+```tsx
+import { useSeizenTable, useSeizenTableEvent, SeizenTable } from "@izumisy/seizen-table";
+
+function App() {
+  const table = useSeizenTable({ data, columns });
+
+  // Subscribe to row-click events
+  useSeizenTableEvent(table, "row-click", (row) => {
+    console.log("Row clicked:", row);
+  });
+
+  // Subscribe to selection changes
+  useSeizenTableEvent(table, "selection-change", (selectedRows) => {
+    console.log("Selection changed:", selectedRows);
+  });
+
+  return <SeizenTable table={table} />;
+}
+```
+
+The hook automatically handles subscription cleanup when the component unmounts.
+
+## Built-in Events
+
+Seizen Table emits the following events automatically:
+
+| Event | Payload | Description |
+|-------|---------|-------------|
+| `data-change` | `TData[]` | Emitted when table data changes |
+| `selection-change` | `TData[]` | Emitted when row selection changes |
+| `filter-change` | `ColumnFiltersState` | Emitted when column filters change |
+| `sorting-change` | `SortingState` | Emitted when sorting changes |
+| `pagination-change` | `PaginationState` | Emitted when pagination changes |
+| `row-click` | `TData` | Emitted when a table row is clicked |
+| `cell-context-menu` | `{ cell, column, row, value }` | Emitted when cell context menu opens |
+| `column-context-menu` | `{ column }` | Emitted when column header context menu opens |
+
+## Custom Events with Module Augmentation
+
+Plugins can define custom events using TypeScript's module augmentation. This ensures type safety across your entire application.
+
+### Defining Custom Events
+
+In your plugin file, extend the `EventBusRegistry` interface:
+
+```typescript
+// my-plugin.ts
+declare module "@izumisy/seizen-table/plugin" {
+  interface EventBusRegistry {
+    "my-plugin:action": { itemId: string; action: "create" | "delete" };
+    "my-plugin:complete": { success: boolean };
+  }
+}
+```
+
+<Aside type="tip">
+Use a namespace prefix (e.g., `my-plugin:`) for your custom events to avoid naming collisions with other plugins.
+</Aside>
+
+### Emitting Custom Events
+
+Inside a plugin, use the `emit` function from the plugin context:
+
+```tsx
+import { definePlugin } from "@izumisy/seizen-table/plugin";
+
+export const myPlugin = definePlugin(() => ({
+  name: "my-plugin",
+  slots: {
+    header: ({ emit }) => {
+      const handleAction = () => {
+        // Type-safe! TypeScript knows the payload shape
+        emit("my-plugin:action", { itemId: "123", action: "create" });
+      };
+
+      return <button onClick={handleAction}>Create Item</button>;
+    },
+  },
+}));
+```
+
+### Subscribing to Custom Events
+
+Once declared, custom events are fully type-safe when subscribing:
+
+```tsx
+// In your application code
+useSeizenTableEvent(table, "my-plugin:action", (payload) => {
+  // TypeScript knows: payload is { itemId: string; action: "create" | "delete" }
+  console.log(`Action ${payload.action} on item ${payload.itemId}`);
+});
+
+// Or inside another plugin
+useEvent("my-plugin:complete", (payload) => {
+  // TypeScript knows: payload is { success: boolean }
+  if (payload.success) {
+    showNotification("Operation completed!");
+  }
+});
+```
+
+## Best Practices
+
+### 1. Use Descriptive Event Names
+
+```typescript
+// ✅ Good: Clear namespace and action
+"file-export:started"
+"file-export:completed"
+"file-export:error"
+
+// ❌ Avoid: Vague or conflicting names
+"start"
+"done"
+"click"
+```
+
+### 2. Keep Payloads Serializable
+
+Event payloads should be plain objects that can be easily logged, stored, or transmitted:
+
+```typescript
+// ✅ Good: Plain serializable object
+emit("row-detail:opened", { rowId: row.id, timestamp: Date.now() });
+
+// ❌ Avoid: Complex objects or functions
+emit("row-detail:opened", { row, onClose: () => {} });
+```
+
+### 3. Document Your Events
+
+When creating plugins, document the events they emit:
+
+```typescript
+/**
+ * Events emitted by the file-export plugin:
+ *
+ * - `file-export:started` - Emitted when export begins
+ * - `file-export:progress` - Emitted with progress updates
+ * - `file-export:completed` - Emitted when export finishes successfully
+ * - `file-export:error` - Emitted when export fails
+ */
+declare module "@izumisy/seizen-table/plugin" {
+  interface EventBusRegistry {
+    "file-export:started": { format: "csv" | "json" };
+    "file-export:progress": { percent: number };
+    "file-export:completed": { filename: string; size: number };
+    "file-export:error": { message: string };
+  }
+}
+```
+
+## Events in Plugins
+
+Inside plugins, use the `useEvent` hook from the plugin context to subscribe to events:
+
+```tsx
+import { definePlugin } from "@izumisy/seizen-table/plugin";
+
+export const analyticsPlugin = definePlugin(() => ({
+  name: "analytics",
+  slots: {
+    // This slot doesn't render anything, just listens for events
+    footer: ({ useEvent }) => {
+      useEvent("row-click", (row) => {
+        trackEvent("table_row_clicked", { rowId: row.id });
+      });
+
+      useEvent("filter-change", (filters) => {
+        trackEvent("table_filtered", { filterCount: filters.length });
+      });
+
+      return null; // No UI to render
+    },
+  },
+}));
+```
+
+<Aside>
+The `useEvent` hook inside plugins and `useSeizenTableEvent` hook in application code both subscribe to the same event bus, but they serve different purposes:
+
+- **`useSeizenTableEvent`** (for application code): Has access to the table's generic type parameter `TData`, so event payloads like `row-click` are fully typed with your row data type.
+- **`useEvent`** (for plugins): Cannot know the row type at plugin definition time since plugins are reusable across different tables. Row-related payloads are typed as `unknown`.
+
+This separation ensures that application developers get maximum type safety, while plugin authors can write generic, reusable code that works with any table configuration.
+</Aside>

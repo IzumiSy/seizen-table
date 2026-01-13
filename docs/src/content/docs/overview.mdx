@@ -1,0 +1,37 @@
+---
+title: Overview
+description: What is Seizen Table and why it was created.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What is Seizen Table?
+
+**Seizen Table** is a rich, enterprise-grade data table component for React, built on top of [TanStack Table](https://tanstack.com/table).
+
+The name "Seizen" (整然, /seɪˈzen/) comes from the Japanese word meaning **"orderly," "neat," or "well-organized."** It embodies the essence of **Zen** (禅)—simplicity, clarity, and mindful design. Just as Zen emphasizes removing the unnecessary to reveal what truly matters, Seizen Table aims to bring order and clarity to your data presentation with a clean, extensible architecture.
+
+## Why Seizen Table?
+
+Building enterprise-grade data tables from scratch is challenging. While TanStack Table provides an excellent headless foundation, there's still a significant gap between a headless library and a production-ready component that teams can use immediately.
+
+Seizen Table bridges this gap by providing:
+
+<CardGrid>
+  <Card title="Plugin-First Architecture" icon="puzzle">
+    Every feature beyond core table rendering is a [plugin](/seizen-table/guides/2-plugins/). Keep your bundle small and include only what you need.
+  </Card>
+  <Card title="Flexible UI" icon="seti:css">
+    Customize the look with [CSS variables](/seizen-table/guides/1-theming/), or build entirely custom layouts using the [Composable API](/seizen-table/advanced/composable-api/).
+  </Card>
+  <Card title="Type Safety" icon="approve-check">
+    Full TypeScript support with comprehensive type definitions, including [type-safe custom events](/seizen-table/guides/3-events/#custom-events-with-module-augmentation).
+  </Card>
+  <Card title="Data Adapters" icon="seti:db">
+    Connect to various data sources like Supabase, Firestore, and Hasura with [minimal boilerplate](/seizen-table/advanced/data-adapter/).
+  </Card>
+</CardGrid>
+
+## Next Steps
+
+- [Installation](/seizen-table/installation/) — Get Seizen Table set up in your project

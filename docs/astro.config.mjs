@@ -57,7 +57,13 @@ export default defineConfig({
         },
       ],
       sidebar: [
-        { label: "Getting Started", slug: "getting-started" },
+        {
+          label: "Getting Started",
+          items: [
+            { label: "Overview", slug: "overview" },
+            { label: "Installation", slug: "installation" },
+          ],
+        },
         {
           label: "Guides",
           autogenerate: { directory: "guides" },
