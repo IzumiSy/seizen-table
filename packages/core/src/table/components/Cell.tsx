@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { flexRender, type Cell, type Row } from "@tanstack/react-table";
 import { useContextMenuHandlers } from "../../plugin/contextMenu";
 import { SeizenTablePlugins } from "../../plugin/SeizenTablePlugins";
@@ -19,13 +18,6 @@ export interface TableCellProps<TData> {
    * Additional CSS class name for the cell
    */
   className?: string;
-
-  /**
-   * Custom cell content.
-   * If provided, replaces the default SeizenTablePlugins.Cell rendering.
-   * Use SeizenTablePlugins.Cell inside children if you want plugin support.
-   */
-  children?: ReactNode;
 }
 
 /**
@@ -76,7 +68,7 @@ export function TableCell<TData>({
   row,
   className,
   children,
-}: TableCellProps<TData>) {
+}: React.PropsWithChildren<TableCellProps<TData>>) {
   const { handleCellContextMenu } = useContextMenuHandlers<TData>();
   const cellClassName = className ? `${styles.td} ${className}` : styles.td;
 

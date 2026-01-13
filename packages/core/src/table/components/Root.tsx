@@ -36,11 +36,6 @@ export interface TableRootProps<TData> {
   table: SeizenTableInstance<TData>;
 
   /**
-   * Child components (SeizenTable.Table, SeizenTable.Pagination, etc.)
-   */
-  children: ReactNode;
-
-  /**
    * Additional CSS class name for the root container
    */
   className?: string;
@@ -57,7 +52,7 @@ export function TableRoot<TData>({
   table,
   children,
   className,
-}: TableRootProps<TData>) {
+}: React.PropsWithChildren<TableRootProps<TData>>) {
   const tanstack = table._tanstackTable;
   const containerClassName = className
     ? `${styles.container} ${className}`
