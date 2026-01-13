@@ -23,15 +23,9 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.37.2
         version: 0.37.2(astro@5.16.7(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(typescript@5.8.2)(yaml@2.8.2))
-      '@izumisy/seizen-table':
-        specifier: workspace:*
-        version: link:../packages/core
       '@izumisy/seizen-table-example':
         specifier: workspace:*
         version: link:../example
-      '@izumisy/seizen-table-plugins':
-        specifier: workspace:*
-        version: link:../packages/plugins
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.7

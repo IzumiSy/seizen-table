@@ -24,6 +24,9 @@ export default defineConfig(({ mode }) => {
           formats: ["es"],
           fileName: "index",
         },
+        rollupOptions: {
+          external: ["react", "react-dom", "react/jsx-runtime"],
+        },
         outDir: "dist",
         sourcemap: true,
       },

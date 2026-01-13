@@ -13,8 +13,6 @@
     "@astrojs/check": "^0.9.6",
     "@astrojs/react": "^4.4.2",
     "@astrojs/starlight": "^0.37.2",
-    "@izumisy/seizen-table": "workspace:*",
-    "@izumisy/seizen-table-plugins": "workspace:*",
     "@izumisy/seizen-table-example": "workspace:*",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
