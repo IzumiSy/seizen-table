@@ -14,11 +14,12 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
+    "start": "vite",
+    "dev": "vite build --mode lib --watch",
     "build": "vite build",
     "build:lib": "vite build --mode lib",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc -b"
   },
   "dependencies": {
     "@izumisy/seizen-table": "workspace:*",
