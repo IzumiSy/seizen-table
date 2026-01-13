@@ -34,6 +34,7 @@ export function DemoPreview({ demo, height = 400 }: DemoPreviewProps) {
 
   return (
     <div
+      className="not-content"
       style={{
         minHeight: `${height}px`,
         marginBlock: "1rem",

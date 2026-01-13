@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 
 const colorThemes = {
@@ -95,21 +95,10 @@ export function ThemingDemo() {
   const [spacingTheme, setSpacingTheme] = useState<SpacingThemeName>("compact");
   const table = useSeizenTable({ data, columns });
 
-  useEffect(() => {
-    const theme = {
-      ...colorThemes[colorTheme],
-      ...spacingThemes[spacingTheme],
-    };
-    Object.entries(theme).forEach(([key, value]) => {
-      document.documentElement.style.setProperty(key, value);
-    });
-
-    return () => {
-      Object.keys(theme).forEach((key) => {
-        document.documentElement.style.removeProperty(key);
-      });
-    };
-  }, [colorTheme, spacingTheme]);
+  const themeStyles = {
+    ...colorThemes[colorTheme],
+    ...spacingThemes[spacingTheme],
+  } as React.CSSProperties;
 
   return (
     <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
@@ -207,6 +196,7 @@ export function ThemingDemo() {
           flex: 1,
           borderRadius: "8px",
           overflow: "hidden",
+          ...themeStyles,
         }}
       >
         <SeizenTable table={table} />
