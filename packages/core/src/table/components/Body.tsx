@@ -1,13 +1,13 @@
 import { Fragment, type ReactNode } from "react";
 import type { Row } from "@tanstack/react-table";
-import { useDataTableContext } from "./Root";
-import { DataTableRow } from "./Row";
-import { InlineRow } from "../../plugin/DataTablePlugins";
+import { useSeizenTableContext } from "./Root";
+import { TableRow } from "./Row";
+import { InlineRow } from "../../plugin/SeizenTablePlugins";
 
-export interface DataTableBodyProps<TData = unknown> {
+export interface TableBodyProps<TData = unknown> {
   /**
    * Custom row renderer function (render props pattern).
-   * If not provided, uses default DataTable.Row rendering with InlineRow support.
+   * If not provided, uses default Table.Row rendering with InlineRow support.
    *
    * @param row - The TanStack Table Row object
    * @returns ReactNode to render for this row
@@ -18,35 +18,35 @@ export interface DataTableBodyProps<TData = unknown> {
 /**
  * Default table body component.
  *
- * Renders all rows using DataTable.Row component by default.
+ * Renders all rows using Table.Row component by default.
  * You can provide a render function as children for full control.
  *
  * @example Default usage (includes InlineRow automatically)
  * ```tsx
- * <DataTable.Body />
+ * <Table.Body />
  * ```
  *
  * @example Custom row rendering with render props
  * ```tsx
- * <DataTable.Body>
+ * <Table.Body>
  *   {(row) => (
  *     <>
- *       <DataTable.Row key={row.id} row={row} className="custom" />
- *       <DataTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
+ *       <Table.Row key={row.id} row={row} className="custom" />
+ *       <TablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
  *     </>
  *   )}
- * </DataTable.Body>
+ * </Table.Body>
  * ```
  *
  * @example Without InlineRow (opt-out)
  * ```tsx
- * <DataTable.Body>
- *   {(row) => <DataTable.Row key={row.id} row={row} />}
- * </DataTable.Body>
+ * <Table.Body>
+ *   {(row) => <Table.Row key={row.id} row={row} />}
+ * </Table.Body>
  * ```
  */
-export function DataTableBody<TData>({ children }: DataTableBodyProps<TData>) {
-  const tableFromContext = useDataTableContext<TData>();
+export function TableBody<TData>({ children }: TableBodyProps<TData>) {
+  const tableFromContext = useSeizenTableContext<TData>();
   const table = tableFromContext;
   const tanstack = table._tanstackTable;
   const rows = tanstack.getRowModel().rows;
@@ -67,7 +67,7 @@ export function DataTableBody<TData>({ children }: DataTableBodyProps<TData>) {
     <tbody>
       {rows.map((row) => (
         <Fragment key={row.id}>
-          <DataTableRow row={row} />
+          <TableRow row={row} />
           <InlineRow row={row} colSpan={row.getVisibleCells().length} />
         </Fragment>
       ))}

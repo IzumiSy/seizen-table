@@ -36,7 +36,7 @@ export interface EventBusRegistry {
 /**
  * Map of built-in event names to their payload types.
  *
- * DataTable automatically emits these events:
+ * SeizenTable automatically emits these events:
  * - State change events: data, selection, filter, sorting, pagination
  * - Action events: row-click
  *
@@ -44,7 +44,7 @@ export interface EventBusRegistry {
  *
  * @typeParam TData - The type of row data. Defaults to `unknown`.
  */
-export interface DataTableEventMap<TData = unknown> extends EventBusRegistry {
+export interface SeizenTableEventMap<TData = unknown> extends EventBusRegistry {
   /**
    * Emitted when table data changes.
    * Payload is the entire data array.
@@ -101,7 +101,7 @@ export interface DataTableEventMap<TData = unknown> extends EventBusRegistry {
 /**
  * All known event names (built-in events)
  */
-export type DataTableEventName = keyof DataTableEventMap;
+export type SeizenTableEventName = keyof SeizenTableEventMap;
 
 // =============================================================================
 // Event Bus Hook
@@ -115,7 +115,7 @@ export type DataTableEventName = keyof DataTableEventMap;
  *
  * @example
  * ```tsx
- * // In useDataTable:
+ * // In useSeizenTable:
  * const eventBus = useEventBus();
  *
  * // Application emits events:
@@ -134,9 +134,9 @@ export function useEventBus() {
   );
 
   const emit = useCallback(
-    <K extends DataTableEventName | (string & {})>(
+    <K extends SeizenTableEventName | (string & {})>(
       event: K,
-      payload: K extends DataTableEventName ? DataTableEventMap[K] : unknown
+      payload: K extends SeizenTableEventName ? SeizenTableEventMap[K] : unknown
     ) => {
       const listeners = listenersRef.current.get(event);
       if (listeners) {
@@ -147,10 +147,12 @@ export function useEventBus() {
   );
 
   const subscribe = useCallback(
-    <K extends DataTableEventName | (string & {})>(
+    <K extends SeizenTableEventName | (string & {})>(
       event: K,
       callback: (
-        payload: K extends DataTableEventName ? DataTableEventMap[K] : unknown
+        payload: K extends SeizenTableEventName
+          ? SeizenTableEventMap[K]
+          : unknown
       ) => void
     ) => {
       if (!listenersRef.current.has(event)) {

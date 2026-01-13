@@ -30,7 +30,7 @@ const fallback = {
   rowSelectedBg: "#eff6ff",
 };
 
-// Container for the entire DataTable with side panels
+// Container for the entire SeizenTable with side panels
 export const container = style({
   display: "flex",
   flexDirection: "row",

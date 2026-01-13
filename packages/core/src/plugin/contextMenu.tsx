@@ -7,7 +7,7 @@ import {
 } from "react";
 import type { ReactNode } from "react";
 import type { Cell, Column, Row, Table } from "@tanstack/react-table";
-import type { DataTablePlugin } from "./definePlugin";
+import type { SeizenTablePlugin } from "./definePlugin";
 import type { EventBus } from "./useEventBus";
 import * as styles from "./styles.css";
 
@@ -240,7 +240,7 @@ export function useContextMenu<TData>(): ContextMenuContextValue<TData> {
 interface ContextMenuProviderProps<TData> {
   children: ReactNode;
   table: Table<TData>;
-  plugins: DataTablePlugin<TData>[];
+  plugins: SeizenTablePlugin<TData>[];
   selectedRows: TData[];
   emit: EventBus["emit"];
 }
@@ -313,7 +313,7 @@ export function ContextMenuProvider<TData>({
 interface ContextMenuRendererProps<TData> {
   menuState: NonNullable<ContextMenuState<TData>>;
   table: Table<TData>;
-  plugins: DataTablePlugin<TData>[];
+  plugins: SeizenTablePlugin<TData>[];
   selectedRows: TData[];
   emit: EventBus["emit"];
   onClose: () => void;
@@ -496,7 +496,7 @@ export function useContextMenuHandlers<TData>() {
 
   if (!ctx) {
     throw new Error(
-      "useContextMenuHandlers must be used within a context menu provider (DataTable.Root or ContextMenuProvider)"
+      "useContextMenuHandlers must be used within a context menu provider (SeizenTable.Root or ContextMenuProvider)"
     );
   }
 

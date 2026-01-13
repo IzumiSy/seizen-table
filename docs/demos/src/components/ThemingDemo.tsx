@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 
 const colorThemes = {
   custom: {
@@ -93,7 +93,7 @@ const data = [
 export function ThemingDemo() {
   const [colorTheme, setColorTheme] = useState<ColorThemeName>("custom");
   const [spacingTheme, setSpacingTheme] = useState<SpacingThemeName>("compact");
-  const table = useDataTable({ data, columns });
+  const table = useSeizenTable({ data, columns });
 
   useEffect(() => {
     const theme = {
@@ -209,7 +209,7 @@ export function ThemingDemo() {
           overflow: "hidden",
         }}
       >
-        <DataTable table={table} />
+        <SeizenTable table={table} />
       </div>
     </div>
   );

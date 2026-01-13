@@ -10,7 +10,7 @@ const demosUrl =
 
 const [pluginAPITypeDoc, pluginAPITypeDocSidebarGroup] =
   createStarlightTypeDocPlugin();
-const [datatableAPITypeDoc, datatableAPITypeDocSidebarGroup] =
+const [tableAPITypeDoc, tableAPITypeDocSidebarGroup] =
   createStarlightTypeDocPlugin();
 
 // https://astro.build/config
@@ -26,7 +26,7 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: "Seizen DataTable",
+      title: "Seizen Table",
       customCss: ["./src/styles/custom.css"],
       plugins: [
         starlightLlmsTxt({
@@ -40,10 +40,10 @@ export default defineConfig({
             label: "Reference",
           },
         }),
-        datatableAPITypeDoc({
+        tableAPITypeDoc({
           entryPoints: ["../packages/core/src/table/index.ts"],
           tsconfig: "../packages/core/tsconfig.json",
-          output: "generated/api/datatable",
+          output: "generated/api/table",
           sidebar: {
             label: "Reference",
           },
@@ -76,8 +76,8 @@ export default defineConfig({
           attrs: { target: "_blank" },
         },
         {
-          label: "DataTable API",
-          items: [datatableAPITypeDocSidebarGroup],
+          label: "Table API",
+          items: [tableAPITypeDocSidebarGroup],
         },
         {
           label: "Plugin API",

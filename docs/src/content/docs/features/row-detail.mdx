@@ -6,7 +6,7 @@ description: Display detailed information about a selected row in a side panel.
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-DataTable supports row detail view through the `RowDetailPlugin` from `@izumisy/seizen-table-plugins`.
+SeizenTable supports row detail view through the `RowDetailPlugin` from `@izumisy/seizen-table-plugins`.
 
 ## Try It
 
@@ -32,22 +32,22 @@ Click on any row to see its details in the side panel.
 ## Basic Usage
 
 ```tsx
-import { useDataTable, DataTable, useDataTableEvent } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable, useSeizenTableEvent } from "@izumisy/seizen-table";
 import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
 
 function MyTable() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [RowDetailPlugin.configure({ width: 350 })],
   });
 
   // Open side panel when a row is clicked
-  useDataTableEvent(table, "row-click", (row) => {
+  useSeizenTableEvent(table, "row-click", (row) => {
     table.plugin.open("row-detail", { row });
   });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 
@@ -83,5 +83,5 @@ table.plugin.close("row-detail");
 ```
 
 <Aside type="note">
-  The `useDataTableEvent` hook is used to subscribe to table events. The `row-click` event passes the entire row data object to your handler.
+  The `useSeizenTableEvent` hook is used to subscribe to table events. The `row-click` event passes the entire row data object to your handler.
 </Aside>

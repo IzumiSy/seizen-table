@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import * as styles from "../styles.css";
 
-export interface DataTableContentProps {
+export interface TableContentProps {
   /**
-   * Child components (DataTable.Table, DataTable.Pagination, DataTablePlugins.*, or custom elements)
+   * Child components (SeizenTable.Table, SeizenTable.Pagination, SeizenTablePlugins.*, or custom elements)
    */
   children: ReactNode;
 }
@@ -11,9 +11,9 @@ export interface DataTableContentProps {
 /**
  * Main content container that arranges children vertically.
  *
- * This is a pure layout component. Use DataTablePlugins.SidePanel,
- * DataTablePlugins.Header, and DataTablePlugins.Footer to add plugin content.
+ * This is a pure layout component. Use TablePlugins.SidePanel,
+ * TablePlugins.Header, and TablePlugins.Footer to add plugin content.
  */
-export function DataTableContent({ children }: DataTableContentProps) {
+export function TableContent({ children }: TableContentProps) {
   return <div className={styles.mainContent}>{children}</div>;
 }

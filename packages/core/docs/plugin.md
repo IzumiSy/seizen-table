@@ -12,7 +12,7 @@ The plugin system allows these features to be added modularly.
 
 ## Layout & Slots
 
-DataTable provides 5 slots where plugins can render UI components:
+SeizenTable provides 5 slots where plugins can render UI components:
 
 ```
 ┌───────┬─────────────────────────────────────────────┬───────┐
@@ -55,13 +55,13 @@ DataTable provides 5 slots where plugins can render UI components:
 ## Plugin Usage
 
 ```tsx
-import { DataTable } from "@izumisy/seizen-table";
+import { SeizenTable } from "@izumisy/seizen-table";
 import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
 import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
 
 function UsersTable() {
   return (
-    <DataTable
+    <SeizenTable
       data={data}
       columns={columns}
       plugins={[
@@ -76,7 +76,7 @@ function UsersTable() {
 
 ## Plugin Development Guide
 
-This section explains how to create custom plugins for DataTable.
+This section explains how to create custom plugins for SeizenTable.
 
 ### Import Path
 
@@ -260,7 +260,7 @@ Inside your plugin component, use `usePluginContext` to access table data and AP
 
 ```tsx
 const {
-  table,         // DataTable instance
+  table,         // SeizenTable instance
   data,          // Current table data (unknown[])
   columns,       // Column info ({ key, header }[])
   selectedRows,  // Currently selected rows (unknown[])
@@ -284,7 +284,7 @@ const initialRow = openArgs?.row;
 
 ## Event System (`useEvent`)
 
-Plugins can subscribe to DataTable events using the `useEvent` hook.
+Plugins can subscribe to SeizenTable events using the `useEvent` hook.
 
 ### Subscribing to Events
 
@@ -377,13 +377,13 @@ The `table.plugin` object provides methods to programmatically control plugins.
 ### Example: Open Plugin on Row Click
 
 ```tsx
-const table = useDataTable({
+const table = useSeizenTable({
   data,
   columns,
   plugins: [RowDetailPlugin.configure({ width: 350 })],
 });
 
-useDataTableEvent(table, "row-click", (row) => {
+useSeizenTableEvent(table, "row-click", (row) => {
   table.plugin.open("row-detail", { row });
 });
 ```

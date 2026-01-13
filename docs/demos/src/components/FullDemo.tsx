@@ -1,7 +1,7 @@
 import {
-  useDataTable,
-  DataTable,
-  useDataTableEvent,
+  useSeizenTable,
+  SeizenTable,
+  useSeizenTableEvent,
 } from "@izumisy/seizen-table";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
@@ -628,7 +628,7 @@ const data = [
 ];
 
 export function FullDemo() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [
@@ -642,7 +642,7 @@ export function FullDemo() {
     ],
   });
 
-  useDataTableEvent(table, "row-click", (row) => {
+  useSeizenTableEvent(table, "row-click", (row) => {
     table.plugin.open("row-detail", { row });
   });
 
@@ -654,7 +654,7 @@ export function FullDemo() {
         overflow: "hidden",
       }}
     >
-      <DataTable table={table} />
+      <SeizenTable table={table} />
     </div>
   );
 }

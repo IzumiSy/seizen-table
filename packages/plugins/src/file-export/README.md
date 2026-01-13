@@ -16,7 +16,7 @@ import {
 ## Usage
 
 ```tsx
-const table = useDataTable({
+const table = useSeizenTable({
   data,
   columns,
   plugins: [

@@ -1,17 +1,17 @@
-export { DataTable } from "./DataTable";
+export { SeizenTable } from "./SeizenTable";
 export { Paginator } from "./components/Paginator";
-export { useDataTable } from "./useDataTable";
-export { useDataTableEvent } from "./useDataTableEvent";
-export { useDataTableContext } from "./components/Root";
-export type { DataTableProps, PaginateOptions } from "./DataTable";
+export { useSeizenTable } from "./useSeizenTable";
+export { useSeizenTableEvent } from "./useSeizenTableEvent";
+export { useSeizenTableContext } from "./components/Root";
+export type { SeizenTableProps, PaginateOptions } from "./SeizenTable";
 export type { PaginatorProps } from "./components/Paginator";
 
 // Compound component types
 export type {
-  DataTableRootProps,
-  DataTableTableProps,
-  DataTableRowProps,
-  DataTableCellProps,
+  TableRootProps,
+  TableTableProps,
+  TableRowProps,
+  TableCellProps,
 } from "./components";
 
 // Hooks - re-export from plugin for convenience
@@ -19,10 +19,10 @@ export { useContextMenuHandlers } from "../plugin/contextMenu";
 
 // Types
 export type {
-  DataTableColumn,
-  DataTableInstance,
-  UseDataTableOptions,
-} from "./useDataTable";
+  SeizenTableColumn,
+  SeizenTableInstance,
+  UseSeizenTableOptions,
+} from "./useSeizenTable";
 
 // Re-export PluginArgsRegistry for module augmentation
 // This ensures that module augmentation on "@izumisy/seizen-table/plugin"

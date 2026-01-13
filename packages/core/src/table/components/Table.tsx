@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import * as styles from "../styles.css";
 
-export interface DataTableTableProps {
+export interface TableTableProps {
   /**
-   * Table content (DataTable.Header, DataTable.Body, or custom thead/tbody)
+   * Table content (Table.Header, Table.Body, or custom thead/tbody)
    */
   children: ReactNode;
 }
@@ -11,10 +11,10 @@ export interface DataTableTableProps {
 /**
  * Table component that renders the HTML table.
  *
- * This component should be used inside DataTable.Content to handle
+ * This component should be used inside Table.Content to handle
  * the layout with side panels.
  */
-export function DataTableTable({ children }: DataTableTableProps) {
+export function TableTable({ children }: TableTableProps) {
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.table}>{children}</table>

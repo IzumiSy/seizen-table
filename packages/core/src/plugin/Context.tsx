@@ -5,8 +5,8 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import type { DataTableInstance } from "../table/useDataTable";
-import type { DataTableEventMap, DataTableEventName } from "./useEventBus";
+import type { SeizenTableInstance } from "../table/useSeizenTable";
+import type { SeizenTableEventMap, SeizenTableEventName } from "./useEventBus";
 import type { PluginArgsRegistry } from "./usePluginControl";
 
 // Re-export filter types from columnMeta (which also does module augmentation)
@@ -47,9 +47,9 @@ export interface PluginColumnInfo {
  */
 export interface PluginContextValue<TOpenArgs = unknown> {
   /**
-   * The DataTable instance
+   * The SeizenTable instance
    */
-  table: DataTableInstance<unknown>;
+  table: SeizenTableInstance<unknown>;
 
   /**
    * Current table data
@@ -89,7 +89,7 @@ export interface PluginContextValue<TOpenArgs = unknown> {
   openArgs: TOpenArgs | undefined;
 
   /**
-   * Hook to subscribe to events emitted by DataTable.
+   * Hook to subscribe to events emitted by SeizenTable.
    *
    * Built-in events:
    * - `data-change`: Table data changed
@@ -114,10 +114,10 @@ export interface PluginContextValue<TOpenArgs = unknown> {
    * });
    * ```
    */
-  useEvent: <K extends DataTableEventName | (string & {})>(
+  useEvent: <K extends SeizenTableEventName | (string & {})>(
     event: K,
     callback: (
-      payload: K extends DataTableEventName ? DataTableEventMap[K] : unknown
+      payload: K extends SeizenTableEventName ? SeizenTableEventMap[K] : unknown
     ) => void
   ) => void;
 }
@@ -133,7 +133,7 @@ const PluginContext = createContext<PluginContextValue | null>(null);
 // =============================================================================
 
 export interface PluginContextProviderProps<TData> {
-  table: DataTableInstance<TData>;
+  table: SeizenTableInstance<TData>;
   children: ReactNode;
 }
 
@@ -227,10 +227,10 @@ export function PluginContextProvider<TData>({
   }, [paginationState, table.eventBus]);
 
   // useEvent hook factory
-  const useEvent = <K extends DataTableEventName | (string & {})>(
+  const useEvent = <K extends SeizenTableEventName | (string & {})>(
     event: K,
     callback: (
-      payload: K extends DataTableEventName ? DataTableEventMap[K] : unknown
+      payload: K extends SeizenTableEventName ? SeizenTableEventMap[K] : unknown
     ) => void
   ) => {
     useEffect(() => {
@@ -242,7 +242,7 @@ export function PluginContextProvider<TData>({
   };
 
   const contextValue: PluginContextValue = {
-    table: table as DataTableInstance<unknown>,
+    table: table as SeizenTableInstance<unknown>,
     data,
     columns,
     selectedRows,
@@ -306,8 +306,8 @@ export function usePluginContext<
   const context = useContext(PluginContext);
   if (!context) {
     throw new Error(
-      "usePluginContext must be used within a DataTable component. " +
-        "Make sure your plugin is rendered inside a DataTable."
+      "usePluginContext must be used within a SeizenTable component. " +
+        "Make sure your plugin is rendered inside a SeizenTable."
     );
   }
   return context as PluginContextValue<

@@ -14,7 +14,7 @@ import {
   type ColumnOrderState,
   type Table,
 } from "@tanstack/react-table";
-import type { DataTablePlugin } from "../plugin";
+import type { SeizenTablePlugin } from "../plugin";
 import { useEventBus, type EventBus } from "../plugin/useEventBus";
 import {
   usePluginControl,
@@ -26,29 +26,29 @@ import { pluginFilterFn } from "./filterFn";
 // Column Types
 // =============================================================================
 
-export type DataTableColumn<TData> = ColumnDef<TData, unknown>;
+export type SeizenTableColumn<TData> = ColumnDef<TData, unknown>;
 
 // =============================================================================
-// useDataTable Types
+// useSeizenTable Types
 // =============================================================================
 
 /**
- * Options for useDataTable hook
+ * Options for useSeizenTable hook
  */
-export interface UseDataTableOptions<TData> {
+export interface UseSeizenTableOptions<TData> {
   data: TData[];
-  columns: DataTableColumn<TData>[];
-  /** Plugins to use. Plugins that don't use context menu can be DataTablePlugin<any>. */
-  plugins?: DataTablePlugin<any>[];
+  columns: SeizenTableColumn<TData>[];
+  /** Plugins to use. Plugins that don't use context menu can be SeizenTablePlugin<any>. */
+  plugins?: SeizenTablePlugin<any>[];
   initialSelection?: RowSelectionState;
   enableMultiSelect?: boolean;
   onSelectionChange?: (selection: TData[]) => void;
 }
 
 /**
- * DataTable instance returned by useDataTable
+ * Table instance returned by useSeizenTable
  */
-export interface DataTableInstance<TData> {
+export interface SeizenTableInstance<TData> {
   // ===========================================================================
   // Selection
   // ===========================================================================
@@ -150,7 +150,7 @@ export interface DataTableInstance<TData> {
    * Get the column definitions.
    * @returns Array of column definitions
    */
-  getColumns: () => DataTableColumn<TData>[];
+  getColumns: () => SeizenTableColumn<TData>[];
 
   // ===========================================================================
   // Column Visibility
@@ -204,7 +204,7 @@ export interface DataTableInstance<TData> {
   /**
    * Plugins registered with this table.
    */
-  plugins: DataTablePlugin<any>[];
+  plugins: Array<SeizenTablePlugin<any>>;
 
   /**
    * Plugin control interface.
@@ -233,7 +233,7 @@ export interface DataTableInstance<TData> {
 
   /**
    * The underlying TanStack Table instance.
-   * Use this for advanced operations not exposed by DataTableInstance.
+   * Use this for advanced operations not exposed by SeizenTableInstance.
    * @internal
    */
   _tanstackTable: Table<TData>;
@@ -241,16 +241,16 @@ export interface DataTableInstance<TData> {
 
 /**
  * Hook for creating a data table instance
- * Returns a DataTableInstance with methods for controlling the table
+ * Returns a SeizenTableInstance with methods for controlling the table
  */
-export function useDataTable<TData>({
+export function useSeizenTable<TData>({
   data,
   columns,
   plugins = [],
   initialSelection = {},
   enableMultiSelect = true,
   onSelectionChange,
-}: UseDataTableOptions<TData>): DataTableInstance<TData> {
+}: UseSeizenTableOptions<TData>): SeizenTableInstance<TData> {
   // Table state
   const [rowSelection, setRowSelection] =
     useState<RowSelectionState>(initialSelection);
@@ -321,8 +321,8 @@ export function useDataTable<TData>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  // Create DataTableInstance with helper methods
-  const instance = useMemo<DataTableInstance<TData>>(() => {
+  // Create SeizenTableInstance with helper methods
+  const instance = useMemo<SeizenTableInstance<TData>>(() => {
     const getSelectedRows = () => {
       return tanstackTable
         .getSelectedRowModel()

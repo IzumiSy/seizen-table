@@ -1,4 +1,4 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import {
   FileExportPlugin,
   CsvExporter,
@@ -20,7 +20,7 @@ const data = [
 ];
 
 export function DataExportDemo() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [
@@ -39,7 +39,7 @@ export function DataExportDemo() {
         overflow: "hidden",
       }}
     >
-      <DataTable table={table} />
+      <SeizenTable table={table} />
     </div>
   );
 }

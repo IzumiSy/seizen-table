@@ -101,7 +101,7 @@ export interface PluginControl {
 
 /**
  * Internal hook for managing plugin open/close state.
- * Used by useDataTable to provide plugin control interface.
+ * Used by useSeizenTable to provide plugin control interface.
  *
  * @internal
  */

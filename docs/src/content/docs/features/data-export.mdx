@@ -1,12 +1,12 @@
 ---
 title: Data Export
-description: Export your DataTable data to CSV, TSV, JSONL, or custom formats.
+description: Export your SeizenTable data to CSV, TSV, JSONL, or custom formats.
 ---
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-DataTable supports data export through the `FileExportPlugin` from `@izumisy/seizen-table-plugins`.
+SeizenTable supports data export through the `FileExportPlugin` from `@izumisy/seizen-table-plugins`.
 
 ## Try It
 
@@ -32,7 +32,7 @@ Click the export icon in the side panel to download the table data in CSV, TSV, 
 ## Basic Usage
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import {
   FileExportPlugin,
   CsvExporter,
@@ -41,7 +41,7 @@ import {
 } from "@izumisy/seizen-table-plugins/file-export";
 
 function MyTable() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [
@@ -52,7 +52,7 @@ function MyTable() {
     ],
   });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 

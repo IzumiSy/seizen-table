@@ -1,9 +1,9 @@
 import type { Row } from "@tanstack/react-table";
-import { useDataTableContext } from "./Root";
-import { DataTableCell } from "./Cell";
+import { useSeizenTableContext } from "./Root";
+import { TableCell } from "./Cell";
 import * as styles from "../styles.css";
 
-export interface DataTableRowProps<TData> {
+export interface TableRowProps<TData> {
   /**
    * The TanStack Table Row object
    */
@@ -22,7 +22,7 @@ export interface DataTableRowProps<TData> {
 
   /**
    * Custom cell renderer (optional).
-   * If provided, this function will be called for each cell instead of using the default DataTable.Cell component.
+   * If provided, this function will be called for each cell instead of using the default Table.Cell component.
    */
   renderCell?: (
     cell: ReturnType<Row<TData>["getVisibleCells"]>[number]
@@ -41,13 +41,13 @@ export interface DataTableRowProps<TData> {
  * @example Default usage
  * ```tsx
  * {rows.map(row => (
- *   <DataTable.Row key={row.id} row={row} />
+ *   <Table.Row key={row.id} row={row} />
  * ))}
  * ```
  *
  * @example Custom click handler
  * ```tsx
- * <DataTable.Row
+ * <Table.Row
  *   row={row}
  *   onClick={(row) => console.log('Custom click:', row.original)}
  * />
@@ -55,7 +55,7 @@ export interface DataTableRowProps<TData> {
  *
  * @example Custom cell rendering
  * ```tsx
- * <DataTable.Row
+ * <Table.Row
  *   row={row}
  *   renderCell={(cell) => (
  *     <td key={cell.id} className="custom-cell">
@@ -65,13 +65,13 @@ export interface DataTableRowProps<TData> {
  * />
  * ```
  */
-export function DataTableRow<TData>({
+export function TableRow<TData>({
   row,
   className,
   onClick,
   renderCell,
-}: DataTableRowProps<TData>) {
-  const tableFromContext = useDataTableContext();
+}: TableRowProps<TData>) {
+  const tableFromContext = useSeizenTableContext();
   const table = tableFromContext;
 
   const handleClick = () => {
@@ -95,9 +95,7 @@ export function DataTableRow<TData>({
         ? row.getVisibleCells().map(renderCell)
         : row
             .getVisibleCells()
-            .map((cell) => (
-              <DataTableCell key={cell.id} cell={cell} row={row} />
-            ))}
+            .map((cell) => <TableCell key={cell.id} cell={cell} row={row} />)}
     </tr>
   );
 }

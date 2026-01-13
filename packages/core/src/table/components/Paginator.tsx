@@ -1,8 +1,8 @@
-import type { DataTableInstance } from "../useDataTable";
+import type { SeizenTableInstance } from "../useSeizenTable";
 import * as styles from "../styles.css";
 
 export interface PaginatorProps<TData> {
-  table: DataTableInstance<TData>;
+  table: SeizenTableInstance<TData>;
   /**
    * Page size options to display in the dropdown
    * @default [10, 20, 50, 100]

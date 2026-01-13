@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from "react";
 import type { Cell, Column, Row } from "@tanstack/react-table";
 import type {
-  DataTablePlugin,
+  SeizenTablePlugin,
   PluginPosition,
   SidePanelSlot,
 } from "./definePlugin";
@@ -17,9 +17,9 @@ import * as styles from "./styles.css";
  * Get side panel plugins with their slot configuration for a specific position
  */
 function getSidePanelPluginsForPosition(
-  plugins: DataTablePlugin<any>[],
+  plugins: SeizenTablePlugin<any>[],
   position: PluginPosition
-): Array<{ plugin: DataTablePlugin<any>; slot: SidePanelSlot }> {
+): Array<{ plugin: SeizenTablePlugin<any>; slot: SidePanelSlot }> {
   return plugins
     .map((plugin) => {
       const slot = getSidePanelSlot(plugin);
@@ -29,7 +29,7 @@ function getSidePanelPluginsForPosition(
       return null;
     })
     .filter(
-      (item): item is { plugin: DataTablePlugin<any>; slot: SidePanelSlot } =>
+      (item): item is { plugin: SeizenTablePlugin<any>; slot: SidePanelSlot } =>
         item !== null
     );
 }
@@ -48,18 +48,18 @@ export interface SidePanelProps {
 /**
  * Renders plugin side panels for the specified position.
  *
- * Place this component outside of DataTable.Content to position
+ * Place this component outside of SeizenTable.Content to position
  * side panels to the left or right of the main table content.
  *
  * @example
  * ```tsx
- * <DataTable.Root table={table}>
- *   <DataTablePlugins.SidePanel position="left" />
- *   <DataTable.Content>
- *     <DataTable.Table>...</DataTable.Table>
- *   </DataTable.Content>
- *   <DataTablePlugins.SidePanel position="right" />
- * </DataTable.Root>
+ * <SeizenTable.Root table={table}>
+ *   <SeizenTablePlugins.SidePanel position="left" />
+ *   <SeizenTable.Content>
+ *     <SeizenTable.Table>...</SeizenTable.Table>
+ *   </SeizenTable.Content>
+ *   <SeizenTablePlugins.SidePanel position="right" />
+ * </SeizenTable.Root>
  * ```
  */
 export function SidePanel({ position }: SidePanelProps) {
@@ -158,10 +158,10 @@ export function SidePanel({ position }: SidePanelProps) {
  *
  * @example
  * ```tsx
- * <DataTable.Content>
- *   <DataTablePlugins.Header />
- *   <DataTable.Table>...</DataTable.Table>
- * </DataTable.Content>
+ * <SeizenTable.Content>
+ *   <SeizenTablePlugins.Header />
+ *   <SeizenTable.Table>...</SeizenTable.Table>
+ * </SeizenTable.Content>
  * ```
  */
 export function Header() {
@@ -200,11 +200,11 @@ export function Header() {
  *
  * @example
  * ```tsx
- * <DataTable.Content>
- *   <DataTable.Table>...</DataTable.Table>
- *   <DataTablePlugins.Footer />
- *   <DataTable.Paginator />
- * </DataTable.Content>
+ * <SeizenTable.Content>
+ *   <SeizenTable.Table>...</SeizenTable.Table>
+ *   <SeizenTablePlugins.Footer />
+ *   <SeizenTable.Paginator />
+ * </SeizenTable.Content>
  * ```
  */
 export function Footer() {
@@ -250,19 +250,19 @@ export interface InlineRowProps<TData> {
 /**
  * Renders inline row content for a specific row when a plugin is active.
  *
- * Use this component after DataTable.Row to render expandable content
+ * Use this component after <SeizenTable.Row> to render expandable content
  * provided by plugins (e.g., row details panel).
  *
  * @example
  * ```tsx
- * <DataTable.Body>
+ * <SeizenTable.Body>
  *   {(row) => (
  *     <>
- *       <DataTable.Row row={row} />
- *       <DataTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
+ *       <SeizenTable.Row row={row} />
+ *       <SeizenTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
  *     </>
  *   )}
- * </DataTable.Body>
+ * </SeizenTable.Body>
  * ```
  */
 export function InlineRow<TData>({ row, colSpan }: InlineRowProps<TData>) {
@@ -332,11 +332,11 @@ export interface CellSlotProps<TData> {
  *
  * @example
  * ```tsx
- * <DataTable.Cell cell={cell} row={row}>
- *   <DataTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
+ * <SeizenTable.Cell cell={cell} row={row}>
+ *   <SeizenTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
  *     {flexRender(cell.column.columnDef.cell, cell.getContext())}
- *   </DataTablePlugins.CellSlot>
- * </DataTable.Cell>
+ *   </SeizenTablePlugins.CellSlot>
+ * </SeizenTable.Cell>
  * ```
  */
 export function CellSlot<TData>({
@@ -367,12 +367,12 @@ export function CellSlot<TData>({
 // =============================================================================
 
 /**
- * DataTablePlugins - Compound components for plugin-provided UI slots.
+ * SeizenTablePlugins - Compound components for plugin-provided UI slots.
  *
- * These components render content provided by DataTable plugins.
+ * These components render content provided by SeizenTable plugins.
  * Use them to compose custom layouts with plugin integration.
  */
-export const DataTablePlugins = {
+export const SeizenTablePlugins = {
   SidePanel,
   Header,
   Footer,

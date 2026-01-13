@@ -1,9 +1,8 @@
 /**
  * Plugin development utilities
  *
- * This module provides types and helpers for creating DataTable plugins.
- * Import from "@izumisy/seizen-table/plugin" to avoid bundling
- * the entire datatable package.
+ * This module provides types and helpers for creating SeizenTable plugins.
+ * Import from "@izumisy/seizen-table/plugin" to avoid bundling the entire SeizenTable package.
  */
 
 // definePlugin
@@ -24,7 +23,7 @@ export type {
   ContextMenuItemsSlot,
   // Plugin types
   PluginPosition,
-  DataTablePlugin,
+  SeizenTablePlugin,
   PluginContext,
   // Define options
   DefinePluginSlots,
@@ -62,13 +61,13 @@ export type {
 } from "./Context";
 export { DEFAULT_FILTER_OPERATORS, FILTER_OPERATOR_LABELS } from "./Context";
 
-// DataTablePlugins compound components
-export { DataTablePlugins } from "./DataTablePlugins";
+// SeizenTablePlugins compound components
+export { SeizenTablePlugins } from "./SeizenTablePlugins";
 export type {
   SidePanelProps,
   InlineRowProps,
   CellSlotProps,
-} from "./DataTablePlugins";
+} from "./SeizenTablePlugins";
 
 // PluginControl (for type-safe plugin.open())
 export type { PluginArgsRegistry } from "./usePluginControl";
@@ -76,8 +75,8 @@ export type { PluginArgsRegistry } from "./usePluginControl";
 // Event types
 export { useEventBus } from "./useEventBus";
 export type {
+  SeizenTableEventMap,
+  SeizenTableEventName,
   EventBusRegistry,
-  DataTableEventMap,
-  DataTableEventName,
   EventBus,
 } from "./useEventBus";

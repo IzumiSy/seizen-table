@@ -1,12 +1,12 @@
-export { DataTableRoot, useDataTableContext } from "./Root";
-export { DataTableContent } from "./Content";
-export { DataTableTable } from "./Table";
-export { DataTableHeader } from "./Header";
-export { DataTableBody } from "./Body";
-export { DataTableRow } from "./Row";
-export { DataTableCell } from "./Cell";
+export { TableRoot, useSeizenTableContext } from "./Root";
+export { TableContent } from "./Content";
+export { TableTable } from "./Table";
+export { TableHeader } from "./Header";
+export { TableBody } from "./Body";
+export { TableRow } from "./Row";
+export { TableCell } from "./Cell";
 
-export type { DataTableRootProps } from "./Root";
-export type { DataTableTableProps } from "./Table";
-export type { DataTableRowProps } from "./Row";
-export type { DataTableCellProps } from "./Cell";
+export type { TableRootProps } from "./Root";
+export type { TableTableProps } from "./Table";
+export type { TableRowProps } from "./Row";
+export type { TableCellProps } from "./Cell";

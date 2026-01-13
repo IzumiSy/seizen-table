@@ -1,6 +1,6 @@
 ---
 title: Data Adapter
-description: Connect your DataTable to any backend with Data Adapters.
+description: Connect your SeizenTable to any backend with Data Adapters.
 ---
 
 import { Aside } from '@astrojs/starlight/components';
@@ -62,7 +62,7 @@ function UsersTable() {
   const { state } = useAdapter(usersAdapter);
   
   return (
-    <DataTable
+    <SeizenTable
       data={state.data}
       columns={columns}
       isLoading={state.isLoading}
@@ -231,7 +231,7 @@ adapter.setFilter({ status: "active" });  // Set filter
 adapter.setSorting([{ id: "name", desc: false }]);  // Set sorting
 ```
 
-## Usage with DataTable
+## Usage with SeizenTable
 
 ```tsx
 import { useAdapter } from "@izumisy/seizen-table";
@@ -247,7 +247,7 @@ function UsersTable() {
   const { state, actions } = useAdapter(usersAdapter);
 
   return (
-    <DataTable
+    <SeizenTable
       data={state.data}
       columns={columns}
       isLoading={state.isLoading}
@@ -257,5 +257,5 @@ function UsersTable() {
 ```
 
 <Aside type="note">
-  Data adapters are optional. For static data or client-side filtering, you can pass data directly to `useDataTable`.
+  Data adapters are optional. For static data or client-side filtering, you can pass data directly to `useSeizenTable`.
 </Aside>

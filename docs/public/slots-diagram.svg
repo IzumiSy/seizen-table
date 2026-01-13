@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="system-ui, -apple-system, sans-serif">
-  <desc>DataTable Layout: The component has 5 plugin slots - sidepanel (left/right vertical panels), header (above table body), footer (below table), cell (custom cell rendering), and inlineRow (expandable row below each table row).</desc>
+  <desc>SeizenTable Layout: The component has 5 plugin slots - sidepanel (left/right vertical panels), header (above table body), footer (below table), cell (custom cell rendering), and inlineRow (expandable row below each table row).</desc>
   
   <defs>
     <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">

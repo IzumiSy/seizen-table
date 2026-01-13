@@ -312,12 +312,12 @@ function FileExportRenderer(context: PluginContext<FileExportConfig>) {
  * } from "@izumisy/seizen-table-plugins/file-export";
  *
  * // Single format (CSV only - default)
- * const table = useDataTable({
+ * const table = useSeizenTable({
  *   plugins: [FileExportPlugin],
  * });
  *
  * // Multiple formats
- * const table = useDataTable({
+ * const table = useSeizenTable({
  *   plugins: [
  *     FileExportPlugin.configure({
  *       filename: "users",

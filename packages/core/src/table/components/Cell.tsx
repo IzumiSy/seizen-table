@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { flexRender, type Cell, type Row } from "@tanstack/react-table";
 import { useContextMenuHandlers } from "../../plugin/contextMenu";
-import { CellSlot } from "../../plugin/DataTablePlugins";
+import { CellSlot } from "../../plugin/SeizenTablePlugins";
 import * as styles from "../styles.css";
 
-export interface DataTableCellProps<TData> {
+export interface TableCellProps<TData> {
   /**
    * The TanStack Table Cell object
    */
@@ -33,7 +33,7 @@ export interface DataTableCellProps<TData> {
   /**
    * Custom cell content.
    * If provided, replaces the default CellSlot rendering.
-   * Use DataTablePlugins.CellSlot inside children if you want plugin support.
+   * Use TablePlugins.CellSlot inside children if you want plugin support.
    */
   children?: ReactNode;
 }
@@ -49,13 +49,13 @@ export interface DataTableCellProps<TData> {
  * @example Default usage
  * ```tsx
  * {row.getVisibleCells().map(cell => (
- *   <DataTable.Cell key={cell.id} cell={cell} row={row} />
+ *   <Table.Cell key={cell.id} cell={cell} row={row} />
  * ))}
  * ```
  *
  * @example Custom context menu handler
  * ```tsx
- * <DataTable.Cell
+ * <Table.Cell
  *   cell={cell}
  *   row={row}
  *   onContextMenu={(e, cell, row) => {
@@ -67,27 +67,27 @@ export interface DataTableCellProps<TData> {
  *
  * @example Custom cell content with plugin support
  * ```tsx
- * <DataTable.Cell cell={cell} row={row}>
- *   <DataTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
+ * <Table.Cell cell={cell} row={row}>
+ *   <TablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
  *     <CustomContent value={cell.getValue()} />
- *   </DataTablePlugins.CellSlot>
- * </DataTable.Cell>
+ *   </TablePlugins.CellSlot>
+ * </Table.Cell>
  * ```
  *
  * @example Custom cell content without plugin support
  * ```tsx
- * <DataTable.Cell cell={cell} row={row}>
+ * <Table.Cell cell={cell} row={row}>
  *   <span>{cell.getValue()}</span>
- * </DataTable.Cell>
+ * </Table.Cell>
  * ```
  */
-export function DataTableCell<TData>({
+export function TableCell<TData>({
   cell,
   row,
   className,
   onContextMenu,
   children,
-}: DataTableCellProps<TData>) {
+}: TableCellProps<TData>) {
   const { handleCellContextMenu } = useContextMenuHandlers<TData>();
 
   const handleContextMenu = (e: React.MouseEvent<HTMLTableCellElement>) => {
