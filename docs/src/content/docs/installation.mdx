@@ -33,7 +33,7 @@ Here's a basic SeizenTable in action:
 <DemoPreview demo="basic" height={300} client:load />
 
 ```tsx
-import { useSeizenTable, SeizenTable} from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 
 const columns = [
   { accessorKey: "name", header: "Name" },
@@ -59,7 +59,7 @@ function BasicDemo() {
 Seizen Table follows a **plugin-first architecture** — all features, including official ones, are provided as plugins. This keeps the core lightweight while allowing you to add only what you need.
 
 ```tsx
-import { useSeizenTable, SeizenTable} from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { RowDetail } from "@izumisy/seizen-table-plugins/row-detail";
 import { Filter } from "@izumisy/seizen-table-plugins/filter";
 
