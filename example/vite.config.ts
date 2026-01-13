@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), vanillaExtractPlugin()],
     root: __dirname,
-    base: "/",
+    base: "/seizen-table/demos/",
     build: {
       outDir: "dist-app",
     },

@@ -3,6 +3,7 @@ dist
 dist-app
 .turbo
 *.tsbuildinfo
+docs/public/demos/
 
 # logs
 npm-debug.log*

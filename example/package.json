@@ -11,11 +11,12 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "dist-app"
   ],
   "scripts": {
     "dev": "vite build --mode lib --watch",
-    "build": "vite build --mode lib",
+    "build": "vite build --mode lib && vite build",
     "dev:app": "vite",
     "build:app": "vite build",
     "preview": "vite preview",
