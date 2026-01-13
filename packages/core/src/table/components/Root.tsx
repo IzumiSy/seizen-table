@@ -22,8 +22,8 @@ export function useSeizenTableContext<
   const context = useContext(SeizenTableContext);
   if (!context) {
     throw new Error(
-      "useSeizenTableContext must be used within Table.Root. " +
-        "Make sure your component is wrapped in <Table.Root table={table}>."
+      "useSeizenTableContext must be used within SeizenTable.Root. " +
+        "Make sure your component is wrapped in <SeizenTable.Root table={table}>."
     );
   }
   return context as SeizenTableInstance<TData>;

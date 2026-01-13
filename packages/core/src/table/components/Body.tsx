@@ -23,26 +23,26 @@ export interface TableBodyProps<TData = unknown> {
  *
  * @example Default usage (includes InlineRow automatically)
  * ```tsx
- * <Table.Body />
+ * <SeizenTable.Body />
  * ```
  *
  * @example Custom row rendering with render props
  * ```tsx
- * <Table.Body>
+ * <SeizenTable.Body>
  *   {(row) => (
  *     <>
  *       <SeizenTable.Row key={row.id} row={row} className="custom" />
  *       <SeizenTablePlugins.InlineRow row={row} colSpan={row.getVisibleCells().length} />
  *     </>
  *   )}
- * </Table.Body>
+ * </SeizenTable.Body>
  * ```
  *
  * @example Without InlineRow (opt-out)
  * ```tsx
- * <Table.Body>
+ * <SeizenTable.Body>
  *   {(row) => <SeizenTable.Row key={row.id} row={row} />}
- * </Table.Body>
+ * </SeizenTable.Body>
  * ```
  */
 export function TableBody<TData>({ children }: TableBodyProps<TData>) {

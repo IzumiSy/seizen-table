@@ -16,7 +16,7 @@ export interface TableRowProps<TData> {
 
   /**
    * Custom cell renderer (optional).
-   * If provided, this function will be called for each cell instead of using the default Table.Cell component.
+   * If provided, this function will be called for each cell instead of using the default SeizenTable.Cell component.
    */
   renderCell?: (
     cell: ReturnType<Row<TData>["getVisibleCells"]>[number]
