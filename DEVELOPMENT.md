@@ -10,9 +10,9 @@
 ```
 seizen-table/
 ├── packages/
-│   ├── datatable-react/          # DataTable component
+│   ├── core/              # DataTable component
 └── apps/
-    └── example-vite-app/         # Vite + React example app
+    └── example-vite-app/  # Vite + React example app
 ```
 
 ## Setup
@@ -34,7 +34,7 @@ pnpm test
 
 ## Example App
 
-The example app (`apps/example-vite-app`) demonstrates the usage of Seizen UI components.
+The example app (`apps/example-vite-app`) demonstrates the usage of Seizen Table components.
 
 ```bash
 # Start the example app

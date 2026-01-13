@@ -1,1 +1,0 @@
-{"root":["./src/all-slots-demo/index.ts","./src/all-slots-demo/plugin.tsx","./src/column-control/index.ts","./src/column-control/plugin.tsx","./src/file-export/exporters.ts","./src/file-export/index.ts","./src/file-export/plugin.tsx","./src/filter/index.ts","./src/filter/plugin.tsx","./src/row-detail/index.ts","./src/row-detail/plugin.tsx"],"version":"5.8.2"}

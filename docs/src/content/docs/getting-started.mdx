@@ -11,17 +11,17 @@ import { DemoPreview } from '@components/DemoPreview';
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @izumisy/seizen-datatable-react
+    npm install @izumisy/seizen-table
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @izumisy/seizen-datatable-react
+    pnpm add @izumisy/seizen-table
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add @izumisy/seizen-datatable-react
+    yarn add @izumisy/seizen-table
     ```
   </TabItem>
 </Tabs>
@@ -33,7 +33,7 @@ Here's a basic DataTable in action:
 <DemoPreview demo="basic" height={300} client:load />
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
 
 const columns = [
   { accessorKey: "name", header: "Name" },
@@ -59,9 +59,9 @@ function BasicDemo() {
 Seizen DataTable follows a **plugin-first architecture** — all features, including official ones, are provided as plugins. This keeps the core lightweight while allowing you to add only what you need.
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { RowDetail } from "@izumisy/seizen-datatable-plugins/row-detail";
-import { Filter } from "@izumisy/seizen-datatable-plugins/filter";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { RowDetail } from "@izumisy/seizen-table-plugins/row-detail";
+import { Filter } from "@izumisy/seizen-table-plugins/filter";
 
 function MyTable() {
   const table = useDataTable({

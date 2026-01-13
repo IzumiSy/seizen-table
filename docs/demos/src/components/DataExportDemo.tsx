@@ -1,10 +1,10 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
 import {
   FileExportPlugin,
   CsvExporter,
   JsonlExporter,
   TsvExporter,
-} from "@izumisy/seizen-datatable-plugins/file-export";
+} from "@izumisy/seizen-table-plugins/file-export";
 
 const columns = [
   { accessorKey: "name", header: "Name" },

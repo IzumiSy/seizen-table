@@ -6,7 +6,7 @@ description: Add powerful filtering capabilities to your DataTable with type-awa
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-DataTable supports advanced filtering through the `FilterPlugin` from `@izumisy/seizen-datatable-plugins`.
+DataTable supports advanced filtering through the `FilterPlugin` from `@izumisy/seizen-table-plugins`.
 
 ## Try It
 
@@ -19,12 +19,12 @@ Click the filter icon in the side panel to open the filter builder. You can also
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @izumisy/seizen-datatable-plugins
+    npm install @izumisy/seizen-table-plugins
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @izumisy/seizen-datatable-plugins
+    pnpm add @izumisy/seizen-table-plugins
     ```
   </TabItem>
 </Tabs>
@@ -32,8 +32,8 @@ Click the filter icon in the side panel to open the filter builder. You can also
 ## Basic Usage
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { FilterPlugin } from "@izumisy/seizen-datatable-plugins/filter";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 
 function MyTable() {
   const table = useDataTable({

@@ -6,7 +6,7 @@ description: Export your DataTable data to CSV, TSV, JSONL, or custom formats.
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-DataTable supports data export through the `FileExportPlugin` from `@izumisy/seizen-datatable-plugins`.
+DataTable supports data export through the `FileExportPlugin` from `@izumisy/seizen-table-plugins`.
 
 ## Try It
 
@@ -19,12 +19,12 @@ Click the export icon in the side panel to download the table data in CSV, TSV, 
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @izumisy/seizen-datatable-plugins
+    npm install @izumisy/seizen-table-plugins
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @izumisy/seizen-datatable-plugins
+    pnpm add @izumisy/seizen-table-plugins
     ```
   </TabItem>
 </Tabs>
@@ -32,13 +32,13 @@ Click the export icon in the side panel to download the table data in CSV, TSV, 
 ## Basic Usage
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
 import {
   FileExportPlugin,
   CsvExporter,
   JsonlExporter,
   TsvExporter,
-} from "@izumisy/seizen-datatable-plugins/file-export";
+} from "@izumisy/seizen-table-plugins/file-export";
 
 function MyTable() {
   const table = useDataTable({
@@ -84,7 +84,7 @@ function MyTable() {
 Create your own exporter by implementing the `Exporter` interface:
 
 ```tsx
-import type { Exporter } from "@izumisy/seizen-datatable-plugins/file-export";
+import type { Exporter } from "@izumisy/seizen-table-plugins/file-export";
 
 const MarkdownExporter: Exporter = {
   id: "markdown",

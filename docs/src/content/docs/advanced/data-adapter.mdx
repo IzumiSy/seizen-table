@@ -129,7 +129,7 @@ interface CursorPaginationState {
 Use `defineDataAdapter` to create custom adapters:
 
 ```typescript
-import { defineDataAdapter } from "@izumisy/seizen-datatable-react";
+import { defineDataAdapter } from "@izumisy/seizen-table";
 
 const MyCustomAdapter = defineDataAdapter({
   id: "my-custom-adapter",
@@ -234,7 +234,7 @@ adapter.setSorting([{ id: "name", desc: false }]);  // Set sorting
 ## Usage with DataTable
 
 ```tsx
-import { useAdapter } from "@izumisy/seizen-datatable-react";
+import { useAdapter } from "@izumisy/seizen-table";
 
 const usersAdapter = GraphQLAdapter.configure({
   client: apolloClient,

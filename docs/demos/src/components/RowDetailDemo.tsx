@@ -2,8 +2,8 @@ import {
   useDataTable,
   DataTable,
   useDataTableEvent,
-} from "@izumisy/seizen-datatable-react";
-import { RowDetailPlugin } from "@izumisy/seizen-datatable-plugins/row-detail";
+} from "@izumisy/seizen-table";
+import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
 
 const columns = [
   { accessorKey: "name", header: "Name" },

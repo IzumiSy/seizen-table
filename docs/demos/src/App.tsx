@@ -56,7 +56,7 @@ function DemoLayout() {
   return (
     <div className={styles.container}>
       <aside className={styles.sidebar}>
-        <h1 className={styles.sidebarTitle}>Seizen UI Demos</h1>
+        <h1 className={styles.sidebarTitle}>Seizen Table Demos</h1>
         <nav className={styles.nav}>
           {demos.map(({ path, title }) => (
             <NavLink

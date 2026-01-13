@@ -6,7 +6,7 @@ description: Manage column visibility, ordering, and multi-column sorting in you
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-DataTable supports column visibility management and multi-column sorting through the `ColumnControlPlugin` from `@izumisy/seizen-datatable-plugins`.
+DataTable supports column visibility management and multi-column sorting through the `ColumnControlPlugin` from `@izumisy/seizen-table-plugins`.
 
 ## Try It
 
@@ -19,12 +19,12 @@ Click the columns icon in the side panel to toggle column visibility and manage 
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @izumisy/seizen-datatable-plugins
+    npm install @izumisy/seizen-table-plugins
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @izumisy/seizen-datatable-plugins
+    pnpm add @izumisy/seizen-table-plugins
     ```
   </TabItem>
 </Tabs>
@@ -32,8 +32,8 @@ Click the columns icon in the side panel to toggle column visibility and manage 
 ## Basic Usage
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { ColumnControlPlugin } from "@izumisy/seizen-datatable-plugins/column-control";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
 
 function MyTable() {
   const table = useDataTable({

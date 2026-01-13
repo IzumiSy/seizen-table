@@ -2,16 +2,16 @@ import {
   useDataTable,
   DataTable,
   useDataTableEvent,
-} from "@izumisy/seizen-datatable-react";
-import { FilterPlugin } from "@izumisy/seizen-datatable-plugins/filter";
-import { ColumnControlPlugin } from "@izumisy/seizen-datatable-plugins/column-control";
+} from "@izumisy/seizen-table";
+import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
+import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
 import {
   FileExportPlugin,
   CsvExporter,
   JsonlExporter,
   TsvExporter,
-} from "@izumisy/seizen-datatable-plugins/file-export";
-import { RowDetailPlugin } from "@izumisy/seizen-datatable-plugins/row-detail";
+} from "@izumisy/seizen-table-plugins/file-export";
+import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
 import {
   AvatarName,
   EmailCell,

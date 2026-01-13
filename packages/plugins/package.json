@@ -1,0 +1,54 @@
+{
+  "name": "@izumisy/seizen-table-plugins",
+  "version": "0.1.0",
+  "description": "Plugins for seizen-table",
+  "type": "module",
+  "exports": {
+    "./filter": {
+      "import": "./dist/filter.js",
+      "types": "./dist/filter.d.ts"
+    },
+    "./column-control": {
+      "import": "./dist/column-control.js",
+      "types": "./dist/column-control.d.ts"
+    },
+    "./file-export": {
+      "import": "./dist/file-export.js",
+      "types": "./dist/file-export.d.ts"
+    },
+    "./row-detail": {
+      "import": "./dist/row-detail.js",
+      "types": "./dist/row-detail.d.ts"
+    },
+    "./all-slots-demo": {
+      "import": "./dist/all-slots-demo.js",
+      "types": "./dist/all-slots-demo.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "type-check": "tsc -b"
+  },
+  "author": "IzumiSy",
+  "license": "MIT",
+  "peerDependencies": {
+    "@izumisy/seizen-table": "workspace:*",
+    "react": ">= 19",
+    "react-dom": ">= 19",
+    "zod": ">= 4"
+  },
+  "devDependencies": {
+    "@izumisy/seizen-table": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "5.8.2",
+    "vite": "^7.3.0",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-externalize-deps": "^0.10.0",
+    "vite-tsconfig-paths": "^6.0.3",
+    "zod": "^4.3.5"
+  }
+}
