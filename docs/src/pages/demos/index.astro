@@ -1,10 +1,10 @@
 ---
 // This page serves the demo app's index.html
-// We read the pre-built HTML and inject it directly
+// We read the pre-built HTML directly from node_modules
 import fs from 'node:fs';
 import path from 'node:path';
 
-const htmlPath = path.join(process.cwd(), 'public/demos/index.html');
+const htmlPath = path.join(process.cwd(), 'node_modules/@izumisy/seizen-table-example/dist-app/index.html');
 let html = '';
 
 if (fs.existsSync(htmlPath)) {

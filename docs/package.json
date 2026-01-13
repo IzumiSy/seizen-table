@@ -3,12 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "copy-demos": "rm -rf public/demos && cp -r node_modules/@izumisy/seizen-table-example/dist-app public/demos",
-    "predev": "pnpm copy-demos",
     "dev": "astro dev",
     "start": "astro dev",
     "preview": "astro preview",
-    "prebuild": "pnpm copy-demos",
     "build": "astro build",
     "type-check": "node_modules/.bin/astro-check"
   },

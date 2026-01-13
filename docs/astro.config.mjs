@@ -3,9 +3,35 @@ import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 import { createStarlightTypeDocPlugin } from "starlight-typedoc";
 import starlightLlmsTxt from "starlight-llms-txt";
+import { execSync } from "node:child_process";
+import fs from "node:fs";
 
 const [pluginAPITypeDoc, pluginAPITypeDocSidebarGroup] =
   createStarlightTypeDocPlugin();
+
+// Copy demo assets from example package to public/demos
+function copyDemosAssets() {
+  const copy = () => {
+    const src = "node_modules/@izumisy/seizen-table-example/dist-app/assets";
+    const dest = "public/demos/assets";
+
+    if (fs.existsSync("public/demos")) {
+      fs.rmSync("public/demos", { recursive: true });
+    }
+    fs.mkdirSync("public/demos", { recursive: true });
+
+    if (fs.existsSync(src)) {
+      execSync(`cp -r ${src} ${dest}`);
+    }
+  };
+
+  return {
+    name: "copy-demos-assets",
+    hooks: {
+      "astro:config:setup": () => copy(),
+    },
+  };
+}
 const [tableAPITypeDoc, tableAPITypeDocSidebarGroup] =
   createStarlightTypeDocPlugin();
 
@@ -21,6 +47,7 @@ export default defineConfig({
     },
   },
   integrations: [
+    copyDemosAssets(),
     starlight({
       title: "Seizen Table",
       customCss: ["./src/styles/custom.css"],
