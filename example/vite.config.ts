@@ -24,18 +24,6 @@ export default defineConfig(({ mode }) => {
           formats: ["es"],
           fileName: "index",
         },
-        rollupOptions: {
-          external: [
-            "react",
-            "react-dom",
-            "react/jsx-runtime",
-            "@izumisy/seizen-table",
-            "@izumisy/seizen-table-plugins",
-          ],
-          output: {
-            preserveModules: false,
-          },
-        },
         outDir: "dist",
         sourcemap: true,
       },
