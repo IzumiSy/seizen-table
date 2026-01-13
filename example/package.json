@@ -14,10 +14,10 @@
     "dist"
   ],
   "scripts": {
-    "start": "vite",
     "dev": "vite build --mode lib --watch",
-    "build": "vite build",
-    "build:lib": "vite build --mode lib",
+    "build": "vite build --mode lib",
+    "dev:app": "vite",
+    "build:app": "vite build",
     "preview": "vite preview",
     "type-check": "tsc -b"
   },
