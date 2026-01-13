@@ -12,7 +12,7 @@ hero:
       variant: primary
       icon: right-arrow
     - text: View Demos
-      link: https://about.izumisy.work/seizen-table/demos
+      link: /seizen-table/demos/
       variant: secondary
       icon: laptop
 ---
@@ -20,7 +20,7 @@ hero:
 import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-<DemoPreview demo="full" height={650} client:load />
+<DemoPreview demo="full" height={650} client:only="react" />
 
 <div style={{ marginTop: "150px" }}>
   <div className="section-header">
@@ -33,7 +33,7 @@ import { DemoPreview } from '@components/DemoPreview';
   </div>
 
   <div style={{ marginTop: "50px" }}>
-    <DemoPreview demo="theming" height={350} client:load />
+    <DemoPreview demo="theming" height={350} client:only="react" />
   </div>
 </div>
 
@@ -50,16 +50,16 @@ import { DemoPreview } from '@components/DemoPreview';
   <div style={{ marginTop: "50px" }}>
     <Tabs>
       <TabItem label="Filter">
-        <DemoPreview demo="filter" height={400} client:load />
+        <DemoPreview demo="filter" height={400} client:only="react" />
       </TabItem>
       <TabItem label="Column Control">
-        <DemoPreview demo="column-control" height={400} client:load />
+        <DemoPreview demo="column-control" height={400} client:only="react" />
       </TabItem>
       <TabItem label="Data Export">
-        <DemoPreview demo="data-export" height={550} client:load />
+        <DemoPreview demo="data-export" height={550} client:only="react" />
       </TabItem>
       <TabItem label="Row Detail">
-        <DemoPreview demo="row-detail" height={500} client:load />
+        <DemoPreview demo="row-detail" height={500} client:only="react" />
       </TabItem>
     </Tabs>
   </div>
