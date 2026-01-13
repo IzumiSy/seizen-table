@@ -1,5 +1,5 @@
 {
-  "name": "seizen-ui",
+  "name": "seizen-table",
   "private": true,
   "scripts": {
     "build": "turbo build",

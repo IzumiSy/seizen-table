@@ -6,7 +6,7 @@ description: Display detailed information about a selected row in a side panel.
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-DataTable supports row detail view through the `RowDetailPlugin` from `@izumisy/seizen-datatable-plugins`.
+DataTable supports row detail view through the `RowDetailPlugin` from `@izumisy/seizen-table-plugins`.
 
 ## Try It
 
@@ -19,12 +19,12 @@ Click on any row to see its details in the side panel.
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @izumisy/seizen-datatable-plugins
+    npm install @izumisy/seizen-table-plugins
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @izumisy/seizen-datatable-plugins
+    pnpm add @izumisy/seizen-table-plugins
     ```
   </TabItem>
 </Tabs>
@@ -32,8 +32,8 @@ Click on any row to see its details in the side panel.
 ## Basic Usage
 
 ```tsx
-import { useDataTable, DataTable, useDataTableEvent } from "@izumisy/seizen-datatable-react";
-import { RowDetailPlugin } from "@izumisy/seizen-datatable-plugins/row-detail";
+import { useDataTable, DataTable, useDataTableEvent } from "@izumisy/seizen-table";
+import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
 
 function MyTable() {
   const table = useDataTable({

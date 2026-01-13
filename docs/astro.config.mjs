@@ -16,7 +16,7 @@ const [datatableAPITypeDoc, datatableAPITypeDocSidebarGroup] =
 // https://astro.build/config
 export default defineConfig({
   site: "https://izumisy.github.io",
-  base: "/seizen-ui",
+  base: "/seizen-table",
   vite: {
     resolve: {
       alias: {
@@ -33,16 +33,16 @@ export default defineConfig({
           rawContent: true,
         }),
         pluginAPITypeDoc({
-          entryPoints: ["../packages/datatable-react/src/plugin/index.ts"],
-          tsconfig: "../packages/datatable-react/tsconfig.json",
+          entryPoints: ["../packages/core/src/plugin/index.ts"],
+          tsconfig: "../packages/core/tsconfig.json",
           output: "generated/api/plugin",
           sidebar: {
             label: "Reference",
           },
         }),
         datatableAPITypeDoc({
-          entryPoints: ["../packages/datatable-react/src/table/index.ts"],
-          tsconfig: "../packages/datatable-react/tsconfig.json",
+          entryPoints: ["../packages/core/src/table/index.ts"],
+          tsconfig: "../packages/core/tsconfig.json",
           output: "generated/api/datatable",
           sidebar: {
             label: "Reference",
@@ -53,7 +53,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/izumisy/seizen-ui",
+          href: "https://github.com/izumisy/seizen-table",
         },
       ],
       sidebar: [

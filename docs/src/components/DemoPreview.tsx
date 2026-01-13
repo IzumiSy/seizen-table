@@ -6,7 +6,7 @@ interface DemoPreviewProps {
 export function DemoPreview({ demo, height = 400 }: DemoPreviewProps) {
   const baseUrl = import.meta.env.DEV
     ? "http://localhost:5184"
-    : "/seizen-ui/demos";
+    : "/seizen-table/demos";
 
   return (
     <iframe

@@ -1,5 +1,5 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { ColumnControlPlugin } from "@izumisy/seizen-datatable-plugins/column-control";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
 
 const columns = [
   { accessorKey: "name", header: "Name" },

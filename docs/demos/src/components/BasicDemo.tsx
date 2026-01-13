@@ -1,4 +1,4 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
 
 const columns = [
   { accessorKey: "name", header: "Name" },

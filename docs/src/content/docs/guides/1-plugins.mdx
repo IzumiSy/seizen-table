@@ -28,7 +28,7 @@ This architecture is inspired by modern editor ecosystems like VS Code, where th
 
 DataTable provides 5 slots where plugins can render UI components:
 
-![DataTable plugin slots layout](/seizen-ui/slots-diagram.svg)
+![DataTable plugin slots layout](/seizen-table/slots-diagram.svg)
 
 {/* Accessible description for AI/screen readers: DataTable layout has left and right side panels, a header slot above the table body, an inlineRow slot that expands below each row, a cell slot for custom cell rendering, and a footer slot below the table. */}
 
@@ -51,9 +51,9 @@ DataTable provides 5 slots where plugins can render UI components:
 ## Using Plugins
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { RowDetailPlugin } from "@izumisy/seizen-datatable-plugins/row-detail";
-import { FilterPlugin } from "@izumisy/seizen-datatable-plugins/filter";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
+import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 
 function UsersTable() {
   const table = useDataTable({
@@ -84,7 +84,7 @@ import {
   type PluginContext,
   type PluginContextValue,
   type PluginColumnInfo,
-} from "@izumisy/seizen-datatable-react/plugin";
+} from "@izumisy/seizen-table-plugins";
 ```
 
 ### Plugin Structure Overview
@@ -93,7 +93,7 @@ A plugin is created using `definePlugin()` which returns a factory with a `confi
 
 ```tsx
 import { z } from "zod";
-import { definePlugin } from "@izumisy/seizen-datatable-react/plugin";
+import { definePlugin } from "@izumisy/seizen-table-plugins";
 
 const MyPluginSchema = z.object({
   // Configuration options with Zod validation
@@ -124,7 +124,7 @@ import {
   definePlugin,
   usePluginContext,
   type PluginContext,
-} from "@izumisy/seizen-datatable-react/plugin";
+} from "@izumisy/seizen-table-plugins";
 
 const SidePanelSchema = z.object({
   width: z.number().default(320),
@@ -228,7 +228,7 @@ Plugins can add items to cell and column header context menus using `cellContext
 import {
   definePlugin,
   cellContextMenuItem,
-} from "@izumisy/seizen-datatable-react/plugin";
+} from "@izumisy/seizen-table-plugins";
 
 export const CellActionsPlugin = definePlugin({
   id: "cell-actions",
@@ -261,7 +261,7 @@ The `ctx` object provides access to the clicked cell, column, row, cell value, s
 import {
   definePlugin,
   columnContextMenuItem,
-} from "@izumisy/seizen-datatable-react/plugin";
+} from "@izumisy/seizen-table-plugins";
 
 export const ColumnActionsPlugin = definePlugin({
   id: "column-actions",
@@ -348,7 +348,7 @@ For type-safe `openArgs`, extend the `PluginArgsRegistry` interface:
 
 ```tsx
 // In your plugin file
-declare module "@izumisy/seizen-datatable-react/plugin" {
+declare module "@izumisy/seizen-table/plugin" {
   interface PluginArgsRegistry {
     "my-plugin": { row: MyRowType; mode: "view" | "edit" };
   }
@@ -367,7 +367,7 @@ Plugins can define custom events using module augmentation on `EventBusRegistry`
 
 ```tsx
 // In your plugin file
-declare module "@izumisy/seizen-datatable-react/plugin" {
+declare module "@izumisy/seizen-table/plugin" {
   interface EventBusRegistry {
     /** Request to add a filter from context menu */
     "filter:add-request": {
@@ -434,10 +434,10 @@ import {
   usePluginContext,
   cellContextMenuItem,
   type PluginContext,
-} from "@izumisy/seizen-datatable-react/plugin";
+} from "@izumisy/seizen-table-plugins";
 
 // Type-safe plugin args
-declare module "@izumisy/seizen-datatable-react/plugin" {
+declare module "@izumisy/seizen-table/plugin" {
   interface PluginArgsRegistry {
     "bulk-actions": { initialSelection?: unknown[] };
   }
@@ -525,5 +525,5 @@ export const BulkActionsPlugin = definePlugin({
 ```
 
 <Aside type="tip">
-  See the [live demo](/seizen-ui/demos/) to explore plugins in action.
+  See the [live demo](/seizen-table/demos/) to explore plugins in action.
 </Aside>

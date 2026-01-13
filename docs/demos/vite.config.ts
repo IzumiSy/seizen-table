@@ -6,7 +6,7 @@ import path from "path";
 export default defineConfig({
   plugins: [react(), vanillaExtractPlugin()],
   root: __dirname,
-  base: "/seizen-ui/demos/",
+  base: "/seizen-table/demos/",
   build: {
     outDir: path.resolve(__dirname, "../dist/demos"),
   },

@@ -1,6 +1,6 @@
-# Seizen UI
+# Seizen Table
 
-Enterprise-grade React UI components for serious applications.
+Enterprise-grade React Table component and plugins for serious applications.
 
 ## Contributing
 

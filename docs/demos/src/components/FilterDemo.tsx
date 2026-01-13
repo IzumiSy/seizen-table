@@ -1,5 +1,5 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { FilterPlugin } from "@izumisy/seizen-datatable-plugins/filter";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 
 const columns = [
   {

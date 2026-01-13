@@ -11,17 +11,17 @@ import { DemoPreview } from '@components/DemoPreview';
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @izumisy/seizen-datatable-react
+    npm install @izumisy/seizen-table
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @izumisy/seizen-datatable-react
+    pnpm add @izumisy/seizen-table
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add @izumisy/seizen-datatable-react
+    yarn add @izumisy/seizen-table
     ```
   </TabItem>
 </Tabs>
@@ -33,7 +33,7 @@ Here's a basic DataTable in action:
 <DemoPreview demo="basic" height={300} client:load />
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
 
 const columns = [
   { accessorKey: "name", header: "Name" },
@@ -59,9 +59,9 @@ function BasicDemo() {
 Seizen DataTable follows a **plugin-first architecture** — all features, including official ones, are provided as plugins. This keeps the core lightweight while allowing you to add only what you need.
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-datatable-react";
-import { RowDetail } from "@izumisy/seizen-datatable-plugins/row-detail";
-import { Filter } from "@izumisy/seizen-datatable-plugins/filter";
+import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { RowDetail } from "@izumisy/seizen-table-plugins/row-detail";
+import { Filter } from "@izumisy/seizen-table-plugins/filter";
 
 function MyTable() {
   const table = useDataTable({
@@ -81,15 +81,15 @@ function MyTable() {
 
 | Plugin | Description |
 |--------|-------------|
-| [Row Detail](/seizen-ui/features/row-detail/) | Expandable panel to show detailed row information |
-| [Filtering](/seizen-ui/features/filtering/) | Build complex filters with an intuitive UI |
-| [Column Control](/seizen-ui/features/column-control/) | Toggle column visibility and reorder columns |
-| [Data Export](/seizen-ui/features/data-export/) | Export table data to CSV, JSON, and more |
+| [Row Detail](/seizen-table/features/row-detail/) | Expandable panel to show detailed row information |
+| [Filtering](/seizen-table/features/filtering/) | Build complex filters with an intuitive UI |
+| [Column Control](/seizen-table/features/column-control/) | Toggle column visibility and reorder columns |
+| [Data Export](/seizen-table/features/data-export/) | Export table data to CSV, JSON, and more |
 
-Learn more about the [Plugin System](/seizen-ui/guides/1-plugins/) to create your own custom plugins.
+Learn more about the [Plugin System](/seizen-table/guides/1-plugins/) to create your own custom plugins.
 
 ## Next Steps
 
-- Learn about the [Plugin System](/seizen-ui/guides/1-plugins/) to add features like filtering, row details, and more
-- Explore [Data Adapters](/seizen-ui/reference/data-adapter/) for connecting to various data sources
-- Check out [Theming](/seizen-ui/guides/theming/) to customize the appearance
+- Learn about the [Plugin System](/seizen-table/guides/1-plugins/) to add features like filtering, row details, and more
+- Explore [Data Adapters](/seizen-table/reference/data-adapter/) for connecting to various data sources
+- Check out [Theming](/seizen-table/guides/theming/) to customize the appearance

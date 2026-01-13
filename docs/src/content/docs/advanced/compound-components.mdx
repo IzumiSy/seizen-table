@@ -21,7 +21,7 @@ Seizen DataTable provides multiple levels of API abstraction. Choose the level t
 The simplest approach—just pass a table instance and configuration:
 
 ```tsx
-import { DataTable, useDataTable } from "@izumisy/seizen-datatable-react";
+import { DataTable, useDataTable } from "@izumisy/seizen-table";
 
 function MyComponent() {
   const table = useDataTable({ data, columns });
@@ -34,7 +34,7 @@ function MyComponent() {
 Build custom layouts using compound components while keeping plugin support:
 
 ```tsx
-import { DataTable, DataTablePlugins, useDataTable } from "@izumisy/seizen-datatable-react";
+import { DataTable, DataTablePlugins, useDataTable } from "@izumisy/seizen-table";
 
 function MyComponent() {
   const table = useDataTable({ data, columns, plugins: [MyPlugin] });
@@ -62,7 +62,7 @@ function MyComponent() {
 For maximum control, use TanStack Table API directly:
 
 ```tsx
-import { useDataTable, flexRender } from "@izumisy/seizen-datatable-react";
+import { useDataTable, flexRender } from "@izumisy/seizen-table";
 
 function CustomTable({ data, columns }) {
   const table = useDataTable({ data, columns });
@@ -256,7 +256,7 @@ import {
   useDataTableContext,
   useContextMenu,
   flexRender 
-} from "@izumisy/seizen-datatable-react";
+} from "@izumisy/seizen-table";
 
 function CustomTableBody() {
   const table = useDataTableContext();
