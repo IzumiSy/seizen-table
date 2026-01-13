@@ -1,3 +1,4 @@
+import "@izumisy/seizen-table/styles.css";
 import {
   BasicDemo,
   FilterDemo,

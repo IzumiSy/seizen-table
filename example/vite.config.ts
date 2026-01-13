@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+import { externalizeDeps } from "vite-plugin-externalize-deps";
 import dts from "vite-plugin-dts";
 import path from "path";
 
@@ -13,6 +14,7 @@ export default defineConfig(({ mode }) => {
       plugins: [
         react(),
         vanillaExtractPlugin(),
+        externalizeDeps(),
         dts({
           include: ["src/index.ts", "src/components/**/*.tsx"],
           outDir: "dist",
@@ -23,9 +25,6 @@ export default defineConfig(({ mode }) => {
           entry: path.resolve(__dirname, "src/index.ts"),
           formats: ["es"],
           fileName: "index",
-        },
-        rollupOptions: {
-          external: ["react", "react-dom", "react/jsx-runtime"],
         },
         outDir: "dist",
         sourcemap: true,
