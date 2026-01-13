@@ -11,7 +11,7 @@ import { AllSlotsDemo } from "@izumisy/seizen-table-plugins/all-slots-demo";
 ## Usage
 
 ```tsx
-const table = useDataTable({
+const table = useSeizenTable({
   data,
   columns,
   plugins: [

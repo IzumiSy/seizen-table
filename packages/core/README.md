@@ -1,6 +1,6 @@
 # @izumisy/seizen-table
 
-A rich, enterprise-grade DataTable component for React, powered by [TanStack Table](https://tanstack.com/table).
+A rich, enterprise-grade Table component for React, powered by [TanStack Table](https://tanstack.com/table).
 
 ## Features
 
@@ -22,7 +22,7 @@ pnpm add @izumisy/seizen-table
 ## Quick Start
 
 ```tsx
-import { useDataTable, DataTable, type ColumnDef } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable, type ColumnDef } from "@izumisy/seizen-table";
 
 type Person = {
   name: string;
@@ -42,13 +42,13 @@ const data: Person[] = [
 ];
 
 function App() {
-  const table = useDataTable({ data, columns });
+  const table = useSeizenTable({ data, columns });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 
-`useDataTable` and `DataTable` are always used together. This pattern provides:
+`useSeizenTable` and `SeizenTable` are always used together. This pattern provides:
 
 - **Full control** - Access table state and methods from the hook
 - **Flexibility** - Trigger actions from outside the table component
@@ -56,7 +56,7 @@ function App() {
 
 ```tsx
 function UsersPage() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data: users,
     columns,
     plugins: [
@@ -84,7 +84,7 @@ function UsersPage() {
         <button onClick={handleExport}>Export</button>
         <span>{table.getSelectedRows().length} selected</span>
       </div>
-      <DataTable table={table} />
+      <SeizenTable table={table} />
     </div>
   );
 }
@@ -143,10 +143,10 @@ Customize the appearance by defining CSS variables. All variables have sensible 
 For full control over table rendering, use `table.render()` or access the TanStack Table instance directly:
 
 ```tsx
-import { useDataTable, flexRender, type ColumnDef } from "@izumisy/seizen-table";
+import { useSeizenTable, flexRender, type ColumnDef } from "@izumisy/seizen-table";
 
 function CustomTable<TData>({ data, columns }: { data: TData[]; columns: ColumnDef<TData>[] }) {
-  const table = useDataTable({ data, columns });
+  const table = useSeizenTable({ data, columns });
   const tanstack = table._tanstackTable;
 
   return (
@@ -182,10 +182,10 @@ function CustomTable<TData>({ data, columns }: { data: TData[]; columns: ColumnD
 
 ## Data Adapters
 
-Connect your DataTable to any backend with minimal setup. Sorting, filtering, and pagination are handled automatically by the adapter.
+Connect your SeizenTable to any backend with minimal setup. Sorting, filtering, and pagination are handled automatically by the adapter.
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { SupabaseAdapter } from "@izumisy/seizen-datatable-adapter-supabase";
 
 const adapter = SupabaseAdapter.configure({
@@ -194,12 +194,12 @@ const adapter = SupabaseAdapter.configure({
 });
 
 function UsersTable() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     columns,
     adapter,
   });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 
@@ -211,15 +211,15 @@ function UsersTable() {
 
 ## Plugins
 
-Enhance your DataTable with pre-built UI components. Add powerful features without writing complex code.
+Enhance your SeizenTable with pre-built UI components. Add powerful features without writing complex code.
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { RowDetail } from "@izumisy/seizen-datatable-plugin-row-detail";
 import { FilterBuilder } from "@izumisy/seizen-datatable-plugin-filter";
 
 function UsersTable() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [
@@ -228,7 +228,7 @@ function UsersTable() {
     ],
   });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 
@@ -239,7 +239,7 @@ function UsersTable() {
 
 ## Event Bus
 
-DataTable provides a built-in event bus for subscribing to table state changes and row interactions. Use `useDataTableEvent` to listen to events from your application code.
+SeizenTable provides a built-in event bus for subscribing to table state changes and row interactions. Use `useSeizenTableEvent` to listen to events from your application code.
 
 ### Built-in Events
 
@@ -255,28 +255,28 @@ DataTable provides a built-in event bus for subscribing to table state changes a
 ### Subscribing to Events
 
 ```tsx
-import { useDataTable, DataTable, useDataTableEvent } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable, useSeizenTableEvent } from "@izumisy/seizen-table";
 
 function App() {
-  const table = useDataTable({ data, columns });
+  const table = useSeizenTable({ data, columns });
 
   // Subscribe to row-click events
-  useDataTableEvent(table, "row-click", (row) => {
+  useSeizenTableEvent(table, "row-click", (row) => {
     console.log("Row clicked:", row);
   });
 
   // Subscribe to selection changes
-  useDataTableEvent(table, "selection-change", (selectedRows) => {
+  useSeizenTableEvent(table, "selection-change", (selectedRows) => {
     console.log("Selection changed:", selectedRows);
   });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 
 ### Custom Events
 
-Plugins can define custom events with full type safety using module augmentation. Application code can also subscribe to these plugin-defined events using `useDataTableEvent`, enabling seamless communication between plugins and the application layer.
+Plugins can define custom events with full type safety using module augmentation. Application code can also subscribe to these plugin-defined events using `useSeizenTableEvent`, enabling seamless communication between plugins and the application layer.
 
 ```tsx
 // Plugin defines custom events via module augmentation
@@ -288,12 +288,12 @@ declare module "@izumisy/seizen-table/plugin" {
 }
 
 // Application code can subscribe to plugin events
-useDataTableEvent(table, "my-plugin:action", (payload) => {
+useSeizenTableEvent(table, "my-plugin:action", (payload) => {
   // payload is typed as { itemId: string; action: "create" | "delete" }
   console.log(`Plugin action: ${payload.action} on item ${payload.itemId}`);
 });
 
-useDataTableEvent(table, "my-plugin:complete", (payload) => {
+useSeizenTableEvent(table, "my-plugin:complete", (payload) => {
   if (payload.success) {
     showNotification("Operation completed successfully");
   }

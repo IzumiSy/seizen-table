@@ -1,9 +1,9 @@
 ---
 title: Compound Components
-description: Build custom DataTable layouts with compound components and plugin slots.
+description: Build custom SeizenTable layouts with compound components and plugin slots.
 ---
 
-Seizen DataTable provides multiple levels of API abstraction. Choose the level that fits your needs—from zero-config to fully custom rendering.
+Seizen Table provides multiple levels of API abstraction. Choose the level that fits your needs—from zero-config to fully custom rendering.
 
 ## Choosing an API Level
 
@@ -21,11 +21,11 @@ Seizen DataTable provides multiple levels of API abstraction. Choose the level t
 The simplest approach—just pass a table instance and configuration:
 
 ```tsx
-import { DataTable, useDataTable } from "@izumisy/seizen-table";
+import { SeizenTable, useSeizenTable } from "@izumisy/seizen-table";
 
 function MyComponent() {
-  const table = useDataTable({ data, columns });
-  return <DataTable table={table} paginate={{ enable: true }} />;
+  const table = useSeizenTable({ data, columns });
+  return <SeizenTable table={table} paginate={{ enable: true }} />;
 }
 ```
 
@@ -34,25 +34,25 @@ function MyComponent() {
 Build custom layouts using compound components while keeping plugin support:
 
 ```tsx
-import { DataTable, DataTablePlugins, useDataTable } from "@izumisy/seizen-table";
+import { SeizenTable, SeizenTablePlugins, useSeizenTable } from "@izumisy/seizen-table";
 
 function MyComponent() {
-  const table = useDataTable({ data, columns, plugins: [MyPlugin] });
+  const table = useSeizenTable({ data, columns, plugins: [MyPlugin] });
   
   return (
-    <DataTable.Root table={table}>
-      <DataTablePlugins.SidePanel position="left" />
-      <DataTable.Content>
-        <DataTablePlugins.Header />
-        <DataTable.Table>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Table>
-        <DataTablePlugins.Footer />
-        <DataTable.Paginator sizeOptions={[10, 25, 50]} />
-      </DataTable.Content>
-      <DataTablePlugins.SidePanel position="right" />
-    </DataTable.Root>
+    <SeizenTable.Root table={table}>
+      <SeizenTablePlugins.SidePanel position="left" />
+      <SeizenTable.Content>
+        <SeizenTablePlugins.Header />
+        <SeizenTable.Table>
+          <SeizenTable.Header />
+          <SeizenTable.Body />
+        </SeizenTable.Table>
+        <SeizenTablePlugins.Footer />
+        <SeizenTable.Paginator sizeOptions={[10, 25, 50]} />
+      </SeizenTable.Content>
+      <SeizenTablePlugins.SidePanel position="right" />
+    </SeizenTable.Root>
   );
 }
 ```
@@ -62,10 +62,10 @@ function MyComponent() {
 For maximum control, use TanStack Table API directly:
 
 ```tsx
-import { useDataTable, flexRender } from "@izumisy/seizen-table";
+import { useSeizenTable, flexRender } from "@izumisy/seizen-table";
 
 function CustomTable({ data, columns }) {
-  const table = useDataTable({ data, columns });
+  const table = useSeizenTable({ data, columns });
   const tanstack = table._tanstackTable;
 
   return (
@@ -103,104 +103,104 @@ Level 3 loses plugin support and context menus. Use Level 2 if you need those fe
 
 ## Component Reference
 
-### DataTable Components
+### SeizenTable Components
 
 Core table structure components:
 
 | Component | HTML Element | Description |
 |-----------|--------------|-------------|
-| `DataTable.Root` | `<div>` | Provider wrapper (required, provides context) |
-| `DataTable.Content` | `<div>` | Main content area (between side panels) |
-| `DataTable.Table` | `<table>` | Pure `<table>` element wrapper |
-| `DataTable.Header` | `<thead>` | Column headers with sorting and context menu |
-| `DataTable.Body` | `<tbody>` | Row rendering with render props support |
-| `DataTable.Row` | `<tr>` | Individual row with click handlers |
-| `DataTable.Cell` | `<td>` | Individual cell with context menu support |
-| `DataTable.Paginator` | `<div>` | Pagination controls |
+| `SeizenTable.Root` | `<div>` | Provider wrapper (required, provides context) |
+| `SeizenTable.Content` | `<div>` | Main content area (between side panels) |
+| `SeizenTable.Table` | `<table>` | Pure `<table>` element wrapper |
+| `SeizenTable.Header` | `<thead>` | Column headers with sorting and context menu |
+| `SeizenTable.Body` | `<tbody>` | Row rendering with render props support |
+| `SeizenTable.Row` | `<tr>` | Individual row with click handlers |
+| `SeizenTable.Cell` | `<td>` | Individual cell with context menu support |
+| `SeizenTable.Paginator` | `<div>` | Pagination controls |
 
-### DataTablePlugins
+### SeizenTablePlugins
 
 Plugin-provided UI slots:
 
 | Component | Description |
 |-----------|-------------|
-| `DataTablePlugins.SidePanel` | Left/right side panels for plugin content |
-| `DataTablePlugins.Header` | Plugin header slots (e.g., filter bars) |
-| `DataTablePlugins.Footer` | Plugin footer slots |
-| `DataTablePlugins.InlineRow` | Expandable row content (e.g., row details) |
-| `DataTablePlugins.CellSlot` | Custom cell rendering from plugins |
+| `SeizenTablePlugins.SidePanel` | Left/right side panels for plugin content |
+| `SeizenTablePlugins.Header` | Plugin header slots (e.g., filter bars) |
+| `SeizenTablePlugins.Footer` | Plugin footer slots |
+| `SeizenTablePlugins.InlineRow` | Expandable row content (e.g., row details) |
+| `SeizenTablePlugins.Cell` | Custom cell rendering from plugins |
 
 ### Component Hierarchy
 
 ```
-DataTable.Root (providers + context)
-├─ DataTablePlugins.SidePanel (position: "left")
-├─ DataTable.Content (main content area)
-│  ├─ DataTablePlugins.Header (plugin-provided toolbars)
-│  ├─ DataTable.Table
-│  │  ├─ DataTable.Header
-│  │  └─ DataTable.Body
-│  │     ├─ DataTable.Row
-│  │     │  └─ DataTable.Cell
-│  │     └─ DataTablePlugins.InlineRow (plugin-provided expandable rows)
-│  ├─ DataTablePlugins.Footer (plugin-provided footers)
-│  └─ DataTable.Paginator
-└─ DataTablePlugins.SidePanel (position: "right")
+SeizenTable.Root (providers + context)
+├─ SeizenTablePlugins.SidePanel (position: "left")
+├─ SeizenTable.Content (main content area)
+│  ├─ SeizenTablePlugins.Header (plugin-provided toolbars)
+│  ├─ SeizenTable.Table
+│  │  ├─ SeizenTable.Header
+│  │  └─ SeizenTable.Body
+│  │     ├─ SeizenTable.Row
+│  │     │  └─ SeizenTable.Cell
+│  │     └─ SeizenTablePlugins.InlineRow (plugin-provided expandable rows)
+│  ├─ SeizenTablePlugins.Footer (plugin-provided footers)
+│  └─ SeizenTable.Paginator
+└─ SeizenTablePlugins.SidePanel (position: "right")
 ```
 
 ## Customization
 
 ### Custom Row Rendering
 
-`DataTable.Body` supports render props for custom row rendering:
+`SeizenTable.Body` supports render props for custom row rendering:
 
 ```tsx
-<DataTable.Body>
+<SeizenTable.Body>
   {(row) => (
     <>
-      <DataTable.Row
+      <SeizenTable.Row
         row={row}
         className={row.original.isVIP ? "vip-row" : ""}
         onClick={(row) => console.log("Clicked:", row.original)}
       />
-      <DataTablePlugins.InlineRow 
+      <SeizenTablePlugins.InlineRow 
         row={row} 
         colSpan={row.getVisibleCells().length} 
       />
     </>
   )}
-</DataTable.Body>
+</SeizenTable.Body>
 ```
 
-When no children are provided, `DataTable.Body` automatically renders `DataTable.Row` and `DataTablePlugins.InlineRow` for each row.
+When no children are provided, `SeizenTable.Body` automatically renders `SeizenTable.Row` and `SeizenTablePlugins.InlineRow` for each row.
 
 **Opting out of InlineRow:**
 
 ```tsx
-<DataTable.Body>
-  {(row) => <DataTable.Row row={row} />}
-</DataTable.Body>
+<SeizenTable.Body>
+  {(row) => <SeizenTable.Row row={row} />}
+</SeizenTable.Body>
 ```
 
 ### Custom Cell Content
 
-`DataTable.Cell` supports custom children:
+`SeizenTable.Cell` supports custom children:
 
 ```tsx
-// Default: uses plugin CellSlot automatically
-<DataTable.Cell cell={cell} row={row} />
+// Default: uses plugin Cell automatically
+<SeizenTable.Cell cell={cell} row={row} />
 
 // Custom content without plugin support
-<DataTable.Cell cell={cell} row={row}>
+<SeizenTable.Cell cell={cell} row={row}>
   <span className="custom">{cell.getValue()}</span>
-</DataTable.Cell>
+</SeizenTable.Cell>
 
 // Custom content with plugin support
-<DataTable.Cell cell={cell} row={row}>
-  <DataTablePlugins.CellSlot cell={cell} column={cell.column} row={row}>
+<SeizenTable.Cell cell={cell} row={row}>
+  <SeizenTablePlugins.Cell cell={cell} column={cell.column} row={row}>
     <span className="custom">{cell.getValue()}</span>
-  </DataTablePlugins.CellSlot>
-</DataTable.Cell>
+  </SeizenTablePlugins.Cell>
+</SeizenTable.Cell>
 ```
 
 ### Adding Custom Elements
@@ -208,58 +208,58 @@ When no children are provided, `DataTable.Body` automatically renders `DataTable
 You can add custom elements anywhere in the layout:
 
 ```tsx
-<DataTable.Root table={table}>
-  <DataTablePlugins.SidePanel position="left" />
-  <DataTable.Content>
+<SeizenTable.Root table={table}>
+  <SeizenTablePlugins.SidePanel position="left" />
+  <SeizenTable.Content>
     {/* Custom toolbar */}
     <div className="custom-toolbar">
       <button>Export</button>
       <button>Refresh</button>
     </div>
     
-    <DataTablePlugins.Header />
+    <SeizenTablePlugins.Header />
     
-    <DataTable.Table>
-      <DataTable.Header />
-      <DataTable.Body />
-    </DataTable.Table>
+    <SeizenTable.Table>
+      <SeizenTable.Header />
+      <SeizenTable.Body />
+    </SeizenTable.Table>
     
-    <DataTablePlugins.Footer />
+    <SeizenTablePlugins.Footer />
     
     {/* Custom footer content */}
     <div className="table-info">
       Showing {table.getData().length} records
     </div>
     
-    <DataTable.Paginator />
-  </DataTable.Content>
-  <DataTablePlugins.SidePanel position="right" />
-</DataTable.Root>
+    <SeizenTable.Paginator />
+  </SeizenTable.Content>
+  <SeizenTablePlugins.SidePanel position="right" />
+</SeizenTable.Root>
 ```
 
 ## Advanced: Using Hooks
 
-For completely custom rendering while keeping context menu support, use the provided hooks inside `DataTable.Root`.
+For completely custom rendering while keeping context menu support, use the provided hooks inside `SeizenTable.Root`.
 
 ### Available Hooks
 
 | Hook | Description |
 |------|-------------|
-| `useDataTableContext()` | Get the table instance from context |
+| `useSeizenTableContext()` | Get the table instance from context |
 | `useContextMenu()` | Get `handleCellContextMenu` and `handleColumnContextMenu` functions |
 
 ### Example
 
 ```tsx
 import { 
-  DataTable, 
-  useDataTableContext,
+  SeizenTable, 
+  useSeizenTableContext,
   useContextMenu,
   flexRender 
 } from "@izumisy/seizen-table";
 
 function CustomTableBody() {
-  const table = useDataTableContext();
+  const table = useSeizenTableContext();
   const { handleCellContextMenu } = useContextMenu();
   
   return (
@@ -285,15 +285,15 @@ function CustomTableBody() {
   );
 }
 
-// Usage (must be inside DataTable.Root)
-<DataTable.Root table={table}>
-  <DataTable.Content>
-    <DataTable.Table>
-      <DataTable.Header />
+// Usage (must be inside SeizenTable.Root)
+<SeizenTable.Root table={table}>
+  <SeizenTable.Content>
+    <SeizenTable.Table>
+      <SeizenTable.Header />
       <tbody>
         <CustomTableBody />
       </tbody>
-    </DataTable.Table>
-  </DataTable.Content>
-</DataTable.Root>
+    </SeizenTable.Table>
+  </SeizenTable.Content>
+</SeizenTable.Root>
 ```

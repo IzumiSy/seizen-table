@@ -1,4 +1,4 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
 
 const columns = [
@@ -36,7 +36,7 @@ const data = [
 ];
 
 export function ColumnControlDemo() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [ColumnControlPlugin.configure({ width: 280 })],
@@ -50,7 +50,7 @@ export function ColumnControlDemo() {
         overflow: "hidden",
       }}
     >
-      <DataTable table={table} />
+      <SeizenTable table={table} />
     </div>
   );
 }

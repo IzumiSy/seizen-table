@@ -129,13 +129,13 @@ function formatValue(value: unknown): string {
  * ```tsx
  * import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
  *
- * const table = useDataTable({
+ * const table = useSeizenTable({
  *   data,
  *   columns,
  *   plugins: [RowDetailPlugin.configure({ width: 350 })],
  * });
  *
- * useDataTableEvent(table, "row-click", (row) => {
+ * useSeizenTableEvent(table, "row-click", (row) => {
  *   table.plugin.open("row-detail", { row });
  * });
  * ```

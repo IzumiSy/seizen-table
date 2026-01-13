@@ -264,7 +264,7 @@ function createInlineRowRenderer(context: PluginContext<AllSlotsDemoConfig>) {
  * ```tsx
  * import { AllSlotsDemo } from "@izumisy/seizen-table-plugins/all-slots-demo";
  *
- * const table = useDataTable({
+ * const table = useSeizenTable({
  *   data,
  *   columns,
  *   plugins: [

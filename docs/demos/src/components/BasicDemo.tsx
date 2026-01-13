@@ -1,4 +1,4 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 
 const columns = [
   { accessorKey: "name", header: "Name" },
@@ -13,7 +13,7 @@ const data = [
 ];
 
 export function BasicDemo() {
-  const table = useDataTable({ data, columns });
+  const table = useSeizenTable({ data, columns });
 
   return (
     <div
@@ -23,7 +23,7 @@ export function BasicDemo() {
         overflow: "hidden",
       }}
     >
-      <DataTable table={table} />
+      <SeizenTable table={table} />
     </div>
   );
 }

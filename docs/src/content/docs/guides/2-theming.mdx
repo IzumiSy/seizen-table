@@ -1,17 +1,17 @@
 ---
 title: Theming
-description: Customize the appearance of Seizen DataTable with CSS variables.
+description: Customize the appearance of Seizen Table with CSS variables.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Seizen DataTable uses **CSS Custom Properties (CSS Variables)** as its theming foundation rather than JavaScript-based styling solutions. This choice is intentional:
+Seizen Table uses **CSS Custom Properties (CSS Variables)** as its theming foundation rather than JavaScript-based styling solutions. This choice is intentional:
 
 **Zero runtime overhead** — CSS variables are resolved by the browser's CSS engine, not JavaScript. Theme changes happen instantly without React re-renders or style recalculations in JS-land.
 
 **Framework agnostic** — While Seizen is a React library, CSS variables work anywhere. You can control themes from vanilla CSS, Tailwind, CSS-in-JS, or even server-rendered stylesheets. No vendor lock-in.
 
-**Inheritance by default** — CSS variables cascade naturally. Set variables on `:root` for global theming, or scope them to a container for localized themes. Multiple DataTables with different themes on the same page? Just wrap each in a div with different variable values.
+**Inheritance by default** — CSS variables cascade naturally. Set variables on `:root` for global theming, or scope them to a container for localized themes. Multiple SeizenTables with different themes on the same page? Just wrap each in a div with different variable values.
 
 **DevTools friendly** — Inspect any element and see exactly which variables affect it. Tweak values in real-time without rebuilding. Debug theming issues visually, not through console logs.
 
@@ -19,7 +19,7 @@ Seizen DataTable uses **CSS Custom Properties (CSS Variables)** as its theming f
 
 ## CSS Variables
 
-Seizen DataTable provides two independent theming systems:
+Seizen Table provides two independent theming systems:
 
 1. **Color Themes** - Control the visual appearance (light, dark, nord)
 2. **Spacing Themes** - Control the density and spacing (compact, comfortable)

@@ -1,12 +1,12 @@
 ---
 title: Filtering
-description: Add powerful filtering capabilities to your DataTable with type-aware operators and global search.
+description: Add powerful filtering capabilities to your SeizenTable with type-aware operators and global search.
 ---
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 import { DemoPreview } from '@components/DemoPreview';
 
-DataTable supports advanced filtering through the `FilterPlugin` from `@izumisy/seizen-table-plugins`.
+SeizenTable supports advanced filtering through the `FilterPlugin` from `@izumisy/seizen-table-plugins`.
 
 ## Try It
 
@@ -32,17 +32,17 @@ Click the filter icon in the side panel to open the filter builder. You can also
 ## Basic Usage
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 
 function MyTable() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [FilterPlugin.configure({ width: 320 })],
   });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 

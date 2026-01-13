@@ -1,9 +1,9 @@
 import type { Row } from "@tanstack/react-table";
-import { useDataTableContext } from "./Root";
-import { DataTableCell } from "./Cell";
+import { useSeizenTableContext } from "./Root";
+import { TableCell } from "./Cell";
 import * as styles from "../styles.css";
 
-export interface DataTableRowProps<TData> {
+export interface TableRowProps<TData> {
   /**
    * The TanStack Table Row object
    */
@@ -15,14 +15,8 @@ export interface DataTableRowProps<TData> {
   className?: string;
 
   /**
-   * Custom onClick handler for the row.
-   * If not provided, automatically emits "row-click" event via eventBus.
-   */
-  onClick?: (row: Row<TData>) => void;
-
-  /**
    * Custom cell renderer (optional).
-   * If provided, this function will be called for each cell instead of using the default DataTable.Cell component.
+   * If provided, this function will be called for each cell instead of using the default SeizenTable.Cell component.
    */
   renderCell?: (
     cell: ReturnType<Row<TData>["getVisibleCells"]>[number]
@@ -41,13 +35,13 @@ export interface DataTableRowProps<TData> {
  * @example Default usage
  * ```tsx
  * {rows.map(row => (
- *   <DataTable.Row key={row.id} row={row} />
+ *   <SeizenTable.Row key={row.id} row={row} />
  * ))}
  * ```
  *
  * @example Custom click handler
  * ```tsx
- * <DataTable.Row
+ * <SeizenTable.Row
  *   row={row}
  *   onClick={(row) => console.log('Custom click:', row.original)}
  * />
@@ -55,7 +49,7 @@ export interface DataTableRowProps<TData> {
  *
  * @example Custom cell rendering
  * ```tsx
- * <DataTable.Row
+ * <SeizenTable.Row
  *   row={row}
  *   renderCell={(cell) => (
  *     <td key={cell.id} className="custom-cell">
@@ -65,39 +59,28 @@ export interface DataTableRowProps<TData> {
  * />
  * ```
  */
-export function DataTableRow<TData>({
+export function TableRow<TData>({
   row,
   className,
-  onClick,
   renderCell,
-}: DataTableRowProps<TData>) {
-  const tableFromContext = useDataTableContext();
+}: TableRowProps<TData>) {
+  const tableFromContext = useSeizenTableContext();
   const table = tableFromContext;
-
-  const handleClick = () => {
-    if (onClick) {
-      onClick(row);
-    } else {
-      // Default: emit row-click event
-      table.eventBus.emit("row-click", row.original);
-    }
-  };
-
   const rowClassName = className ? `${styles.tr} ${className}` : styles.tr;
 
   return (
     <tr
       className={rowClassName}
       data-selected={row.getIsSelected() || undefined}
-      onClick={handleClick}
+      onClick={() => {
+        table.eventBus.emit("row-click", row.original);
+      }}
     >
       {renderCell
         ? row.getVisibleCells().map(renderCell)
         : row
             .getVisibleCells()
-            .map((cell) => (
-              <DataTableCell key={cell.id} cell={cell} row={row} />
-            ))}
+            .map((cell) => <TableCell key={cell.id} cell={cell} row={row} />)}
     </tr>
   );
 }

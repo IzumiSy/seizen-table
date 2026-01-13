@@ -797,7 +797,7 @@ function FilterRenderer(context: PluginContext<FilterPluginConfig>) {
  * // 2. Use the plugin
  * import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
  *
- * const table = useDataTable({
+ * const table = useSeizenTable({
  *   data,
  *   columns,
  *   plugins: [FilterPlugin.configure({ width: 320 })],

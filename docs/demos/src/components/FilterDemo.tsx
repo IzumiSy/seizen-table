@@ -1,4 +1,4 @@
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 
 const columns = [
@@ -31,7 +31,7 @@ const data = [
 ];
 
 export function FilterDemo() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [FilterPlugin.configure({ width: 320 })],
@@ -45,7 +45,7 @@ export function FilterDemo() {
         overflow: "hidden",
       }}
     >
-      <DataTable table={table} />
+      <SeizenTable table={table} />
     </div>
   );
 }

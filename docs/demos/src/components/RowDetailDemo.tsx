@@ -1,7 +1,7 @@
 import {
-  useDataTable,
-  DataTable,
-  useDataTableEvent,
+  useSeizenTable,
+  SeizenTable,
+  useSeizenTableEvent,
 } from "@izumisy/seizen-table";
 import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
 
@@ -36,13 +36,13 @@ const data = [
 ];
 
 export function RowDetailDemo() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [RowDetailPlugin.configure({ width: 320 })],
   });
 
-  useDataTableEvent(table, "row-click", (row) => {
+  useSeizenTableEvent(table, "row-click", (row) => {
     table.plugin.open("row-detail", { row });
   });
 
@@ -54,7 +54,7 @@ export function RowDetailDemo() {
         overflow: "hidden",
       }}
     >
-      <DataTable table={table} />
+      <SeizenTable table={table} />
     </div>
   );
 }

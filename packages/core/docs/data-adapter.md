@@ -288,7 +288,7 @@ const unsubscribe = usersAdapter.subscribe((state) => {
 });
 ```
 
-## Usage with DataTable
+## Usage with SeizenTable
 
 ```tsx
 import { useAdapter } from "@izumisy/seizen-table";
@@ -304,7 +304,7 @@ function UsersTable() {
   const { state, actions } = useAdapter(usersAdapter);
 
   return (
-    <DataTable
+    <SeizenTable
       data={state.data}
       columns={columns}
       isLoading={state.isLoading}

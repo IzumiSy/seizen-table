@@ -11,7 +11,7 @@ import type {
 // =============================================================================
 
 /**
- * Plugin position in the DataTable layout.
+ * Plugin position in the SeizenTable layout.
  *
  * - `left-sider`: IDE-style vertical tab on the left side. Ideal for navigation, tree views.
  * - `right-sider`: IDE-style vertical tab on the right side. Ideal for details, inspectors.
@@ -111,10 +111,10 @@ export interface PluginSlots<TData = unknown> {
 // =============================================================================
 
 /**
- * DataTable plugin type.
- * Use DataTablePlugin<unknown> for plugins that don't use TData in context menu.
+ * SeizenTable plugin type.
+ * Use SeizenTablePlugin<unknown> for plugins that don't use TData in context menu.
  */
-export interface DataTablePlugin<TData = unknown> {
+export interface SeizenTablePlugin<TData = unknown> {
   /** Unique plugin identifier */
   id: string;
   /** Plugin display name (used as vertical tab label for side panel plugins) */
@@ -128,7 +128,7 @@ export interface DataTablePlugin<TData = unknown> {
 /**
  * Type guard to check if a plugin has a side panel slot
  */
-export function hasSidePanelSlot(plugin: DataTablePlugin<any>): boolean {
+export function hasSidePanelSlot(plugin: SeizenTablePlugin<any>): boolean {
   return plugin.slots.sidePanel !== undefined;
 }
 
@@ -136,7 +136,7 @@ export function hasSidePanelSlot(plugin: DataTablePlugin<any>): boolean {
  * Get side panel configuration from a plugin
  */
 export function getSidePanelSlot(
-  plugin: DataTablePlugin<any>
+  plugin: SeizenTablePlugin<any>
 ): SidePanelSlot | undefined {
   return plugin.slots.sidePanel;
 }
@@ -272,7 +272,7 @@ export type DefinePluginOptions<
  * });
  *
  * // Usage
- * <DataTable plugins={[BulkActions.configure({ enableDelete: true })]} />
+ * <SeizenTable plugins={[BulkActions.configure({ enableDelete: true })]} />
  * ```
  */
 export function definePlugin<TData, TSchema extends z.ZodType>(
@@ -333,7 +333,7 @@ export function definePlugin<TData, TSchema extends z.ZodType>(
         name: options.name,
         slots,
         contextMenuItems: options.contextMenuItems,
-      } as DataTablePlugin<TData>;
+      } as SeizenTablePlugin<TData>;
     },
   };
 }

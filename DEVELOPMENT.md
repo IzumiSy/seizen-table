@@ -10,7 +10,7 @@
 ```
 seizen-table/
 ├── packages/
-│   ├── core/              # DataTable component
+│   ├── core/              # SeizenTable component
 └── apps/
     └── example-vite-app/  # Vite + React example app
 ```

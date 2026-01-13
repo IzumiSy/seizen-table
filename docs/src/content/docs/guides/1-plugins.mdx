@@ -1,17 +1,17 @@
 ---
 title: Plugin System
-description: Learn how to use and create plugins for Seizen DataTable.
+description: Learn how to use and create plugins for Seizen SeizenTable.
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
 ## Design Philosophy
 
-Seizen DataTable is built on a **plugin-first architecture**. Unlike traditional component libraries that bundle all features into a monolithic package, every feature in Seizen — including official ones — is implemented as a plugin.
+Seizen Table is built on a **plugin-first architecture**. Unlike traditional component libraries that bundle all features into a monolithic package, every feature in Seizen — including official ones — is implemented as a plugin.
 
 This architecture is inspired by modern editor ecosystems like VS Code, where the core remains minimal and all rich functionality comes from extensions. The same principle applies here:
 
-- **The core DataTable does one thing well**: rendering tabular data with essential interactions (sorting, selection, pagination)
+- **The core SeizenTable does one thing well**: rendering tabular data with essential interactions (sorting, selection, pagination)
 - **Everything else is a plugin**: filtering, row details, column controls, data export, and any custom feature you need
 
 ### Why Plugin-First?
@@ -26,11 +26,11 @@ This architecture is inspired by modern editor ecosystems like VS Code, where th
 
 ## Layout & Slots
 
-DataTable provides 5 slots where plugins can render UI components:
+SeizenTable provides 5 slots where plugins can render UI components:
 
-![DataTable plugin slots layout](/seizen-table/slots-diagram.svg)
+![SeizenTable plugin slots layout](/seizen-table/slots-diagram.svg)
 
-{/* Accessible description for AI/screen readers: DataTable layout has left and right side panels, a header slot above the table body, an inlineRow slot that expands below each row, a cell slot for custom cell rendering, and a footer slot below the table. */}
+{/* Accessible description for AI/screen readers: SeizenTable layout has left and right side panels, a header slot above the table body, an inlineRow slot that expands below each row, a cell slot for custom cell rendering, and a footer slot below the table. */}
 
 ### Available Slots
 
@@ -51,12 +51,12 @@ DataTable provides 5 slots where plugins can render UI components:
 ## Using Plugins
 
 ```tsx
-import { useDataTable, DataTable } from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 
 function UsersTable() {
-  const table = useDataTable({
+  const table = useSeizenTable({
     data,
     columns,
     plugins: [
@@ -65,7 +65,7 @@ function UsersTable() {
     ],
   });
 
-  return <DataTable table={table} />;
+  return <SeizenTable table={table} />;
 }
 ```
 
@@ -297,7 +297,7 @@ Inside plugin components, use `usePluginContext()` to access table data and APIs
 
 ```tsx
 const {
-  table,         // DataTableInstance - table methods and state
+  table,         // SeizenTableInstance - table methods and state
   data,          // unknown[] - current table data
   columns,       // PluginColumnInfo[] - column info with filter metadata
   selectedRows,  // unknown[] - currently selected rows

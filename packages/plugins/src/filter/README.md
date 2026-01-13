@@ -11,7 +11,7 @@ import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 ## Usage
 
 ```tsx
-const table = useDataTable({
+const table = useSeizenTable({
   data,
   columns,
   plugins: [FilterPlugin.configure({ width: 320 })],

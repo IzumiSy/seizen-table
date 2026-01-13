@@ -11,7 +11,7 @@ import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-contro
 ## Usage
 
 ```tsx
-const table = useDataTable({
+const table = useSeizenTable({
   data,
   columns,
   plugins: [ColumnControlPlugin.configure({ width: 280 })],

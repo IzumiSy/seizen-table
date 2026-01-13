@@ -11,14 +11,14 @@ import { RowDetailPlugin } from "@izumisy/seizen-table-plugins/row-detail";
 ## Usage
 
 ```tsx
-const table = useDataTable({
+const table = useSeizenTable({
   data,
   columns,
   plugins: [RowDetailPlugin.configure({ width: 350 })],
 });
 
 // Open side panel when row is clicked
-useDataTableEvent(table, "row-click", (row) => {
+useSeizenTableEvent(table, "row-click", (row) => {
   table.plugin.open("row-detail", { row });
 });
 ```

@@ -1,5 +1,5 @@
 import { flexRender } from "@tanstack/react-table";
-import { useDataTableContext } from "./Root";
+import { useSeizenTableContext } from "./Root";
 import { useContextMenuHandlers } from "../../plugin/contextMenu";
 import * as styles from "../styles.css";
 
@@ -12,7 +12,7 @@ import * as styles from "../styles.css";
  *
  * @example
  * ```tsx
- * <DataTable.Header />
+ * <SeizenTable.Header />
  * ```
  *
  * For full control, you can render headers manually:
@@ -30,8 +30,8 @@ import * as styles from "../styles.css";
  * </thead>
  * ```
  */
-export function DataTableHeader() {
-  const table = useDataTableContext();
+export function TableHeader() {
+  const table = useSeizenTableContext();
   const tanstack = table._tanstackTable;
   const { handleColumnContextMenu } = useContextMenuHandlers();
 
