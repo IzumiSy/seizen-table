@@ -12,7 +12,7 @@ import * as styles from "../styles.css";
  *
  * @example
  * ```tsx
- * <Table.Header />
+ * <SeizenTable.Header />
  * ```
  *
  * For full control, you can render headers manually:

@@ -3,7 +3,7 @@ import * as styles from "../styles.css";
 
 export interface TableTableProps {
   /**
-   * Table content (Table.Header, Table.Body, or custom thead/tbody)
+   * Table content (SeizenTable.Header, SeizenTable.Body, or custom thead/tbody)
    */
   children: ReactNode;
 }
@@ -11,7 +11,7 @@ export interface TableTableProps {
 /**
  * Table component that renders the HTML table.
  *
- * This component should be used inside Table.Content to handle
+ * This component should be used inside SeizenTable.Content to handle
  * the layout with side panels.
  */
 export function TableTable({ children }: TableTableProps) {

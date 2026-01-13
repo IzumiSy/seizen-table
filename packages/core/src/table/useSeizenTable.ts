@@ -46,7 +46,7 @@ export interface UseSeizenTableOptions<TData> {
 }
 
 /**
- * Table instance returned by useSeizenTable
+ * Instance returned by useSeizenTable
  */
 export interface SeizenTableInstance<TData> {
   // ===========================================================================
