@@ -8,7 +8,7 @@
 ## Project Structure
 
 ```
-seizen-ui/
+seizen-table/
 ├── packages/
 │   ├── datatable-react/          # DataTable component
 └── apps/

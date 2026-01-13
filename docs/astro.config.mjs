@@ -16,7 +16,7 @@ const [datatableAPITypeDoc, datatableAPITypeDocSidebarGroup] =
 // https://astro.build/config
 export default defineConfig({
   site: "https://izumisy.github.io",
-  base: "/seizen-ui",
+  base: "/seizen-table",
   vite: {
     resolve: {
       alias: {
@@ -53,7 +53,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/izumisy/seizen-ui",
+          href: "https://github.com/izumisy/seizen-table",
         },
       ],
       sidebar: [
