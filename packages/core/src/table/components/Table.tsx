@@ -1,7 +1,6 @@
 import * as styles from "../styles.css";
 
 export interface TableTableProps {
-  children?: React.ReactNode;
   /**
    * Additional elements to render inside the table wrapper (e.g., Loader).
    * These are rendered before the table element.
@@ -31,7 +30,10 @@ export interface TableTableProps {
  * </TableTable>
  * ```
  */
-export function TableTable({ children, before }: TableTableProps) {
+export function TableTable({
+  children,
+  before,
+}: React.PropsWithChildren<TableTableProps>) {
   return (
     <div className={styles.tableWrapper}>
       {before}
