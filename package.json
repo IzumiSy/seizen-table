@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:example": "turbo dev --filter=@izumisy/seizen-table-example",
     "test": "turbo test",
     "type-check": "turbo type-check"
   },

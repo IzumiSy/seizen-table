@@ -15,10 +15,8 @@
     "dist-app"
   ],
   "scripts": {
-    "dev": "vite build --mode lib --watch",
+    "dev": "concurrently -k \"vite build --mode lib --watch\" \"vite\"",
     "build": "vite build --mode lib && vite build",
-    "dev:app": "vite",
-    "build:app": "vite build",
     "preview": "vite preview",
     "type-check": "tsc -b"
   },
@@ -33,6 +31,7 @@
   "devDependencies": {
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "concurrently": "^9.1.2",
     "@vanilla-extract/vite-plugin": "^4.0.20",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "5.8.2",
