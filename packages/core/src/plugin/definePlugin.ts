@@ -286,7 +286,6 @@ export function definePlugin<TData, TSchema extends z.ZodType>(
       // Validate config with Zod schema
       const validatedArgs = options.args.parse(config);
       const context: PluginContext<z.infer<TSchema>> = { args: validatedArgs };
-
       const slots: PluginSlots<TData> = {};
 
       // Build SidePanel slot
