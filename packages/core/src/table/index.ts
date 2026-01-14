@@ -3,7 +3,11 @@ export { Paginator } from "./components/Paginator";
 export { useSeizenTable } from "./useSeizenTable";
 export { useSeizenTableEvent } from "./useSeizenTableEvent";
 export { useSeizenTableContext } from "./components/Root";
-export type { SeizenTableProps, PaginateOptions } from "./SeizenTable";
+export type {
+  SeizenTableProps,
+  PaginateOptions,
+  LoaderProps,
+} from "./SeizenTable";
 export type { PaginatorProps } from "./components/Paginator";
 
 // Compound component types
@@ -11,6 +15,7 @@ export type {
   TableRootProps,
   TableRowProps,
   TableCellProps,
+  TableTableProps,
 } from "./components";
 
 // Hooks - re-export from plugin for convenience
