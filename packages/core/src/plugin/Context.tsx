@@ -316,3 +316,54 @@ export function usePluginContext<
       : unknown
   >;
 }
+
+// =============================================================================
+// Plugin Args Context (for plugin configuration passed to configure())
+// =============================================================================
+
+const PluginArgsContext = createContext<unknown>(undefined);
+
+/**
+ * Provider component that passes plugin args to the plugin component.
+ * @internal Used by SeizenTablePlugins to provide args to slot components.
+ */
+export function PluginArgsProvider({
+  args,
+  children,
+}: {
+  args: unknown;
+  children: ReactNode;
+}) {
+  return (
+    <PluginArgsContext.Provider value={args}>
+      {children}
+    </PluginArgsContext.Provider>
+  );
+}
+
+/**
+ * Hook to access the plugin configuration args from within a plugin component.
+ *
+ * This returns the args passed to `Plugin.configure({ ... })`.
+ * Use this hook inside your plugin component to access configuration.
+ *
+ * @typeParam TArgs - The type of the plugin args
+ *
+ * @example
+ * ```tsx
+ * interface MyPluginConfig {
+ *   columns: string[];
+ *   title?: string;
+ * }
+ *
+ * function MyPluginPanel() {
+ *   const args = usePluginArgs<MyPluginConfig>();
+ *   // args.columns, args.title are available
+ *   return <div>{args.title}</div>;
+ * }
+ * ```
+ */
+export function usePluginArgs<TArgs>(): TArgs {
+  const args = useContext(PluginArgsContext);
+  return args as TArgs;
+}

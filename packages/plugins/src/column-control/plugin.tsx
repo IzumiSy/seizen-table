@@ -3,8 +3,8 @@ import { z } from "zod";
 import {
   definePlugin,
   usePluginContext,
+  usePluginArgs,
   columnContextMenuItem,
-  type PluginContext,
 } from "@izumisy/seizen-table/plugin";
 
 // =============================================================================
@@ -597,59 +597,56 @@ function SorterTab() {
 // =============================================================================
 
 /**
- * ColumnControlRenderer - Creates the render function for the plugin
+ * ColumnControlPanel - Main panel component for the plugin
  */
-function ColumnControlRenderer(context: PluginContext<ColumnControlConfig>) {
-  const { args } = context;
+function ColumnControlPanel() {
+  const args = usePluginArgs<ColumnControlConfig>();
+  const [activeTab, setActiveTab] = useState<TabType>("visibility");
 
-  return function ColumnControlPanel() {
-    const [activeTab, setActiveTab] = useState<TabType>("visibility");
-
-    return (
+  return (
+    <div
+      style={{
+        width: args.width,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* Tab header */}
       <div
         style={{
-          width: args.width,
-          height: "100%",
           display: "flex",
-          flexDirection: "column",
+          borderBottom: "1px solid #e5e7eb",
+          backgroundColor: "#f9fafb",
         }}
       >
-        {/* Tab header */}
-        <div
-          style={{
-            display: "flex",
-            borderBottom: "1px solid #e5e7eb",
-            backgroundColor: "#f9fafb",
-          }}
+        <TabButton
+          active={activeTab === "visibility"}
+          onClick={() => setActiveTab("visibility")}
         >
-          <TabButton
-            active={activeTab === "visibility"}
-            onClick={() => setActiveTab("visibility")}
-          >
-            Visibility
-          </TabButton>
-          <TabButton
-            active={activeTab === "sorter"}
-            onClick={() => setActiveTab("sorter")}
-          >
-            Sorter
-          </TabButton>
-        </div>
-
-        {/* Tab content */}
-        <div
-          style={{
-            flex: 1,
-            padding: "16px",
-            overflow: "auto",
-          }}
+          Visibility
+        </TabButton>
+        <TabButton
+          active={activeTab === "sorter"}
+          onClick={() => setActiveTab("sorter")}
         >
-          {activeTab === "visibility" && <VisibilityTab />}
-          {activeTab === "sorter" && <SorterTab />}
-        </div>
+          Sorter
+        </TabButton>
       </div>
-    );
-  };
+
+      {/* Tab content */}
+      <div
+        style={{
+          flex: 1,
+          padding: "16px",
+          overflow: "auto",
+        }}
+      >
+        {activeTab === "visibility" && <VisibilityTab />}
+        {activeTab === "sorter" && <SorterTab />}
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -678,7 +675,7 @@ export const ColumnControlPlugin = definePlugin({
     sidePanel: {
       position: "right-sider",
       header: "Column Settings",
-      render: ColumnControlRenderer,
+      render: ColumnControlPanel,
     },
   },
   contextMenuItems: {

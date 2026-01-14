@@ -3,10 +3,10 @@ import { z } from "zod";
 import {
   definePlugin,
   usePluginContext,
+  usePluginArgs,
   cellContextMenuItem,
   DEFAULT_FILTER_OPERATORS,
   FILTER_OPERATOR_LABELS,
-  type PluginContext,
   type FilterOperator,
   type PluginColumnInfo,
 } from "@izumisy/seizen-table/plugin";
@@ -601,33 +601,36 @@ function FilterPanel() {
 
 function GlobalSearchHeader() {
   const { table } = usePluginContext();
+  const args = usePluginArgs<FilterPluginConfig>();
   const [searchValue, setSearchValue] = useState(
     () => table.getGlobalFilter() ?? ""
   );
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchValue(value);
+  // If global search is disabled, render nothing
+  if (args.disableGlobalSearch) {
+    return null;
+  }
 
-      // Debounce the global filter update
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-      debounceRef.current = setTimeout(() => {
-        table.setGlobalFilter(value);
-      }, 300);
-    },
-    [table]
-  );
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
 
-  const handleClear = useCallback(() => {
+    // Debounce the global filter update
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      table.setGlobalFilter(value);
+    }, 300);
+  };
+
+  const handleClear = () => {
     setSearchValue("");
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
     table.setGlobalFilter("");
-  }, [table]);
+  };
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -717,41 +720,27 @@ function GlobalSearchHeader() {
   );
 }
 
-function createGlobalSearchRenderer(
-  context: PluginContext<FilterPluginConfig>
-) {
-  const { args } = context;
-  if (args.disableGlobalSearch) {
-    return function EmptyHeader() {
-      return null;
-    };
-  }
-  return GlobalSearchHeader;
-}
-
 // =============================================================================
 // Main Renderer
 // =============================================================================
 
-function FilterRenderer(context: PluginContext<FilterPluginConfig>) {
-  const { args } = context;
+function FilterPluginPanel() {
+  const args = usePluginArgs<FilterPluginConfig>();
 
-  return function FilterPluginPanel() {
-    return (
-      <div
-        style={{
-          width: args.width,
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          padding: "16px",
-          boxSizing: "border-box",
-        }}
-      >
-        <FilterPanel />
-      </div>
-    );
-  };
+  return (
+    <div
+      style={{
+        width: args.width,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        padding: "16px",
+        boxSizing: "border-box",
+      }}
+    >
+      <FilterPanel />
+    </div>
+  );
 }
 
 // =============================================================================
@@ -812,10 +801,10 @@ export const FilterPlugin = definePlugin({
     sidePanel: {
       position: "right-sider",
       header: "Filters",
-      render: FilterRenderer,
+      render: FilterPluginPanel,
     },
     header: {
-      render: createGlobalSearchRenderer,
+      render: GlobalSearchHeader,
     },
   },
   contextMenuItems: {

@@ -46,7 +46,11 @@ export type {
 } from "./contextMenu";
 
 // PluginContext
-export { usePluginContext, PluginContextProvider } from "./Context";
+export {
+  usePluginContext,
+  PluginContextProvider,
+  usePluginArgs,
+} from "./Context";
 export type {
   PluginContextValue,
   PluginColumnInfo,

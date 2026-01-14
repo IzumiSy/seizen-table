@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
   definePlugin,
   usePluginContext,
-  type PluginContext,
+  usePluginArgs,
 } from "@izumisy/seizen-table/plugin";
 import type { Cell, Row } from "@izumisy/seizen-table";
 
@@ -38,212 +38,196 @@ type AllSlotsDemoConfig = z.infer<typeof AllSlotsDemoSchema>;
 /**
  * SidePanel slot - Shows plugin info and controls
  */
-function createSidePanelRenderer(context: PluginContext<AllSlotsDemoConfig>) {
-  const { args } = context;
+function SidePanelContent() {
+  const args = usePluginArgs<AllSlotsDemoConfig>();
+  const { data, selectedRows, useEvent } = usePluginContext<"all-slots-demo">();
+  const [clickCount, setClickCount] = useState(0);
 
-  return function SidePanelContent() {
-    const { data, selectedRows, useEvent } =
-      usePluginContext<"all-slots-demo">();
-    const [clickCount, setClickCount] = useState(0);
+  useEvent("row-click", () => {
+    setClickCount((c) => c + 1);
+  });
 
-    useEvent("row-click", () => {
-      setClickCount((c) => c + 1);
-    });
+  return (
+    <div style={{ padding: "16px", width: 280 }}>
+      <h4 style={{ margin: "0 0 16px", color: args.primaryColor }}>
+        {args.sidePanelTitle}
+      </h4>
 
-    return (
-      <div style={{ padding: "16px", width: 280 }}>
-        <h4 style={{ margin: "0 0 16px", color: args.primaryColor }}>
-          {args.sidePanelTitle}
-        </h4>
-
-        <div style={{ marginBottom: "12px" }}>
-          <strong>Stats:</strong>
-          <ul style={{ margin: "8px 0", paddingLeft: "20px" }}>
-            <li>Total rows: {(data as unknown[]).length}</li>
-            <li>Selected rows: {selectedRows.length}</li>
-            <li>Row clicks: {clickCount}</li>
-          </ul>
-        </div>
-
-        <div
-          style={{
-            padding: "12px",
-            backgroundColor: "#f3f4f6",
-            borderRadius: "8px",
-            fontSize: "12px",
-          }}
-        >
-          <strong>About this plugin:</strong>
-          <p style={{ margin: "8px 0 0" }}>
-            This plugin demonstrates all 5 slot types: sidePanel, header,
-            footer, cell, and inlineRow.
-          </p>
-        </div>
+      <div style={{ marginBottom: "12px" }}>
+        <strong>Stats:</strong>
+        <ul style={{ margin: "8px 0", paddingLeft: "20px" }}>
+          <li>Total rows: {(data as unknown[]).length}</li>
+          <li>Selected rows: {selectedRows.length}</li>
+          <li>Row clicks: {clickCount}</li>
+        </ul>
       </div>
-    );
-  };
+
+      <div
+        style={{
+          padding: "12px",
+          backgroundColor: "#f3f4f6",
+          borderRadius: "8px",
+          fontSize: "12px",
+        }}
+      >
+        <strong>About this plugin:</strong>
+        <p style={{ margin: "8px 0 0" }}>
+          This plugin demonstrates all 5 slot types: sidePanel, header, footer,
+          cell, and inlineRow.
+        </p>
+      </div>
+    </div>
+  );
 }
 
 /**
  * Header slot - Renders between table header and body
  */
-function createHeaderRenderer(context: PluginContext<AllSlotsDemoConfig>) {
-  const { args } = context;
+function HeaderContent() {
+  const args = usePluginArgs<AllSlotsDemoConfig>();
+  const { data, selectedRows } = usePluginContext();
 
-  return function HeaderContent() {
-    const { data, selectedRows } = usePluginContext();
-
-    return (
-      <div
-        style={{
-          padding: "8px 12px",
-          backgroundColor: args.primaryColor + "10",
-          borderLeft: `3px solid ${args.primaryColor}`,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          fontSize: "13px",
-        }}
-      >
-        <span>
-          📊 Showing <strong>{(data as unknown[]).length}</strong> records
+  return (
+    <div
+      style={{
+        padding: "8px 12px",
+        backgroundColor: args.primaryColor + "10",
+        borderLeft: `3px solid ${args.primaryColor}`,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        fontSize: "13px",
+      }}
+    >
+      <span>
+        📊 Showing <strong>{(data as unknown[]).length}</strong> records
+      </span>
+      {selectedRows.length > 0 && (
+        <span style={{ color: args.primaryColor }}>
+          ✓ {selectedRows.length} selected
         </span>
-        {selectedRows.length > 0 && (
-          <span style={{ color: args.primaryColor }}>
-            ✓ {selectedRows.length} selected
-          </span>
-        )}
-      </div>
-    );
-  };
+      )}
+    </div>
+  );
 }
 
 /**
  * Footer slot - Renders below the table
  */
-function createFooterRenderer(context: PluginContext<AllSlotsDemoConfig>) {
-  const { args } = context;
+function FooterContent() {
+  const args = usePluginArgs<AllSlotsDemoConfig>();
+  const { columns } = usePluginContext();
 
-  return function FooterContent() {
-    const { columns } = usePluginContext();
-
-    return (
-      <div
-        style={{
-          padding: "12px",
-          backgroundColor: "#f9fafb",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          fontSize: "12px",
-          color: "#6b7280",
-        }}
-      >
-        <span>Columns: {columns.map((c) => c.header).join(", ")}</span>
-        <span style={{ color: args.primaryColor }}>All Slots Demo Plugin</span>
-      </div>
-    );
-  };
+  return (
+    <div
+      style={{
+        padding: "12px",
+        backgroundColor: "#f9fafb",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        fontSize: "12px",
+        color: "#6b7280",
+      }}
+    >
+      <span>Columns: {columns.map((c) => c.header).join(", ")}</span>
+      <span style={{ color: args.primaryColor }}>All Slots Demo Plugin</span>
+    </div>
+  );
 }
 
 /**
  * Cell slot - Custom cell renderer for all columns
  */
-function createCellRenderer(context: PluginContext<AllSlotsDemoConfig>) {
-  const { args } = context;
+function CellContent(cell: Cell<{ id: number }, unknown>) {
+  const args = usePluginArgs<AllSlotsDemoConfig>();
+  const value = cell.getValue();
+  const isNumeric = typeof value === "number";
 
-  return function CellContent(cell: Cell<{ id: number }, unknown>) {
-    const value = cell.getValue();
-    const isNumeric = typeof value === "number";
+  // Simple formatting based on value type
+  if (isNumeric && args.enableCellHighlight) {
+    return (
+      <span
+        style={{
+          fontWeight: 500,
+          color: args.primaryColor,
+        }}
+      >
+        {value.toLocaleString()}
+      </span>
+    );
+  }
 
-    // Simple formatting based on value type
-    if (isNumeric && args.enableCellHighlight) {
-      return (
-        <span
-          style={{
-            fontWeight: 500,
-            color: args.primaryColor,
-          }}
-        >
-          {value.toLocaleString()}
-        </span>
-      );
-    }
-
-    // Default rendering
-    return <>{String(value ?? "")}</>;
-  };
+  // Default rendering
+  return <>{String(value ?? "")}</>;
 }
 
 /**
  * Inline Row slot - Renders below a specific row when opened
  */
-function createInlineRowRenderer(context: PluginContext<AllSlotsDemoConfig>) {
-  const { args } = context;
+function InlineRowContent(row: Row<{ id: number }>) {
+  const args = usePluginArgs<AllSlotsDemoConfig>();
+  const { table } = usePluginContext();
+  const data = row.original;
 
-  return function InlineRowContent(row: Row<{ id: number }>) {
-    const { table } = usePluginContext();
-    const data = row.original;
-
-    return (
+  return (
+    <div
+      style={{
+        padding: "16px",
+        backgroundColor: args.primaryColor + "08",
+        borderLeft: `4px solid ${args.primaryColor}`,
+      }}
+    >
       <div
         style={{
-          padding: "16px",
-          backgroundColor: args.primaryColor + "08",
-          borderLeft: `4px solid ${args.primaryColor}`,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
-          <div>
-            <h4 style={{ margin: "0 0 8px", color: args.primaryColor }}>
-              Row Details (ID: {String(data.id)})
-            </h4>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "12px",
-                fontSize: "13px",
-              }}
-            >
-              {Object.entries(data).map(([key, value]) => (
-                <div key={key}>
-                  <span style={{ color: "#6b7280", fontSize: "11px" }}>
-                    {key}:
-                  </span>{" "}
-                  <span style={{ fontWeight: 500 }}>
-                    {typeof value === "object"
-                      ? JSON.stringify(value)
-                      : String(value)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={() => table.plugin.close()}
+        <div>
+          <h4 style={{ margin: "0 0 8px", color: args.primaryColor }}>
+            Row Details (ID: {String(data.id)})
+          </h4>
+          <div
             style={{
-              padding: "6px 12px",
-              border: "none",
-              borderRadius: "4px",
-              backgroundColor: args.primaryColor,
-              color: "white",
-              cursor: "pointer",
-              fontSize: "12px",
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "12px",
+              fontSize: "13px",
             }}
           >
-            Close
-          </button>
+            {Object.entries(data).map(([key, value]) => (
+              <div key={key}>
+                <span style={{ color: "#6b7280", fontSize: "11px" }}>
+                  {key}:
+                </span>{" "}
+                <span style={{ fontWeight: 500 }}>
+                  {typeof value === "object"
+                    ? JSON.stringify(value)
+                    : String(value)}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
+        <button
+          onClick={() => table.plugin.close()}
+          style={{
+            padding: "6px 12px",
+            border: "none",
+            borderRadius: "4px",
+            backgroundColor: args.primaryColor,
+            color: "white",
+            cursor: "pointer",
+            fontSize: "12px",
+          }}
+        >
+          Close
+        </button>
       </div>
-    );
-  };
+    </div>
+  );
 }
 
 // =============================================================================
@@ -291,19 +275,19 @@ export const AllSlotsDemo = definePlugin<
     sidePanel: {
       position: "right-sider",
       header: "All Slots Demo",
-      render: createSidePanelRenderer,
+      render: SidePanelContent,
     },
     header: {
-      render: createHeaderRenderer,
+      render: HeaderContent,
     },
     footer: {
-      render: createFooterRenderer,
+      render: FooterContent,
     },
     cell: {
-      render: createCellRenderer,
+      render: CellContent,
     },
     inlineRow: {
-      render: createInlineRowRenderer,
+      render: InlineRowContent,
     },
   },
 });

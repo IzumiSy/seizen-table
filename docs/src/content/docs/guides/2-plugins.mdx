@@ -79,32 +79,46 @@ All plugin development utilities are exported from a dedicated subpath:
 import {
   definePlugin,
   usePluginContext,
+  usePluginArgs,
   cellContextMenuItem,
   columnContextMenuItem,
   type PluginContext,
   type PluginContextValue,
   type PluginColumnInfo,
-} from "@izumisy/seizen-table-plugins";
+} from "@izumisy/seizen-table/plugin";
 ```
 
 ### Plugin Structure Overview
 
-A plugin is created using `definePlugin()` which returns a factory with a `configure()` method:
+A plugin is created using `definePlugin()` which returns a factory with a `configure()` method.
+**Important**: Plugin components should access their configuration via `usePluginArgs()` hook to maintain stable component identity.
 
 ```tsx
 import { z } from "zod";
-import { definePlugin } from "@izumisy/seizen-table-plugins";
+import { definePlugin, usePluginArgs } from "@izumisy/seizen-table/plugin";
 
 const MyPluginSchema = z.object({
   // Configuration options with Zod validation
   width: z.number().default(300),
 });
 
+type MyPluginConfig = z.infer<typeof MyPluginSchema>;
+
+// Define component at module level with stable reference
+function MyPluginPanel() {
+  const args = usePluginArgs<MyPluginConfig>(); // Access config via hook
+  return <div style={{ width: args.width }}>...</div>;
+}
+
 export const MyPlugin = definePlugin({
   id: "my-plugin",           // Unique identifier
   name: "My Plugin",         // Display name (shown in side panel tabs)
   args: MyPluginSchema,      // Zod schema for configuration
-  slots: { /* ... */ },      // UI slots (sidePanel, header, footer, cell, inlineRow)
+  slots: {
+    sidePanel: {
+      render: MyPluginPanel, // Pass component directly
+    },
+  },
   contextMenuItems: { /* ... */ },  // Optional context menu items
 });
 
@@ -123,8 +137,8 @@ import { z } from "zod";
 import {
   definePlugin,
   usePluginContext,
-  type PluginContext,
-} from "@izumisy/seizen-table-plugins";
+  usePluginArgs,
+} from "@izumisy/seizen-table/plugin";
 
 const SidePanelSchema = z.object({
   width: z.number().default(320),
@@ -132,24 +146,22 @@ const SidePanelSchema = z.object({
 
 type SidePanelConfig = z.infer<typeof SidePanelSchema>;
 
-function createSidePanelRenderer(context: PluginContext<SidePanelConfig>) {
-  const { args } = context;
+// Component defined at module level for stable identity
+function SidePanelContent() {
+  const args = usePluginArgs<SidePanelConfig>();
+  const { data, selectedRows, useEvent } = usePluginContext();
 
-  return function SidePanelContent() {
-    const { data, selectedRows, useEvent } = usePluginContext();
+  // Subscribe to row clicks
+  useEvent("row-click", (row) => {
+    console.log("Row clicked:", row);
+  });
 
-    // Subscribe to row clicks
-    useEvent("row-click", (row) => {
-      console.log("Row clicked:", row);
-    });
-
-    return (
-      <div style={{ width: args.width, padding: 16 }}>
-        <p>Total rows: {data.length}</p>
-        <p>Selected: {selectedRows.length}</p>
-      </div>
-    );
-  };
+  return (
+    <div style={{ width: args.width, padding: 16 }}>
+      <p>Total rows: {data.length}</p>
+      <p>Selected: {selectedRows.length}</p>
+    </div>
+  );
 }
 
 export const MySidePanelPlugin = definePlugin({
@@ -159,8 +171,8 @@ export const MySidePanelPlugin = definePlugin({
   slots: {
     sidePanel: {
       position: "right-sider",  // or "left-sider"
-      header: "Panel Title",    // Can also be a function: (context) => ReactNode
-      render: createSidePanelRenderer,
+      header: "Panel Title",
+      render: SidePanelContent, // Pass component directly
     },
   },
 });
@@ -171,21 +183,28 @@ export const MySidePanelPlugin = definePlugin({
 Render above or below the table body. All plugins with these slots render sequentially.
 
 ```tsx
+import { z } from "zod";
+import { definePlugin, usePluginContext } from "@izumisy/seizen-table/plugin";
+
+function HeaderContent() {
+  const { data } = usePluginContext();
+  return <div>Showing {data.length} records</div>;
+}
+
+function FooterContent() {
+  return <div>Footer content here</div>;
+}
+
 export const HeaderFooterPlugin = definePlugin({
   id: "header-footer",
   name: "Header Footer",
   args: z.object({}),
   slots: {
     header: {
-      render: (context) => function HeaderContent() {
-        const { data } = usePluginContext();
-        return <div>Showing {data.length} records</div>;
-      },
+      render: HeaderContent,
     },
     footer: {
-      render: (context) => function FooterContent() {
-        return <div>Footer content here</div>;
-      },
+      render: FooterContent,
     },
   },
 });
@@ -196,23 +215,30 @@ export const HeaderFooterPlugin = definePlugin({
 Custom renderers for cells and expandable rows. Only the first matching plugin renders.
 
 ```tsx
+import { z } from "zod";
+import { definePlugin } from "@izumisy/seizen-table/plugin";
+
+// Cell renderer receives (cell, column, row) as arguments
+function CellRenderer(cell: any, column: any, row: any) {
+  const value = cell.getValue();
+  return <span style={{ color: "blue" }}>{String(value)}</span>;
+}
+
+// InlineRow renderer receives (row) as argument
+function InlineRowRenderer(row: any) {
+  return <div>Details for row {row.id}</div>;
+}
+
 export const CellPlugin = definePlugin({
   id: "custom-cell",
   name: "Custom Cell",
   args: z.object({}),
   slots: {
     cell: {
-      // Receives TanStack Table's Cell, Column, and Row
-      render: (context) => (cell, column, row) => {
-        const value = cell.getValue();
-        return <span style={{ color: "blue" }}>{String(value)}</span>;
-      },
+      render: CellRenderer,
     },
     inlineRow: {
-      // Renders below a row when expanded
-      render: (context) => (row) => {
-        return <div>Details for row {row.id}</div>;
-      },
+      render: InlineRowRenderer,
     },
   },
 });
@@ -228,7 +254,7 @@ Plugins can add items to cell and column header context menus using `cellContext
 import {
   definePlugin,
   cellContextMenuItem,
-} from "@izumisy/seizen-table-plugins";
+} from "@izumisy/seizen-table/plugin";
 
 export const CellActionsPlugin = definePlugin({
   id: "cell-actions",
@@ -261,7 +287,7 @@ The `ctx` object provides access to the clicked cell, column, row, cell value, s
 import {
   definePlugin,
   columnContextMenuItem,
-} from "@izumisy/seizen-table-plugins";
+} from "@izumisy/seizen-table/plugin";
 
 export const ColumnActionsPlugin = definePlugin({
   id: "column-actions",
@@ -434,9 +460,9 @@ import { z } from "zod";
 import {
   definePlugin,
   usePluginContext,
+  usePluginArgs,
   cellContextMenuItem,
-  type PluginContext,
-} from "@izumisy/seizen-table-plugins";
+} from "@izumisy/seizen-table/plugin";
 
 // Type-safe plugin args
 declare module "@izumisy/seizen-table/plugin" {
@@ -455,43 +481,41 @@ const BulkActionsSchema = z.object({
 
 type BulkActionsConfig = z.infer<typeof BulkActionsSchema>;
 
-function createSidePanelRenderer(context: PluginContext<BulkActionsConfig>) {
-  const { args } = context;
+// Component defined at module level with stable reference
+function BulkActionsPanel() {
+  const args = usePluginArgs<BulkActionsConfig>();
+  const { selectedRows, openArgs, useEvent } = usePluginContext<"bulk-actions">();
+  const [lastDeleted, setLastDeleted] = useState<number>(0);
 
-  return function BulkActionsPanel() {
-    const { selectedRows, openArgs, useEvent } = usePluginContext<"bulk-actions">();
-    const [lastDeleted, setLastDeleted] = useState<number>(0);
+  // Subscribe to delete events
+  useEvent("bulk-actions:delete", ({ rows }) => {
+    setLastDeleted(rows.length);
+  });
 
-    // Subscribe to delete events
-    useEvent("bulk-actions:delete", ({ rows }) => {
-      setLastDeleted(rows.length);
-    });
-
-    if (selectedRows.length === 0) {
-      return (
-        <div style={{ padding: 16, color: "#9ca3af" }}>
-          Select rows to see bulk actions
-        </div>
-      );
-    }
-
+  if (selectedRows.length === 0) {
     return (
-      <div style={{ padding: 16 }}>
-        <p>{selectedRows.length} rows selected</p>
-        {args.enableDelete && (
-          <button onClick={() => console.log("Delete", selectedRows)}>
-            Delete Selected
-          </button>
-        )}
-        {args.enableExport && (
-          <button onClick={() => console.log("Export", selectedRows)}>
-            Export Selected
-          </button>
-        )}
-        {lastDeleted > 0 && <p>Last deleted: {lastDeleted} rows</p>}
+      <div style={{ padding: 16, color: "#9ca3af" }}>
+        Select rows to see bulk actions
       </div>
     );
-  };
+  }
+
+  return (
+    <div style={{ padding: 16 }}>
+      <p>{selectedRows.length} rows selected</p>
+      {args.enableDelete && (
+        <button onClick={() => console.log("Delete", selectedRows)}>
+          Delete Selected
+        </button>
+      )}
+      {args.enableExport && (
+        <button onClick={() => console.log("Export", selectedRows)}>
+          Export Selected
+        </button>
+      )}
+      {lastDeleted > 0 && <p>Last deleted: {lastDeleted} rows</p>}
+    </div>
+  );
 }
 
 export const BulkActionsPlugin = definePlugin({
@@ -502,7 +526,7 @@ export const BulkActionsPlugin = definePlugin({
     sidePanel: {
       position: "right-sider",
       header: "Bulk Actions",
-      render: createSidePanelRenderer,
+      render: BulkActionsPanel, // Stable component reference
     },
   },
   contextMenuItems: {
