@@ -17,7 +17,7 @@ Seizen Table includes a built-in event bus that enables communication between th
 
 ## Subscribing to Events
 
-Use the `useSeizenTableEvent` hook to subscribe to events from your application code:
+Use the `useSeizenTableEvent` hook to subscribe to events from your application code. This works for both built-in events and custom events emitted by plugins:
 
 ```tsx
 import { useSeizenTable, useSeizenTableEvent, SeizenTable } from "@izumisy/seizen-table";
@@ -25,14 +25,19 @@ import { useSeizenTable, useSeizenTableEvent, SeizenTable } from "@izumisy/seize
 function App() {
   const table = useSeizenTable({ data, columns });
 
-  // Subscribe to row-click events
+  // Subscribe to built-in row-click events
   useSeizenTableEvent(table, "row-click", (row) => {
     console.log("Row clicked:", row);
   });
 
-  // Subscribe to selection changes
+  // Subscribe to built-in selection changes
   useSeizenTableEvent(table, "selection-change", (selectedRows) => {
     console.log("Selection changed:", selectedRows);
+  });
+
+  // Subscribe to custom events from plugins (e.g., file-export plugin)
+  useSeizenTableEvent(table, "file-export:completed", (payload) => {
+    console.log("Export completed:", payload.filename);
   });
 
   return <SeizenTable table={table} />;
@@ -102,7 +107,7 @@ export const myPlugin = definePlugin(() => ({
 
 ### Subscribing to Custom Events
 
-Once declared, custom events are fully type-safe when subscribing:
+Once declared, custom events are fully type-safe when subscribing from your application code:
 
 ```tsx
 // In your application code
@@ -110,15 +115,11 @@ useSeizenTableEvent(table, "my-plugin:action", (payload) => {
   // TypeScript knows: payload is { itemId: string; action: "create" | "delete" }
   console.log(`Action ${payload.action} on item ${payload.itemId}`);
 });
-
-// Or inside another plugin
-useEvent("my-plugin:complete", (payload) => {
-  // TypeScript knows: payload is { success: boolean }
-  if (payload.success) {
-    showNotification("Operation completed!");
-  }
-});
 ```
+
+<Aside type="tip">
+For subscribing to events inside plugins, see the [Events in Plugins](#events-in-plugins) section below.
+</Aside>
 
 ## Best Practices
 
@@ -170,6 +171,69 @@ declare module "@izumisy/seizen-table/plugin" {
   }
 }
 ```
+
+### 4. Place useEvent at the Right Component Level
+
+<Aside type="caution" title="Important">
+**Where you place `useEvent` matters!** Event subscriptions are only active while the component containing `useEvent` is mounted.
+
+If your plugin uses a SidePanel slot with conditionally rendered child components (e.g., tabs), placing `useEvent` inside those child components means events will only be received when that specific tab is displayed.
+</Aside>
+
+For example, if your plugin listens to events from context menu actions, place `useEvent` in the **top-level panel component**, not in child components that may be conditionally rendered:
+
+```tsx
+// ❌ Bad: useEvent in a child component that's conditionally rendered
+function VisibilityTab() {
+  const { useEvent, table } = usePluginContext();
+  
+  // This only receives events when the Visibility tab is active!
+  useEvent("column:hide-request", (payload) => {
+    table.setColumnVisibility({ [payload.columnId]: false });
+  });
+  
+  return <div>...</div>;
+}
+
+function ColumnControlPanel() {
+  const [activeTab, setActiveTab] = useState("visibility");
+  
+  return (
+    <div>
+      {activeTab === "visibility" && <VisibilityTab />}
+      {activeTab === "sorter" && <SorterTab />}
+    </div>
+  );
+}
+```
+
+```tsx
+// ✅ Good: useEvent in the top-level panel component
+function ColumnControlPanel() {
+  const { useEvent, table } = usePluginContext();
+  const [activeTab, setActiveTab] = useState("visibility");
+  
+  // Always mounted, always receives events
+  useEvent("column:hide-request", (payload) => {
+    table.setColumnVisibility({ [payload.columnId]: false });
+  });
+  
+  useEvent("column:sort-request", (payload) => {
+    // Handle sort request...
+  });
+  
+  return (
+    <div>
+      {activeTab === "visibility" && <VisibilityTab />}
+      {activeTab === "sorter" && <SorterTab />}
+    </div>
+  );
+}
+```
+
+<Aside type="tip">
+SidePanel slot components are always mounted (with `display: none` when inactive), so placing `useEvent` at the panel root ensures events are received even when the side panel is closed.
+</Aside>
 
 ## Events in Plugins
 

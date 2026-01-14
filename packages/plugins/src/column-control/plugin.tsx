@@ -80,7 +80,7 @@ function TabButton({
 // Visibility Tab Component
 // =============================================================================
 function VisibilityTab() {
-  const { columns, table, useEvent } = usePluginContext();
+  const { columns, table } = usePluginContext();
   const columnVisibility = table.getColumnVisibility();
   const [searchQuery, setSearchQuery] = useState("");
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null);
@@ -88,16 +88,6 @@ function VisibilityTab() {
 
   const isColumnVisible = (columnKey: string) =>
     columnVisibility[columnKey] !== false;
-
-  // Subscribe to column:hide-request event (from context menu)
-  useEvent("column:hide-request", (payload) => {
-    const { columnId } = payload;
-    // Use setColumnVisibility to explicitly hide (not toggle)
-    table.setColumnVisibility({
-      ...table.getColumnVisibility(),
-      [columnId]: false,
-    });
-  });
 
   const filteredColumns = columns.filter(
     (column) =>
@@ -267,39 +257,10 @@ interface SorterItem {
 }
 
 function SorterTab() {
-  const { columns, table, useEvent } = usePluginContext();
+  const { columns, table } = usePluginContext();
   const sortingState = table.getSortingState();
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-
-  // Subscribe to column:sort-request event (from context menu)
-  useEvent("column:sort-request", (payload) => {
-    const { columnId, direction } = payload;
-    // Get fresh sorting state inside callback to avoid stale closure
-    const currentSorting = table.getSortingState();
-    if (direction === "clear") {
-      // Remove this column from sorting
-      const newSorting = currentSorting.filter((s) => s.id !== columnId);
-      table.setSorting(newSorting);
-    } else {
-      // Check if column is already being sorted
-      const existingIndex = currentSorting.findIndex((s) => s.id === columnId);
-      if (existingIndex >= 0) {
-        // Update direction
-        const newSorting = currentSorting.map((s) =>
-          s.id === columnId ? { ...s, desc: direction === "desc" } : s
-        );
-        table.setSorting(newSorting);
-      } else {
-        // Add new sorter
-        const newSorting = [
-          ...currentSorting,
-          { id: columnId, desc: direction === "desc" },
-        ];
-        table.setSorting(newSorting);
-      }
-    }
-  });
 
   // Convert sorting state to sorter items with column headers
   const sorterItems: SorterItem[] = useMemo(() => {
@@ -601,7 +562,43 @@ function SorterTab() {
  */
 function ColumnControlPanel() {
   const args = usePluginArgs<ColumnControlConfig>();
+  const { table, useEvent } = usePluginContext();
   const [activeTab, setActiveTab] = useState<TabType>("visibility");
+
+  // Subscribe to column:hide-request event (from context menu)
+  // This must be at the panel level to ensure it's always mounted
+  useEvent("column:hide-request", (payload) => {
+    const { columnId } = payload;
+    table.setColumnVisibility({
+      ...table.getColumnVisibility(),
+      [columnId]: false,
+    });
+  });
+
+  // Subscribe to column:sort-request event (from context menu)
+  // This must be at the panel level to ensure it's always mounted
+  useEvent("column:sort-request", (payload) => {
+    const { columnId, direction } = payload;
+    const currentSorting = table.getSortingState();
+    if (direction === "clear") {
+      const newSorting = currentSorting.filter((s) => s.id !== columnId);
+      table.setSorting(newSorting);
+    } else {
+      const existingIndex = currentSorting.findIndex((s) => s.id === columnId);
+      if (existingIndex >= 0) {
+        const newSorting = currentSorting.map((s) =>
+          s.id === columnId ? { ...s, desc: direction === "desc" } : s
+        );
+        table.setSorting(newSorting);
+      } else {
+        const newSorting = [
+          ...currentSorting,
+          { id: columnId, desc: direction === "desc" },
+        ];
+        table.setSorting(newSorting);
+      }
+    }
+  });
 
   return (
     <div
