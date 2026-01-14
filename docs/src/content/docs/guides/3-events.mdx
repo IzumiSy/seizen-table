@@ -205,3 +205,66 @@ The `useEvent` hook inside plugins and `useSeizenTableEvent` hook in application
 
 This separation ensures that application developers get maximum type safety, while plugin authors can write generic, reusable code that works with any table configuration.
 </Aside>
+
+### useEvent Placement in Components
+
+<Aside type="caution" title="Important">
+**Where you place `useEvent` matters!** Event subscriptions are only active while the component containing `useEvent` is mounted.
+
+If your plugin uses a SidePanel slot with conditionally rendered child components (e.g., tabs), placing `useEvent` inside those child components means events will only be received when that specific tab is displayed.
+</Aside>
+
+For example, if your plugin listens to events from context menu actions, place `useEvent` in the **top-level panel component**, not in child components that may be conditionally rendered:
+
+```tsx
+// ❌ Bad: useEvent in a child component that's conditionally rendered
+function VisibilityTab() {
+  const { useEvent, table } = usePluginContext();
+  
+  // This only receives events when the Visibility tab is active!
+  useEvent("column:hide-request", (payload) => {
+    table.setColumnVisibility({ [payload.columnId]: false });
+  });
+  
+  return <div>...</div>;
+}
+
+function ColumnControlPanel() {
+  const [activeTab, setActiveTab] = useState("visibility");
+  
+  return (
+    <div>
+      {activeTab === "visibility" && <VisibilityTab />}
+      {activeTab === "sorter" && <SorterTab />}
+    </div>
+  );
+}
+```
+
+```tsx
+// ✅ Good: useEvent in the top-level panel component
+function ColumnControlPanel() {
+  const { useEvent, table } = usePluginContext();
+  const [activeTab, setActiveTab] = useState("visibility");
+  
+  // Always mounted, always receives events
+  useEvent("column:hide-request", (payload) => {
+    table.setColumnVisibility({ [payload.columnId]: false });
+  });
+  
+  useEvent("column:sort-request", (payload) => {
+    // Handle sort request...
+  });
+  
+  return (
+    <div>
+      {activeTab === "visibility" && <VisibilityTab />}
+      {activeTab === "sorter" && <SorterTab />}
+    </div>
+  );
+}
+```
+
+<Aside type="tip">
+SidePanel slot components are always mounted (with `display: none` when inactive), so placing `useEvent` at the panel root ensures events are received even when the side panel is closed.
+</Aside>
