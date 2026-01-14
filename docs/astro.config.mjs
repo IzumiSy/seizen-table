@@ -3,6 +3,7 @@ import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 import { createStarlightTypeDocPlugin } from "starlight-typedoc";
 import starlightLlmsTxt from "starlight-llms-txt";
+import starlightLinksValidator from "starlight-links-validator";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 
@@ -52,6 +53,7 @@ export default defineConfig({
       title: "Seizen Table",
       customCss: ["./src/styles/custom.css"],
       plugins: [
+        starlightLinksValidator(),
         starlightLlmsTxt({
           rawContent: true,
         }),
