@@ -19,6 +19,7 @@ export default defineConfig({
         "file-export": "./src/file-export/index.ts",
         "row-detail": "./src/row-detail/index.ts",
         "all-slots-demo": "./src/all-slots-demo/index.ts",
+        "preset-filter": "./src/preset-filter/index.ts",
       },
       formats: ["es"],
     },

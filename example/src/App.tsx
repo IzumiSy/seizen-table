@@ -2,6 +2,7 @@ import { type FC } from "react";
 import { HashRouter, Routes, Route, NavLink, Navigate } from "react-router";
 import { BasicDemo } from "./components/BasicDemo";
 import { FilterDemo } from "./components/FilterDemo";
+import { PresetFilterDemo } from "./components/PresetFilterDemo";
 import { ColumnControlDemo } from "./components/ColumnControlDemo";
 import { DataExportDemo } from "./components/DataExportDemo";
 import { RowDetailDemo } from "./components/RowDetailDemo";
@@ -24,6 +25,11 @@ const demos: { path: string; component: FC; title: string }[] = [
     path: "filter",
     component: FilterDemo,
     title: "Filter",
+  },
+  {
+    path: "preset-filter",
+    component: PresetFilterDemo,
+    title: "Preset Filter",
   },
   {
     path: "column-control",
