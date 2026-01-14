@@ -4,6 +4,7 @@ import {
   useSeizenTableEvent,
 } from "@izumisy/seizen-table";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
+import { PresetFilterPlugin } from "@izumisy/seizen-table-plugins/preset-filter";
 import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
 import {
   FileExportPlugin,
@@ -632,7 +633,36 @@ export function FullDemo() {
     data,
     columns,
     plugins: [
-      FilterPlugin.configure({ width: 320 }),
+      PresetFilterPlugin.configure({
+        presets: [
+          {
+            id: "active",
+            label: "Active",
+            filters: [
+              { columnKey: "status", operator: "equals", value: "active" },
+            ],
+          },
+          {
+            id: "engineering",
+            label: "Engineering",
+            filters: [
+              {
+                columnKey: "department",
+                operator: "equals",
+                value: "Engineering",
+              },
+            ],
+          },
+          {
+            id: "high-salary",
+            label: "High Salary",
+            filters: [{ columnKey: "salary", operator: "gte", value: "80000" }],
+          },
+        ],
+        allLabel: "All",
+        searchPlaceholder: "Search employees...",
+      }),
+      FilterPlugin.configure({ width: 320, disableGlobalSearch: true }),
       ColumnControlPlugin.configure({ width: 280 }),
       FileExportPlugin.configure({
         filename: "employees",
