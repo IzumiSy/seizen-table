@@ -21,4 +21,4 @@ jobs:
           cache-dependency-path: ./pnpm-lock.yaml
           node-version-file: './package.json'
       - run: pnpm install
-      - run: pnpm type-check
+      - run: npx turbo run type-check test
