@@ -1,49 +1,55 @@
-# Starlight Starter Kit: Basics
+# Seizen Table Documentation
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+This package contains the documentation site for Seizen Table, built with [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/).
+
+## Build Pipeline
+
+This documentation site depends on the `@izumisy/seizen-table-example` package for demo components and assets. See [DEVELOPMENT.md](../DEVELOPMENT.md) for the full build pipeline diagram.
+
+During the build process:
+1. The `example` package builds its demo app to `dist-app/`
+2. This docs site copies the demo assets from `example/dist-app/assets/` to `public/demos/assets/`
+3. The `/demos/` page in docs loads these assets via iframe
+
+## Project Structure
 
 ```
-pnpm create astro@latest -- --template starlight
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
+docs/
 ├── public/
+│   └── demos/
+│       └── assets/        # Copied from example/dist-app/assets during build
 ├── src/
-│   ├── assets/
+│   ├── assets/            # Images and static assets
+│   ├── components/        # React components for documentation
 │   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+│   │   └── docs/          # MDX documentation files
+│   ├── pages/
+│   │   └── demos/         # Demo pages
+│   └── styles/            # Custom CSS
+├── astro.config.mjs       # Astro configuration with TypeDoc plugins
+└── package.json
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## Commands
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+All commands are run from the `docs/` directory:
 
-Static assets, like favicons, can be placed in the `public/` directory.
+| Command | Action |
+|---------|--------|
+| `pnpm install` | Install dependencies |
+| `pnpm dev` | Start local dev server at `localhost:4321` |
+| `pnpm build` | Build production site to `./dist/` |
+| `pnpm preview` | Preview build locally before deploying |
+| `pnpm type-check` | Run Astro type checking |
 
-## 🧞 Commands
+## Features
 
-All commands are run from the root of the project, from a terminal:
+- **Starlight**: Documentation framework with sidebar navigation, search, and theming
+- **TypeDoc Integration**: Auto-generated API documentation from TypeScript source
+- **Link Validation**: Automated link checking via `starlight-links-validator`
+- **LLM Support**: Generated `llms.txt` for AI assistants via `starlight-llms-txt`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Learn More
 
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+- [Starlight Documentation](https://starlight.astro.build/)
+- [Astro Documentation](https://docs.astro.build)
