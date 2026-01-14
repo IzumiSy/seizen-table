@@ -1,7 +1,5 @@
-import { vi } from "vitest";
 import type { PluginColumnInfo } from "@izumisy/seizen-table/plugin";
 import {
-  createMockTable,
   createMockPluginContext,
   type MockTableInstance,
   type EventCallbackStore,
