@@ -2,6 +2,7 @@ import "@izumisy/seizen-table/styles.css";
 import {
   BasicDemo,
   FilterDemo,
+  PresetFilterDemo,
   ColumnControlDemo,
   DataExportDemo,
   RowDetailDemo,
@@ -19,6 +20,7 @@ const demoComponents: Record<DemoName, React.ComponentType> = {
   basic: BasicDemo,
   theming: ThemingDemo,
   filter: FilterDemo,
+  "preset-filter": PresetFilterDemo,
   "column-control": ColumnControlDemo,
   "data-export": DataExportDemo,
   "row-detail": RowDetailDemo,

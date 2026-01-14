@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { z } from "zod";
 import {
   definePlugin,
@@ -10,6 +10,7 @@ import {
   type FilterOperator,
   type PluginColumnInfo,
 } from "@izumisy/seizen-table/plugin";
+import { GlobalSearchInput } from "../shared";
 
 // =============================================================================
 // Module Augmentation for EventBus
@@ -600,46 +601,12 @@ function FilterPanel() {
 // =============================================================================
 
 function GlobalSearchHeader() {
-  const { table } = usePluginContext();
   const args = usePluginArgs<FilterPluginConfig>();
-  const [searchValue, setSearchValue] = useState(
-    () => table.getGlobalFilter() ?? ""
-  );
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // If global search is disabled, render nothing
   if (args.disableGlobalSearch) {
     return null;
   }
-
-  const handleSearchChange = (value: string) => {
-    setSearchValue(value);
-
-    // Debounce the global filter update
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-    debounceRef.current = setTimeout(() => {
-      table.setGlobalFilter(value);
-    }, 300);
-  };
-
-  const handleClear = () => {
-    setSearchValue("");
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-    table.setGlobalFilter("");
-  };
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div
@@ -652,70 +619,12 @@ function GlobalSearchHeader() {
         borderBottom: "1px solid #e5e7eb",
       }}
     >
-      {/* Search icon */}
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#9ca3af"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21-4.35-4.35" />
-      </svg>
-
-      {/* Search input */}
-      <input
-        type="text"
-        value={searchValue}
-        onChange={(e) => handleSearchChange(e.target.value)}
+      <GlobalSearchInput
         placeholder="Search all columns..."
-        style={{
-          flex: 1,
-          padding: "6px 8px",
-          fontSize: "14px",
-          border: "1px solid #e5e7eb",
-          borderRadius: "4px",
-          outline: "none",
-          backgroundColor: "#fff",
-        }}
+        debounceMs={300}
+        width="100%"
+        variant="default"
       />
-
-      {/* Clear button - only show when there's a value */}
-      {searchValue && (
-        <button
-          onClick={handleClear}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "24px",
-            height: "24px",
-            padding: 0,
-            fontSize: "16px",
-            color: "#9ca3af",
-            backgroundColor: "transparent",
-            border: "1px solid #e5e7eb",
-            borderRadius: "4px",
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = "#f3f4f6";
-            e.currentTarget.style.color = "#6b7280";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "#9ca3af";
-          }}
-          title="Clear search"
-        >
-          ×
-        </button>
-      )}
     </div>
   );
 }

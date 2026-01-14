@@ -23,6 +23,10 @@
     "./all-slots-demo": {
       "import": "./dist/all-slots-demo.js",
       "types": "./dist/all-slots-demo.d.ts"
+    },
+    "./preset-filter": {
+      "import": "./dist/preset-filter.js",
+      "types": "./dist/preset-filter.d.ts"
     }
   },
   "files": [

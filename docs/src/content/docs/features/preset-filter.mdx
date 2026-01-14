@@ -1,0 +1,156 @@
+---
+title: Preset Filter
+description: Add quick filter presets and global search to your SeizenTable header.
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import { DemoPreview } from '@components/DemoPreview';
+
+SeizenTable supports preset filter buttons and global search through the `PresetFilterPlugin` from `@izumisy/seizen-table-plugins`.
+
+## Try It
+
+Click on the preset buttons to quickly filter data, or use the search bar to search across all columns.
+
+<DemoPreview demo="preset-filter" height={350} client:only="react" />
+
+## Installation
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @izumisy/seizen-table-plugins
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @izumisy/seizen-table-plugins
+    ```
+  </TabItem>
+</Tabs>
+
+## Basic Usage
+
+```tsx
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
+import { PresetFilterPlugin } from "@izumisy/seizen-table-plugins/preset-filter";
+
+function MyTable() {
+  const table = useSeizenTable({
+    data,
+    columns,
+    plugins: [
+      PresetFilterPlugin.configure({
+        presets: [
+          {
+            id: "active",
+            label: "Active",
+            filters: [
+              { columnKey: "status", operator: "equals", value: "active" },
+            ],
+          },
+          {
+            id: "high-value",
+            label: "High Value",
+            filters: [
+              { columnKey: "amount", operator: "gte", value: "1000" },
+            ],
+          },
+        ],
+      }),
+    ],
+  });
+
+  return <SeizenTable table={table} />;
+}
+```
+
+The plugin adds:
+- A **header bar** with preset filter buttons on the left
+- A **global search bar** on the right side
+- An **"All" button** to clear all filters
+
+## Preset Definition
+
+Each preset has the following structure:
+
+```tsx
+interface Preset {
+  id: string;       // Unique identifier
+  label: string;    // Button display text
+  filters: FilterCondition[];
+}
+
+interface FilterCondition {
+  columnKey: string;        // Column accessor key
+  operator: FilterOperator; // Filter operator
+  value?: string;           // Filter value (optional for is_empty/is_not_empty)
+}
+```
+
+### Multiple Filter Conditions
+
+You can combine multiple filter conditions in a single preset. Conditions are combined with AND logic:
+
+```tsx
+PresetFilterPlugin.configure({
+  presets: [
+    {
+      id: "active-engineers",
+      label: "Active Engineers",
+      filters: [
+        { columnKey: "status", operator: "equals", value: "active" },
+        { columnKey: "department", operator: "equals", value: "Engineering" },
+      ],
+    },
+  ],
+})
+```
+
+## Filter Operators
+
+| Type | Operators |
+|------|-----------|
+| String | `contains`, `not_contains`, `equals`, `not_equals`, `starts_with`, `ends_with`, `is_empty`, `is_not_empty` |
+| Number | `eq`, `neq`, `gt`, `gte`, `lt`, `lte` |
+| Date | `before`, `after`, `on` |
+| Enum | `is`, `is_not` |
+
+## Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `presets` | `Preset[]` | Required | Array of preset filter definitions |
+| `allLabel` | `string` | `"All"` | Label for the "All" button that clears filters |
+| `enableGlobalSearch` | `boolean` | `true` | Enable the global search bar |
+| `searchPlaceholder` | `string` | `"Search..."` | Placeholder text for the search input |
+| `searchDebounceMs` | `number` | `300` | Debounce delay for search in milliseconds |
+
+## Combining with FilterPlugin
+
+PresetFilterPlugin works great alongside FilterPlugin for a complete filtering experience. When using both, disable global search on FilterPlugin to avoid duplication:
+
+```tsx
+import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
+import { PresetFilterPlugin } from "@izumisy/seizen-table-plugins/preset-filter";
+
+const table = useSeizenTable({
+  data,
+  columns,
+  plugins: [
+    PresetFilterPlugin.configure({
+      presets: [
+        { id: "active", label: "Active", filters: [...] },
+      ],
+    }),
+    FilterPlugin.configure({ 
+      width: 320,
+      disableGlobalSearch: true, // Use PresetFilter's search bar instead
+    }),
+  ],
+});
+```
+
+<Aside type="tip">
+  PresetFilterPlugin is ideal for common, frequently-used filters, while FilterPlugin provides advanced filter building capabilities for complex queries.
+</Aside>
