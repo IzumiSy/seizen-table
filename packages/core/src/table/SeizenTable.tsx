@@ -10,6 +10,7 @@ import {
 } from "./components";
 import { Paginator } from "./components/Paginator";
 import { SeizenTablePlugins } from "../plugin/SeizenTablePlugins";
+import * as styles from "./styles.css";
 
 export interface PaginateOptions {
   /**
@@ -40,6 +41,43 @@ export interface SeizenTableProps<TData> {
    * Pagination options
    */
   paginate?: PaginateOptions;
+
+  /**
+   * Show loading overlay on the table.
+   * Useful for Remote Mode when fetching data.
+   *
+   * @default false
+   */
+  loading?: boolean;
+
+  /**
+   * Custom loader component. Defaults to a built-in spinner.
+   *
+   * @example
+   * loaderComponent={<MySpinner size="lg" />}
+   */
+  loaderComponent?: React.ReactNode;
+}
+
+/**
+ * Default loading spinner component
+ */
+function DefaultLoader() {
+  return (
+    <div className={styles.spinner} aria-label="Loading">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray="31.4 31.4"
+        />
+      </svg>
+    </div>
+  );
 }
 
 /**
@@ -86,6 +124,8 @@ export function SeizenTable<TData>({
   table,
   className,
   paginate,
+  loading = false,
+  loaderComponent,
 }: SeizenTableProps<TData>) {
   const paginateEnabled = paginate?.enable ?? true;
   const paginateSizeOptions = paginate?.sizeOptions ?? [10, 20, 50, 100];
@@ -95,10 +135,17 @@ export function SeizenTable<TData>({
       <SeizenTablePlugins.SidePanel position="left" />
       <TableContent>
         <SeizenTablePlugins.Header />
-        <TableTable>
-          <TableHeader />
-          <TableBody />
-        </TableTable>
+        <div className={styles.tableWrapper}>
+          {loading && (
+            <div className={styles.loadingOverlay}>
+              {loaderComponent ?? <DefaultLoader />}
+            </div>
+          )}
+          <TableTable>
+            <TableHeader />
+            <TableBody />
+          </TableTable>
+        </div>
         <SeizenTablePlugins.Footer />
         {paginateEnabled && (
           <Paginator table={table} sizeOptions={paginateSizeOptions} />

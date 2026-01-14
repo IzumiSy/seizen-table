@@ -168,22 +168,6 @@ describe("useSeizenTable", () => {
       expect(selectedRows).toHaveLength(1);
       expect(selectedRows).toContainEqual(data[0]);
     });
-
-    it("should call onSelectionChange callback when selection changes", () => {
-      const data = createTestData();
-      const columns = createTestColumns();
-      const onSelectionChange = vi.fn();
-
-      const { result } = renderHook(() =>
-        useSeizenTable({ data, columns, onSelectionChange })
-      );
-
-      act(() => {
-        result.current.setSelectedRows([data[0]]);
-      });
-
-      expect(onSelectionChange).toHaveBeenCalled();
-    });
   });
 
   // ===========================================================================
@@ -697,6 +681,204 @@ describe("useSeizenTable", () => {
       rerender({ data: newData });
 
       expect(result.current.getData()).toEqual(newData);
+    });
+  });
+
+  // ===========================================================================
+  // Remote Mode Tests
+  // ===========================================================================
+
+  describe("Remote Mode", () => {
+    it("should set remote: false by default", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() => useSeizenTable({ data, columns }));
+
+      expect(result.current.remote).toBe(false);
+    });
+
+    it("should set remote: true when remote option is true", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: true })
+      );
+
+      expect(result.current.remote).toBe(true);
+    });
+
+    it("should set remote: true when remote option has totalRowCount", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: { totalRowCount: 100 } })
+      );
+
+      expect(result.current.remote).toBe(true);
+    });
+
+    it("should calculate pageCount from totalRowCount in Remote Mode", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: { totalRowCount: 55 } })
+      );
+
+      // Default pageSize is 10, so 55 rows = 6 pages
+      const tanstackTable = result.current._tanstackTable;
+      expect(tanstackTable.getPageCount()).toBe(6);
+    });
+
+    it("should update pageCount when pageSize changes", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: { totalRowCount: 100 } })
+      );
+
+      // Default pageSize is 10, so 100 rows = 10 pages
+      expect(result.current._tanstackTable.getPageCount()).toBe(10);
+
+      // Change pageSize to 20
+      act(() => {
+        result.current.setPageSize(20);
+      });
+
+      // Now 100 rows = 5 pages
+      expect(result.current._tanstackTable.getPageCount()).toBe(5);
+    });
+
+    it("should not filter data internally when remote is enabled", () => {
+      // Create data where only 2 rows would match a filter
+      const data: TestRow[] = [
+        { id: 1, name: "Alice", age: 30, status: "active" },
+        { id: 2, name: "Bob", age: 25, status: "inactive" },
+        { id: 3, name: "Charlie", age: 35, status: "active" },
+      ];
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: true })
+      );
+
+      // Apply a filter
+      act(() => {
+        result.current.setFilter([
+          { id: "status", value: { operator: "equals", value: "active" } },
+        ]);
+      });
+
+      // In Remote Mode, internal filtering is disabled (manualFiltering: true)
+      // So all rows should still be displayed
+      const tanstackTable = result.current._tanstackTable;
+      expect(tanstackTable.getRowModel().rows).toHaveLength(3);
+    });
+
+    it("should not sort data internally when remote is enabled", () => {
+      const data: TestRow[] = [
+        { id: 3, name: "Charlie", age: 35, status: "active" },
+        { id: 1, name: "Alice", age: 30, status: "active" },
+        { id: 2, name: "Bob", age: 25, status: "inactive" },
+      ];
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: true })
+      );
+
+      // Apply sorting
+      act(() => {
+        result.current.setSorting([{ id: "id", desc: false }]);
+      });
+
+      // In Remote Mode, internal sorting is disabled (manualSorting: true)
+      // So the order should remain as provided
+      const rows = result.current._tanstackTable.getRowModel().rows;
+      expect(rows[0].original.id).toBe(3);
+      expect(rows[1].original.id).toBe(1);
+      expect(rows[2].original.id).toBe(2);
+    });
+
+    it("should not paginate data internally when remote is enabled", () => {
+      // Create more than one page of data (default pageSize is 10)
+      const data: TestRow[] = Array.from({ length: 15 }, (_, i) => ({
+        id: i + 1,
+        name: `User ${i + 1}`,
+        age: 20 + i,
+        status: "active",
+      }));
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: { totalRowCount: 15 } })
+      );
+
+      // In Remote Mode, internal pagination is disabled (manualPagination: true)
+      // So all 15 rows should be in the row model (data is pre-paginated externally)
+      const tanstackTable = result.current._tanstackTable;
+      expect(tanstackTable.getRowModel().rows).toHaveLength(15);
+    });
+
+    it("should still update internal filter state for UI sync", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: true })
+      );
+
+      // Apply a filter
+      act(() => {
+        result.current.setFilter([
+          { id: "status", value: { operator: "equals", value: "active" } },
+        ]);
+      });
+
+      // Internal state should be updated for plugin UI sync
+      expect(result.current.getFilterState()).toEqual([
+        { id: "status", value: { operator: "equals", value: "active" } },
+      ]);
+    });
+
+    it("should still update internal sorting state for UI sync", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: true })
+      );
+
+      // Apply sorting
+      act(() => {
+        result.current.setSorting([{ id: "name", desc: true }]);
+      });
+
+      // Internal state should be updated for plugin UI sync
+      expect(result.current.getSortingState()).toEqual([
+        { id: "name", desc: true },
+      ]);
+    });
+
+    it("should still update internal pagination state for UI sync", () => {
+      const data = createTestData();
+      const columns = createTestColumns();
+
+      const { result } = renderHook(() =>
+        useSeizenTable({ data, columns, remote: { totalRowCount: 100 } })
+      );
+
+      // Change page
+      act(() => {
+        result.current.setPageIndex(3);
+      });
+
+      // Internal state should be updated for plugin UI sync
+      expect(result.current.getPaginationState().pageIndex).toBe(3);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { style, globalStyle } from "@vanilla-extract/css";
+import { style, globalStyle, keyframes } from "@vanilla-extract/css";
 
 /**
  * CSS Variables for theming
@@ -54,6 +54,7 @@ export const mainContent = style({
 
 // Wrapper for the main table
 export const tableWrapper = style({
+  position: "relative",
   flex: 1,
   overflow: "auto",
 });
@@ -225,4 +226,37 @@ export const paginatorPageNumber = style({
   fontWeight: "500",
   whiteSpace: "nowrap",
   padding: "0 8px",
+});
+// =============================================================================
+// Loading Overlay Styles
+// =============================================================================
+
+export const loadingOverlay = style({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: `var(--szui-loading-overlay-bg, rgba(255, 255, 255, 0.8))`,
+  zIndex: 10,
+  backdropFilter: "blur(1px)",
+});
+
+const spinAnimation = keyframes({
+  from: { transform: "rotate(0deg)" },
+  to: { transform: "rotate(360deg)" },
+});
+
+export const spinner = style({
+  width: `var(--szui-spinner-size, 32px)`,
+  height: `var(--szui-spinner-size, 32px)`,
+  color: `var(--szui-spinner-color, #3b82f6)`,
+});
+
+// Global styles for spinner SVG animation
+globalStyle(`${spinner} svg`, {
+  animation: `${spinAnimation} 1s linear infinite`,
 });

@@ -33,6 +33,18 @@ export type SeizenTableColumn<TData> = ColumnDef<TData, unknown>;
 // =============================================================================
 
 /**
+ * Options for Remote Mode with pagination support.
+ * Use this when you need pagination in Remote Mode.
+ */
+export interface RemoteOptions {
+  /**
+   * Total row count for pagination calculation.
+   * Required when using pagination in Remote Mode.
+   */
+  totalRowCount: number;
+}
+
+/**
  * Options for useSeizenTable hook
  */
 export interface UseSeizenTableOptions<TData> {
@@ -42,7 +54,28 @@ export interface UseSeizenTableOptions<TData> {
   plugins?: SeizenTablePlugin<any>[];
   initialSelection?: RowSelectionState;
   enableMultiSelect?: boolean;
-  onSelectionChange?: (selection: TData[]) => void;
+  /**
+   * Enable Remote Mode.
+   *
+   * When enabled:
+   * - Internal filtering/sorting/pagination is disabled (TanStack Table manual* options)
+   * - `data` is expected to be pre-filtered/sorted/paginated by external source
+   * - `setFilter()`, `setSorting()`, `setPageIndex()` etc. emit events AND update internal state
+   * - Internal state is maintained for plugin UI synchronization
+   * - TanStack Table does NOT apply filtering/sorting/pagination to data
+   *
+   * Use with EventBus to integrate with external data sources:
+   * - `filter-change`: Emitted when filter state changes
+   * - `sorting-change`: Emitted when sorting changes
+   * - `pagination-change`: Emitted when pagination changes
+   *
+   * Usage:
+   * - `remote: true` - Enable without pagination support
+   * - `remote: { totalRowCount: 100 }` - Enable with pagination (totalRowCount required)
+   *
+   * @default false
+   */
+  remote?: boolean | RemoteOptions;
 }
 
 /**
@@ -228,6 +261,24 @@ export interface SeizenTableInstance<TData> {
   eventBus: EventBus;
 
   // ===========================================================================
+  // Remote Mode
+  // ===========================================================================
+
+  /**
+   * Whether table is in Remote Mode.
+   * Plugins can use this to adjust their behavior.
+   *
+   * @example
+   * ```tsx
+   * if (table.remote) {
+   *   // Hide global search in Remote Mode
+   *   return null;
+   * }
+   * ```
+   */
+  readonly remote: boolean;
+
+  // ===========================================================================
   // Advanced
   // ===========================================================================
 
@@ -249,8 +300,13 @@ export function useSeizenTable<TData>({
   plugins = [],
   initialSelection = {},
   enableMultiSelect = true,
-  onSelectionChange,
+  remote = false,
 }: UseSeizenTableOptions<TData>): SeizenTableInstance<TData> {
+  // Remote Mode flags
+  const isRemote = remote === true || typeof remote === "object";
+  const totalRowCount =
+    typeof remote === "object" ? remote.totalRowCount : undefined;
+
   // Table state
   const [rowSelection, setRowSelection] =
     useState<RowSelectionState>(initialSelection);
@@ -319,6 +375,15 @@ export function useSeizenTable<TData>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    // Remote Mode: disable internal processing
+    manualFiltering: isRemote,
+    manualSorting: isRemote,
+    manualPagination: isRemote,
+    // For pagination in Remote Mode
+    pageCount:
+      isRemote && totalRowCount != null
+        ? Math.ceil(totalRowCount / pagination.pageSize)
+        : undefined,
   });
 
   // Create SeizenTableInstance with helper methods
@@ -405,6 +470,9 @@ export function useSeizenTable<TData>({
       // Event bus
       eventBus,
 
+      // Remote Mode
+      remote: isRemote,
+
       // TanStack Table instance for advanced usage
       _tanstackTable: tanstackTable,
     };
@@ -421,14 +489,8 @@ export function useSeizenTable<TData>({
     columnOrder,
     plugin,
     eventBus,
+    isRemote,
   ]);
-
-  // Notify selection changes
-  useMemo(() => {
-    if (onSelectionChange) {
-      onSelectionChange(instance.getSelectedRows());
-    }
-  }, [rowSelection, onSelectionChange, instance]);
 
   return instance;
 }

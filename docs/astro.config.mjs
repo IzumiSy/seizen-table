@@ -101,10 +101,6 @@ export default defineConfig({
           autogenerate: { directory: "features" },
         },
         {
-          label: "Advanced",
-          autogenerate: { directory: "advanced" },
-        },
-        {
           label: "Table API",
           items: [tableAPITypeDocSidebarGroup],
         },

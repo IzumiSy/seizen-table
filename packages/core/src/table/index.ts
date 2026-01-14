@@ -21,6 +21,7 @@ export type {
   SeizenTableColumn,
   SeizenTableInstance,
   UseSeizenTableOptions,
+  RemoteOptions,
 } from "./useSeizenTable";
 
 // Re-export PluginArgsRegistry for module augmentation
