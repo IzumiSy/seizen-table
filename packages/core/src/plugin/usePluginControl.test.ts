@@ -289,8 +289,6 @@ describe("usePluginControl", () => {
     it("isOpen function should update when state changes", () => {
       const { result } = renderHook(() => usePluginControl());
 
-      const isOpen1 = result.current.isOpen;
-
       act(() => {
         result.current.open("filter" as never, {} as never);
       });
