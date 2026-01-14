@@ -232,7 +232,7 @@ export type DefinePluginOptions<
  * @example Slot Plugin with SidePanel
  * ```tsx
  * import { z } from "zod";
- * import { definePlugin, cellContextMenuItem, usePluginContext } from "@izumisy/seizen-table-plugins";
+ * import { definePlugin, cellContextMenuItem, usePluginContext } from "@izumisy/seizen-table/plugin";
  *
  * const BulkActionsSchema = z.object({
  *   enableDelete: z.boolean().default(true),
