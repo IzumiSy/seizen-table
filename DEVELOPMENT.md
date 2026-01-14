@@ -44,6 +44,8 @@ pnpm install
 
 ## Commands
 
+All commands should be run from the repository root to ensure proper dependency resolution via Turborepo.
+
 ```bash
 # Build all packages (in dependency order)
 pnpm build
@@ -54,44 +56,11 @@ pnpm test
 # Type check all packages
 pnpm type-check
 
-# Start development mode (all packages in watch mode)
-pnpm dev
-```
-
-## Development Workflow
-
-### Working on Core/Plugins
-
-```bash
-# Start watching core package changes
-cd packages/core && pnpm dev
-
-# In another terminal, start watching plugins
-cd packages/plugins && pnpm dev
-```
-
-### Working on Example App
-
-```bash
-cd example
-
-# Start the standalone demo app (http://localhost:5174)
-pnpm dev:app
-
-# Build for library export (used by docs)
-pnpm dev
-```
-
-### Working on Documentation
-
-```bash
-cd docs
-
-# Start the docs dev server (http://localhost:4321)
+# Start documentation site with all packages in watch mode (http://localhost:4321)
 pnpm dev
 
-# Build the documentation site
-pnpm build
+# Start only example with library watch build + dev server (http://localhost:5174)
+pnpm dev:example
 ```
 
 ## Useful Links

@@ -44,8 +44,7 @@ example/
 
 | Command | Action |
 |---------|--------|
-| `pnpm dev` | Watch mode for library build (outputs to `dist/`) |
-| `pnpm dev:app` | Start standalone demo app at `http://localhost:5174` |
+| `pnpm dev` | Start library watch build + dev server at `http://localhost:5174` |
 | `pnpm build` | Build both library (`dist/`) and app (`dist-app/`) |
 | `pnpm build:app` | Build standalone app only |
 | `pnpm preview` | Preview the built app |
@@ -73,7 +72,7 @@ import { BasicDemo, FilterDemo } from "@izumisy/seizen-table-example";
 
 ### As a Standalone App
 
-Run `pnpm dev:app` to start the development server at `http://localhost:5174`.
+Run `pnpm dev` to start the development server at `http://localhost:5174`.
 
 The app is served with base path `/seizen-table/demos/` to match the production deployment URL.
 
