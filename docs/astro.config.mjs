@@ -3,11 +3,9 @@ import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 import { createStarlightTypeDocPlugin } from "starlight-typedoc";
 import starlightLlmsTxt from "starlight-llms-txt";
+import starlightLinksValidator from "starlight-links-validator";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
-
-const [pluginAPITypeDoc, pluginAPITypeDocSidebarGroup] =
-  createStarlightTypeDocPlugin();
 
 // Copy demo assets from example package to public/demos
 function copyDemosAssets() {
@@ -32,6 +30,10 @@ function copyDemosAssets() {
     },
   };
 }
+
+// Initialize TypeDoc plugins for Plugin API and Table API
+const [pluginAPITypeDoc, pluginAPITypeDocSidebarGroup] =
+  createStarlightTypeDocPlugin();
 const [tableAPITypeDoc, tableAPITypeDocSidebarGroup] =
   createStarlightTypeDocPlugin();
 
@@ -52,6 +54,9 @@ export default defineConfig({
       title: "Seizen Table",
       customCss: ["./src/styles/custom.css"],
       plugins: [
+        starlightLinksValidator({
+          exclude: ["/seizen-table/demos/"],
+        }),
         starlightLlmsTxt({
           rawContent: true,
         }),
