@@ -1,45 +1,43 @@
 import { vi } from "vitest";
-import type { PluginColumnInfo } from "@izumisy/seizen-table/plugin";
-
-// Re-export mock state utilities
-export {
-  pluginMockState,
-  initPluginMockState,
-  setupPluginMocks,
-  getPluginContextValue,
-  getPluginArgsValue,
-  MOCK_FILTER_OPERATORS,
-  MOCK_FILTER_OPERATOR_LABELS,
-} from "./mockState";
+import type { PluginColumnInfo, EventBus } from "@izumisy/seizen-table/plugin";
+import type { SeizenTableInstance } from "@izumisy/seizen-table";
 
 // =============================================================================
 // Mock Table Instance
 // =============================================================================
 
-export interface MockTableInstance {
-  getColumnVisibility: ReturnType<typeof vi.fn>;
-  setColumnVisibility: ReturnType<typeof vi.fn>;
-  toggleColumnVisibility: ReturnType<typeof vi.fn>;
-  getSortingState: ReturnType<typeof vi.fn>;
-  setSorting: ReturnType<typeof vi.fn>;
-  getColumnOrder: ReturnType<typeof vi.fn>;
-  moveColumn: ReturnType<typeof vi.fn>;
-  getData: ReturnType<typeof vi.fn>;
-  getSelectedRows: ReturnType<typeof vi.fn>;
-  getFilterState: ReturnType<typeof vi.fn>;
-  setFilter: ReturnType<typeof vi.fn>;
-  getPaginationState: ReturnType<typeof vi.fn>;
-  getColumns: ReturnType<typeof vi.fn>;
-  eventBus: {
-    emit: ReturnType<typeof vi.fn>;
-    subscribe: ReturnType<typeof vi.fn>;
-  };
+/**
+ * Keys of SeizenTableInstance that are methods (functions).
+ * These will be mocked with vi.fn().
+ */
+type SeizenTableMethodKeys = {
+  [K in keyof SeizenTableInstance<unknown>]: SeizenTableInstance<unknown>[K] extends (
+    ...args: any[]
+  ) => any
+    ? K
+    : never;
+}[keyof SeizenTableInstance<unknown>];
+
+/**
+ * Mock version of SeizenTableInstance where all methods are vi.fn() mocks.
+ * This type is derived from the real SeizenTableInstance to stay in sync
+ * with the core API automatically.
+ */
+export type MockTableInstance = {
+  [K in SeizenTableMethodKeys]: ReturnType<typeof vi.fn>;
+} & {
+  // Non-method properties with mock-friendly types
+  plugins: Array<unknown>;
   plugin: {
     _state: {
       args: unknown;
     };
   };
-}
+  eventBus: {
+    [K in keyof EventBus]: ReturnType<typeof vi.fn>;
+  };
+  _tanstackTable: unknown;
+};
 
 export interface CreateMockTableOptions {
   columnVisibility?: Record<string, boolean>;
@@ -47,10 +45,13 @@ export interface CreateMockTableOptions {
   columnOrder?: string[];
   data?: unknown[];
   selectedRows?: unknown[];
+  globalFilter?: string;
+  pagination?: { pageIndex: number; pageSize: number };
 }
 
 /**
  * Creates a mock table instance for testing.
+ * All methods from SeizenTableInstance are mocked with vi.fn().
  */
 export function createMockTable(
   options: CreateMockTableOptions = {}
@@ -61,31 +62,57 @@ export function createMockTable(
     columnOrder = [],
     data = [],
     selectedRows = [],
+    globalFilter = "",
+    pagination = { pageIndex: 0, pageSize: 10 },
   } = options;
 
   return {
+    // Selection
+    getSelectedRows: vi.fn(() => selectedRows),
+    setSelectedRows: vi.fn(),
+    clearSelection: vi.fn(),
+
+    // Filtering
+    getFilterState: vi.fn(() => []),
+    setFilter: vi.fn(),
+    getGlobalFilter: vi.fn(() => globalFilter),
+    setGlobalFilter: vi.fn(),
+
+    // Sorting
+    getSortingState: vi.fn(() => sorting),
+    setSorting: vi.fn(),
+
+    // Pagination
+    getPaginationState: vi.fn(() => pagination),
+    setPageIndex: vi.fn(),
+    setPageSize: vi.fn(),
+
+    // Data
+    getData: vi.fn(() => data),
+    getColumns: vi.fn(() => []),
+
+    // Column Visibility
     getColumnVisibility: vi.fn(() => columnVisibility),
     setColumnVisibility: vi.fn(),
     toggleColumnVisibility: vi.fn(),
-    getSortingState: vi.fn(() => sorting),
-    setSorting: vi.fn(),
+
+    // Column Order
     getColumnOrder: vi.fn(() => columnOrder),
+    setColumnOrder: vi.fn(),
     moveColumn: vi.fn(),
-    getData: vi.fn(() => data),
-    getSelectedRows: vi.fn(() => selectedRows),
-    getFilterState: vi.fn(() => []),
-    setFilter: vi.fn(),
-    getPaginationState: vi.fn(() => ({ pageIndex: 0, pageSize: 10 })),
-    getColumns: vi.fn(() => []),
-    eventBus: {
-      emit: vi.fn(),
-      subscribe: vi.fn(() => vi.fn()), // returns unsubscribe function
-    },
+
+    // Non-method properties
+    plugins: [],
     plugin: {
       _state: {
         args: undefined,
       },
     },
+    eventBus: {
+      emit: vi.fn(),
+      subscribe: vi.fn(() => vi.fn()), // returns unsubscribe function
+    },
+    _tanstackTable: {},
   };
 }
 

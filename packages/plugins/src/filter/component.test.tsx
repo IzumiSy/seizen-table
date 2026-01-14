@@ -2,16 +2,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { renderHook } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createMockTable } from "../../tests/utils/mocks";
 import {
-  createMockTable,
   pluginMockState,
   initPluginMockState,
   setupPluginMocks,
   getPluginContextValue,
   getPluginArgsValue,
-  MOCK_FILTER_OPERATORS,
-  MOCK_FILTER_OPERATOR_LABELS,
-} from "../test-utils";
+} from "../../tests/utils/mockState";
 import type { PluginColumnInfo } from "@izumisy/seizen-table/plugin";
 
 // =============================================================================
@@ -51,13 +49,17 @@ const defaultColumns: PluginColumnInfo[] = [
 
 const defaultPluginArgs = { width: 320, disableGlobalSearch: false };
 
-// Mock the plugin module - uses shared mock state functions
-vi.mock("@izumisy/seizen-table/plugin", () => ({
-  usePluginContext: vi.fn(() => getPluginContextValue()),
-  usePluginArgs: vi.fn(() => getPluginArgsValue()),
-  DEFAULT_FILTER_OPERATORS: MOCK_FILTER_OPERATORS,
-  FILTER_OPERATOR_LABELS: MOCK_FILTER_OPERATOR_LABELS,
-}));
+// Mock the plugin module - uses importOriginal to keep real constants
+vi.mock("@izumisy/seizen-table/plugin", async (importOriginal) => {
+  const actual = await importOriginal<
+    typeof import("@izumisy/seizen-table/plugin")
+  >();
+  return {
+    ...actual,
+    usePluginContext: vi.fn(() => getPluginContextValue()),
+    usePluginArgs: vi.fn(() => getPluginArgsValue()),
+  };
+});
 
 // Import components after mocking
 import {
@@ -130,7 +132,8 @@ describe("Helper Functions", () => {
         filterMeta: { filterType: "number" },
       };
       const operators = getOperatorsForColumn(column);
-      expect(operators).toContain("equals");
+      // Uses actual operators from core: eq, neq, gt, gte, lt, lte
+      expect(operators).toContain("eq");
       expect(operators).toContain("gt");
       expect(operators).toContain("lte");
     });

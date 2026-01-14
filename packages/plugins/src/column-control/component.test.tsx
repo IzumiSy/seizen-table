@@ -2,14 +2,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { renderHook } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createMockTable } from "../../tests/utils/mocks";
 import {
-  createMockTable,
   pluginMockState,
   initPluginMockState,
   setupPluginMocks,
   getPluginContextValue,
   getPluginArgsValue,
-} from "../test-utils";
+} from "../../tests/utils/mockState";
 import type { PluginColumnInfo } from "@izumisy/seizen-table/plugin";
 
 // =============================================================================

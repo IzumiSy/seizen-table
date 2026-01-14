@@ -4,7 +4,7 @@ import {
   type MockTableInstance,
   type EventCallbackStore,
   type MockPluginContextResult,
-} from "./index";
+} from "./mocks";
 
 // =============================================================================
 // Mutable State for vi.mock Hoisting Workaround
@@ -99,36 +99,14 @@ export function setupPluginMocks(options: {
   return mockContext;
 }
 
-// =============================================================================
-// Filter Plugin Constants (for filter tests)
-// =============================================================================
-
-export const MOCK_FILTER_OPERATORS = {
-  string: [
-    "contains",
-    "equals",
-    "starts_with",
-    "ends_with",
-    "is_empty",
-    "is_not_empty",
-  ],
-  number: ["equals", "not_equals", "gt", "gte", "lt", "lte"],
-  date: ["equals", "before", "after"],
-  enum: ["equals", "not_equals"],
-} as const;
-
-export const MOCK_FILTER_OPERATOR_LABELS: Record<string, string> = {
-  contains: "Contains",
-  equals: "Equals",
-  not_equals: "Not equals",
-  starts_with: "Starts with",
-  ends_with: "Ends with",
-  is_empty: "Is empty",
-  is_not_empty: "Is not empty",
-  gt: ">",
-  gte: ">=",
-  lt: "<",
-  lte: "<=",
-  before: "Before",
-  after: "After",
-};
+// Note: For filter constants (DEFAULT_FILTER_OPERATORS, FILTER_OPERATOR_LABELS),
+// use vi.importActual in vi.mock to get the real values from the core package.
+// Example:
+//   vi.mock("@izumisy/seizen-table/plugin", async (importOriginal) => {
+//     const actual = await importOriginal<typeof import("@izumisy/seizen-table/plugin")>();
+//     return {
+//       ...actual,
+//       usePluginContext: vi.fn(() => getPluginContextValue()),
+//       usePluginArgs: vi.fn(() => getPluginArgsValue()),
+//     };
+//   });

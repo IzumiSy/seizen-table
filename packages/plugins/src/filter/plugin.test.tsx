@@ -6,9 +6,7 @@ import {
   setupPluginMocks,
   getPluginContextValue,
   getPluginArgsValue,
-  MOCK_FILTER_OPERATORS,
-  MOCK_FILTER_OPERATOR_LABELS,
-} from "../test-utils";
+} from "../../tests/utils/mockState";
 
 // =============================================================================
 // Mock Setup
@@ -16,15 +14,17 @@ import {
 
 const defaultPluginArgs = { width: 320, disableGlobalSearch: false };
 
-// Mock the plugin module - uses shared mock state functions
-vi.mock("@izumisy/seizen-table/plugin", () => ({
-  usePluginContext: vi.fn(() => getPluginContextValue()),
-  usePluginArgs: vi.fn(() => getPluginArgsValue()),
-  DEFAULT_FILTER_OPERATORS: MOCK_FILTER_OPERATORS,
-  FILTER_OPERATOR_LABELS: MOCK_FILTER_OPERATOR_LABELS,
-  definePlugin: vi.fn(),
-  cellContextMenuItem: vi.fn(),
-}));
+// Mock the plugin module - uses importOriginal to keep real constants
+vi.mock("@izumisy/seizen-table/plugin", async (importOriginal) => {
+  const actual = await importOriginal<
+    typeof import("@izumisy/seizen-table/plugin")
+  >();
+  return {
+    ...actual,
+    usePluginContext: vi.fn(() => getPluginContextValue()),
+    usePluginArgs: vi.fn(() => getPluginArgsValue()),
+  };
+});
 
 // Import after mocking
 import { useFilterEvents } from "./plugin";
