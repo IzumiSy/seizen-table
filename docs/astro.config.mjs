@@ -53,7 +53,9 @@ export default defineConfig({
       title: "Seizen Table",
       customCss: ["./src/styles/custom.css"],
       plugins: [
-        starlightLinksValidator(),
+        starlightLinksValidator({
+          exclude: ["/seizen-table/demos/"],
+        }),
         starlightLlmsTxt({
           rawContent: true,
         }),
