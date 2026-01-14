@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
   definePlugin,
   usePluginContext,
-  type PluginContext,
+  usePluginArgs,
 } from "@izumisy/seizen-table/plugin";
 
 // =============================================================================
@@ -27,85 +27,82 @@ const RowDetailSchema = z.object({
 type RowDetailConfig = z.infer<typeof RowDetailSchema>;
 
 /**
- * RowDetailRenderer - Creates the render function for the plugin
+ * RowDetailPanel - Main panel component for the plugin
  */
-function RowDetailRenderer(context: PluginContext<RowDetailConfig>) {
-  const { args } = context;
+function RowDetailPanel() {
+  const args = usePluginArgs<RowDetailConfig>();
+  // Pass plugin ID as type parameter for type-safe openArgs
+  const { openArgs, useEvent } = usePluginContext<"row-detail">();
+  const initialRow = openArgs?.row ?? null;
+  const [selectedRow, setSelectedRow] = useState<unknown>(initialRow);
 
-  return function RowDetailPanel() {
-    // Pass plugin ID as type parameter for type-safe openArgs
-    const { openArgs, useEvent } = usePluginContext<"row-detail">();
-    const initialRow = openArgs?.row ?? null;
-    const [selectedRow, setSelectedRow] = useState<unknown>(initialRow);
+  // Subscribe to row-click events for subsequent clicks while panel is open
+  useEvent("row-click", (row) => {
+    setSelectedRow(row);
+  });
 
-    // Subscribe to row-click events for subsequent clicks while panel is open
-    useEvent("row-click", (row) => {
-      setSelectedRow(row);
-    });
-
-    if (!selectedRow) {
-      return (
-        <div
-          style={{
-            width: args.width,
-            padding: "16px",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#9ca3af",
-          }}
-        >
-          <p>Click a row to view details</p>
-        </div>
-      );
-    }
-
+  if (!selectedRow) {
     return (
       <div
         style={{
           width: args.width,
           padding: "16px",
           height: "100%",
-          overflow: "auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#9ca3af",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {Object.entries(selectedRow as Record<string, unknown>).map(
-            ([key, value]) => (
-              <div key={key}>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 500,
-                    color: "#6b7280",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {key}
-                </div>
-                <div
-                  style={{
-                    fontSize: "14px",
-                    color: "#111827",
-                    backgroundColor: "#fff",
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    border: "1px solid #e5e7eb",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {formatValue(value)}
-                </div>
-              </div>
-            )
-          )}
-        </div>
+        <p>Click a row to view details</p>
       </div>
     );
-  };
+  }
+
+  return (
+    <div
+      style={{
+        width: args.width,
+        padding: "16px",
+        height: "100%",
+        overflow: "auto",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {Object.entries(selectedRow as Record<string, unknown>).map(
+          ([key, value]) => (
+            <div key={key}>
+              <div
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  color: "#6b7280",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  marginBottom: "4px",
+                }}
+              >
+                {key}
+              </div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  color: "#111827",
+                  backgroundColor: "#fff",
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  border: "1px solid #e5e7eb",
+                  wordBreak: "break-word",
+                }}
+              >
+                {formatValue(value)}
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -148,7 +145,7 @@ export const RowDetailPlugin = definePlugin({
     sidePanel: {
       position: "right-sider",
       header: "Row Details",
-      render: RowDetailRenderer,
+      render: RowDetailPanel,
     },
   },
 });

@@ -1,38 +1,8 @@
 import { useMemo, type ReactNode } from "react";
 import type { Cell, Column, Row } from "@tanstack/react-table";
-import type {
-  SeizenTablePlugin,
-  PluginPosition,
-  SidePanelSlot,
-} from "./definePlugin";
 import { getSidePanelSlot } from "./definePlugin";
-import { usePluginContext } from "./Context";
+import { usePluginContext, PluginArgsProvider } from "./Context";
 import * as styles from "./styles.css";
-
-// =============================================================================
-// Internal Helpers
-// =============================================================================
-
-/**
- * Get side panel plugins with their slot configuration for a specific position
- */
-function getSidePanelPluginsForPosition(
-  plugins: SeizenTablePlugin<any>[],
-  position: PluginPosition
-): Array<{ plugin: SeizenTablePlugin<any>; slot: SidePanelSlot }> {
-  return plugins
-    .map((plugin) => {
-      const slot = getSidePanelSlot(plugin);
-      if (slot && slot.position === position) {
-        return { plugin, slot };
-      }
-      return null;
-    })
-    .filter(
-      (item): item is { plugin: SeizenTablePlugin<any>; slot: SidePanelSlot } =>
-        item !== null
-    );
-}
 
 // =============================================================================
 // SidePanel
@@ -69,32 +39,30 @@ export function SidePanel({ position }: SidePanelProps) {
   const activePluginId = table.plugin.getActiveId();
   const setActive = table.plugin.setActive;
 
-  // Get side panel plugins for this position
-  const sidePanelPlugins = getSidePanelPluginsForPosition(
-    plugins,
-    internalPosition
-  );
-
-  // Memoize plugin components to maintain stable references
+  // Build plugin components for this position
   const pluginComponents = useMemo(() => {
-    return sidePanelPlugins.map(({ plugin, slot }) => ({
-      id: plugin.id,
-      name: plugin.name,
-      // Use header if provided, otherwise fallback to name
-      header: slot.header ?? plugin.name,
-      Component: slot.render,
-    }));
-  }, [sidePanelPlugins]);
+    return plugins
+      .map((plugin) => {
+        const slot = getSidePanelSlot(plugin);
+        if (!slot || slot.position !== internalPosition) return null;
+        return {
+          id: plugin.id,
+          name: plugin.name,
+          header: slot.header ?? plugin.name,
+          Component: slot.render,
+          args: plugin._args,
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+  }, [plugins, internalPosition]);
 
-  if (sidePanelPlugins.length === 0) {
+  if (pluginComponents.length === 0) {
     return null;
   }
 
   const dataPosition = position;
   // Check if the active plugin belongs to this position
-  const isActiveHere = sidePanelPlugins.some(
-    ({ plugin }) => plugin.id === activePluginId
-  );
+  const isActiveHere = pluginComponents.some(({ id }) => id === activePluginId);
 
   return (
     <div className={styles.sidePanel} data-position={dataPosition}>
@@ -113,7 +81,7 @@ export function SidePanel({ position }: SidePanelProps) {
       </div>
 
       {/* Plugin content - render all but only show active */}
-      {pluginComponents.map(({ id, header, Component }) => (
+      {pluginComponents.map(({ id, header, Component, args }) => (
         <div
           key={id}
           className={styles.sidePanelContent}
@@ -138,7 +106,9 @@ export function SidePanel({ position }: SidePanelProps) {
             </button>
           </div>
           <div className={styles.sidePanelBody}>
-            <Component />
+            <PluginArgsProvider args={args}>
+              <Component />
+            </PluginArgsProvider>
           </div>
         </div>
       ))}
@@ -169,9 +139,15 @@ export function Header() {
   const plugins = table.plugins;
 
   // Collect all header slots
-  const headerSlots = plugins
-    .filter((p) => p.slots.header !== undefined)
-    .map((p) => ({ id: p.id, render: p.slots.header!.render }));
+  const headerSlots = useMemo(() => {
+    return plugins
+      .filter((p) => p.slots.header !== undefined)
+      .map((p) => ({
+        id: p.id,
+        render: p.slots.header!.render,
+        args: p._args,
+      }));
+  }, [plugins]);
 
   if (headerSlots.length === 0) {
     return null;
@@ -179,9 +155,11 @@ export function Header() {
 
   return (
     <>
-      {headerSlots.map(({ id, render: Render }) => (
+      {headerSlots.map(({ id, render: Render, args }) => (
         <div key={id} className={styles.headerSlot} data-plugin-id={id}>
-          <Render />
+          <PluginArgsProvider args={args}>
+            <Render />
+          </PluginArgsProvider>
         </div>
       ))}
     </>
@@ -212,9 +190,15 @@ export function Footer() {
   const plugins = table.plugins;
 
   // Collect all footer slots
-  const footerSlots = plugins
-    .filter((p) => p.slots.footer !== undefined)
-    .map((p) => ({ id: p.id, render: p.slots.footer!.render }));
+  const footerSlots = useMemo(() => {
+    return plugins
+      .filter((p) => p.slots.footer !== undefined)
+      .map((p) => ({
+        id: p.id,
+        render: p.slots.footer!.render,
+        args: p._args,
+      }));
+  }, [plugins]);
 
   if (footerSlots.length === 0) {
     return null;
@@ -222,9 +206,11 @@ export function Footer() {
 
   return (
     <>
-      {footerSlots.map(({ id, render: Render }) => (
+      {footerSlots.map(({ id, render: Render, args }) => (
         <div key={id} className={styles.footerSlot} data-plugin-id={id}>
-          <Render />
+          <PluginArgsProvider args={args}>
+            <Render />
+          </PluginArgsProvider>
         </div>
       ))}
     </>
@@ -292,7 +278,9 @@ export function InlineRow<TData>({ row, colSpan }: InlineRowProps<TData>) {
   return (
     <tr className={styles.inlineRow} data-plugin-id={activeInlineRowPlugin.id}>
       <td colSpan={colSpan} className={styles.inlineRowCell}>
-        {renderInlineRow(row as any)}
+        <PluginArgsProvider args={activeInlineRowPlugin._args}>
+          {renderInlineRow(row as any)}
+        </PluginArgsProvider>
       </td>
     </tr>
   );
@@ -348,9 +336,9 @@ export function Cell<TData>({ cell, column, row, children }: CellProps<TData>) {
 
   if (cellPlugin && cellPlugin.slots.cell) {
     return (
-      <>
+      <PluginArgsProvider args={cellPlugin._args}>
         {cellPlugin.slots.cell.render(cell as any, column as any, row as any)}
-      </>
+      </PluginArgsProvider>
     );
   }
 

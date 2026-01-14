@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import type { z } from "zod";
 import type { Cell, Column, Row } from "@tanstack/react-table";
 import type {
@@ -123,6 +123,8 @@ export interface SeizenTablePlugin<TData = unknown> {
   slots: PluginSlots<TData>;
   /** Context menu items for cell and column */
   contextMenuItems?: ContextMenuItemsSlot<TData>;
+  /** Plugin configuration args (for internal use) */
+  _args?: unknown;
 }
 
 /**
@@ -173,21 +175,23 @@ export interface DefinePluginSlots<TData, TSchema extends z.ZodType> {
   sidePanel?: {
     position: PluginPosition;
     header?: string | ((context: PluginContext<z.infer<TSchema>>) => ReactNode);
-    render: (context: PluginContext<z.infer<TSchema>>) => () => ReactNode;
+    /** Render function - return a React component. Use usePluginArgs() inside to access args. */
+    render: () => ReactNode;
   };
   /** Header slot - renders between table header and body */
   header?: {
-    render: (context: PluginContext<z.infer<TSchema>>) => () => ReactNode;
+    /** Render function - return a React component. Use usePluginArgs() inside to access args. */
+    render: () => ReactNode;
   };
   /** Footer slot - renders below the table */
   footer?: {
-    render: (context: PluginContext<z.infer<TSchema>>) => () => ReactNode;
+    /** Render function - return a React component. Use usePluginArgs() inside to access args. */
+    render: () => ReactNode;
   };
   /** Cell slot - custom cell renderer for all columns (first match wins) */
   cell?: {
+    /** Render function. Use usePluginArgs() inside to access args. */
     render: (
-      context: PluginContext<z.infer<TSchema>>
-    ) => (
       cell: Cell<TData, unknown>,
       column: Column<TData, unknown>,
       row: Row<TData>
@@ -195,9 +199,8 @@ export interface DefinePluginSlots<TData, TSchema extends z.ZodType> {
   };
   /** Inline row slot - renders below a specific row when opened (first match wins) */
   inlineRow?: {
-    render: (
-      context: PluginContext<z.infer<TSchema>>
-    ) => (row: Row<TData>) => ReactNode;
+    /** Render function. Use usePluginArgs() inside to access args. */
+    render: (row: Row<TData>) => ReactNode;
   };
 }
 
@@ -296,35 +299,35 @@ export function definePlugin<TData, TSchema extends z.ZodType>(
         slots.sidePanel = {
           position: sidePanelDef.position,
           header,
-          render: sidePanelDef.render(context),
+          render: sidePanelDef.render,
         };
       }
 
       // Build header slot
       if (options.slots.header) {
         slots.header = {
-          render: options.slots.header.render(context),
+          render: options.slots.header.render,
         };
       }
 
       // Build footer slot
       if (options.slots.footer) {
         slots.footer = {
-          render: options.slots.footer.render(context),
+          render: options.slots.footer.render,
         };
       }
 
       // Build cell slot
       if (options.slots.cell) {
         slots.cell = {
-          render: options.slots.cell.render(context),
+          render: options.slots.cell.render,
         };
       }
 
       // Build inlineRow slot
       if (options.slots.inlineRow) {
         slots.inlineRow = {
-          render: options.slots.inlineRow.render(context),
+          render: options.slots.inlineRow.render,
         };
       }
 
@@ -333,6 +336,7 @@ export function definePlugin<TData, TSchema extends z.ZodType>(
         name: options.name,
         slots,
         contextMenuItems: options.contextMenuItems,
+        _args: validatedArgs,
       } as SeizenTablePlugin<TData>;
     },
   };
