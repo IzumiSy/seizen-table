@@ -89,6 +89,7 @@ function createMockTableInstance(
     plugins: [],
     plugin: mockPlugin as any,
     eventBus: mockEventBus as any,
+    remote: false,
     _tanstackTable: {} as any,
     ...overrides,
   };

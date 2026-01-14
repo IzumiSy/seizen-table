@@ -10,6 +10,7 @@ import {
 } from "./components";
 import { Paginator } from "./components/Paginator";
 import { SeizenTablePlugins } from "../plugin/SeizenTablePlugins";
+import * as styles from "./styles.css";
 
 export interface PaginateOptions {
   /**
@@ -23,6 +24,19 @@ export interface PaginateOptions {
    * @default [10, 20, 50, 100]
    */
   sizeOptions?: number[];
+}
+
+export interface LoaderProps {
+  /**
+   * Whether to show the loading overlay.
+   * @default true
+   */
+  loading?: boolean;
+
+  /**
+   * Custom loader component. Defaults to a built-in spinner.
+   */
+  children?: React.ReactNode;
 }
 
 export interface SeizenTableProps<TData> {
@@ -40,6 +54,67 @@ export interface SeizenTableProps<TData> {
    * Pagination options
    */
   paginate?: PaginateOptions;
+
+  /**
+   * Show loading overlay on the table.
+   * Useful for Remote Mode when fetching data.
+   *
+   * @default false
+   */
+  loading?: boolean;
+
+  /**
+   * Custom loader component. Defaults to a built-in spinner.
+   *
+   * @example
+   * loaderComponent={<MySpinner size="lg" />}
+   */
+  loaderComponent?: React.ReactNode;
+}
+
+/**
+ * Default loading spinner component
+ */
+function DefaultSpinner() {
+  return (
+    <div className={styles.spinner} aria-label="Loading">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray="31.4 31.4"
+        />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Loading overlay component for Composable UI.
+ * Use with `SeizenTable.Table`'s `before` prop to show loading state.
+ *
+ * @example
+ * ```tsx
+ * <SeizenTable.Table before={<SeizenTable.Loader loading={isLoading} />}>
+ *   <SeizenTable.Header />
+ *   <SeizenTable.Body />
+ * </SeizenTable.Table>
+ * ```
+ */
+function Loader({ loading = true, children }: LoaderProps) {
+  if (!loading) {
+    return null;
+  }
+
+  return (
+    <div className={styles.loadingOverlay}>
+      {children ?? <DefaultSpinner />}
+    </div>
+  );
 }
 
 /**
@@ -86,6 +161,8 @@ export function SeizenTable<TData>({
   table,
   className,
   paginate,
+  loading = false,
+  loaderComponent,
 }: SeizenTableProps<TData>) {
   const paginateEnabled = paginate?.enable ?? true;
   const paginateSizeOptions = paginate?.sizeOptions ?? [10, 20, 50, 100];
@@ -95,7 +172,9 @@ export function SeizenTable<TData>({
       <SeizenTablePlugins.SidePanel position="left" />
       <TableContent>
         <SeizenTablePlugins.Header />
-        <TableTable>
+        <TableTable
+          before={<Loader loading={loading}>{loaderComponent}</Loader>}
+        >
           <TableHeader />
           <TableBody />
         </TableTable>
@@ -124,3 +203,4 @@ SeizenTable.Body = TableBody;
 SeizenTable.Row = TableRow;
 SeizenTable.Cell = TableCell;
 SeizenTable.Paginator = Paginator;
+SeizenTable.Loader = Loader;

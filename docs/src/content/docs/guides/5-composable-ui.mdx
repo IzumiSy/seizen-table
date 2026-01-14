@@ -1,5 +1,5 @@
 ---
-title: Composable API
+title: Composable UI
 description: Build custom SeizenTable layouts with composable components and plugin slots.
 ---
 
@@ -111,12 +111,13 @@ Core table structure components:
 |-----------|--------------|-------------|
 | `SeizenTable.Root` | `<div>` | Provider wrapper (required, provides context) |
 | `SeizenTable.Content` | `<div>` | Main content area (between side panels) |
-| `SeizenTable.Table` | `<table>` | Pure `<table>` element wrapper |
+| `SeizenTable.Table` | `<div>` + `<table>` | Table wrapper with scrollable container |
 | `SeizenTable.Header` | `<thead>` | Column headers with sorting and context menu |
 | `SeizenTable.Body` | `<tbody>` | Row rendering with render props support |
 | `SeizenTable.Row` | `<tr>` | Individual row with click handlers |
 | `SeizenTable.Cell` | `<td>` | Individual cell with context menu support |
 | `SeizenTable.Paginator` | `<div>` | Pagination controls |
+| `SeizenTable.Loader` | `<div>` | Loading overlay for Remote Mode |
 
 ### SeizenTablePlugins
 
@@ -138,6 +139,7 @@ SeizenTable.Root (providers + context)
 ├─ SeizenTable.Content (main content area)
 │  ├─ SeizenTablePlugins.Header (plugin-provided toolbars)
 │  ├─ SeizenTable.Table
+│  │  ├─ SeizenTable.Loader (optional, via `before` prop)
 │  │  ├─ SeizenTable.Header
 │  │  └─ SeizenTable.Body
 │  │     ├─ SeizenTable.Row
@@ -146,6 +148,34 @@ SeizenTable.Root (providers + context)
 │  ├─ SeizenTablePlugins.Footer (plugin-provided footers)
 │  └─ SeizenTable.Paginator
 └─ SeizenTablePlugins.SidePanel (position: "right")
+```
+
+## Loading Overlay
+
+For [Remote Mode](/seizen-table/guides/4-remote-data/), use `SeizenTable.Loader` to show a loading state while fetching data:
+
+```tsx
+const [isLoading, setIsLoading] = useState(false);
+
+<SeizenTable.Table before={<SeizenTable.Loader loading={isLoading} />}>
+  <SeizenTable.Header />
+  <SeizenTable.Body />
+</SeizenTable.Table>
+```
+
+Custom loader component:
+
+```tsx
+<SeizenTable.Table 
+  before={
+    <SeizenTable.Loader loading={isLoading}>
+      <MyCustomSpinner />
+    </SeizenTable.Loader>
+  }
+>
+  <SeizenTable.Header />
+  <SeizenTable.Body />
+</SeizenTable.Table>
 ```
 
 ## Customization

@@ -1,0 +1,185 @@
+---
+title: Remote Data
+description: Learn how to integrate Seizen Table with external data sources like REST APIs, GraphQL, or TanStack DB.
+---
+
+import { Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Seizen Table supports a **Remote Mode** that enables seamless integration with external data sources. In this mode, filtering, sorting, and pagination are handled by your external data source (e.g., REST API, GraphQL, TanStack DB), while Seizen Table manages the UI state.
+
+## Enabling Remote Mode
+
+Enable Remote Mode by adding the `remote` option to `useSeizenTable`:
+
+```tsx
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
+
+// Without pagination
+const table = useSeizenTable({
+  data: filteredUsers,  // Pre-filtered data from external source
+  columns,
+  remote: true,
+});
+
+// With pagination (requires totalRowCount for page calculation)
+const table = useSeizenTable({
+  data: filteredUsers,
+  columns,
+  remote: { totalRowCount: 1000 },
+});
+```
+
+<Aside type="tip">
+  When `remote` is enabled, Seizen Table's internal filtering, sorting, and pagination are disabled. The `data` prop is expected to already be processed by your external source.
+</Aside>
+
+## How It Works
+
+| Mode | Filtering/Sorting/Pagination |
+|------|------------------------------|
+| **Default** | TanStack Table processes data internally |
+| **Remote** | External source processes data; UI state is synchronized |
+
+In Remote Mode:
+1. User interacts with filter/sort/pagination controls
+2. Internal state updates (for UI synchronization)
+3. Events are emitted (`filter-change`, `sorting-change`, `pagination-change`)
+4. Your app subscribes to events and updates the external data source
+5. New `data` prop is passed to the table
+
+## Loading State
+
+Use the `loading` prop to show a loading overlay while fetching data:
+
+```tsx
+<SeizenTable 
+  table={table} 
+  loading={isLoading} 
+/>
+
+// With custom loader
+<SeizenTable 
+  table={table} 
+  loading={isLoading}
+  loaderComponent={<MyCustomSpinner />}
+/>
+```
+
+## Complete Example
+
+Here's a complete example integrating with a REST API:
+
+```tsx
+import { useState, useEffect } from "react";
+import { 
+  useSeizenTable, 
+  useSeizenTableEvent, 
+  SeizenTable,
+  type ColumnFiltersState,
+  type SortingState,
+  type PaginationState,
+} from "@izumisy/seizen-table";
+import { FilterPlugin } from "@izumisy/seizen-table-plugins";
+
+function UsersTable() {
+  const [data, setData] = useState<User[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // State for external data fetching
+  const [filters, setFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({ 
+    pageIndex: 0, 
+    pageSize: 20 
+  });
+  
+  const table = useSeizenTable({
+    data,
+    columns,
+    plugins: [FilterPlugin()],
+    remote: { totalRowCount: totalCount },
+  });
+  
+  // Subscribe to state change events
+  useSeizenTableEvent(table, "filter-change", setFilters);
+  useSeizenTableEvent(table, "sorting-change", setSorting);
+  useSeizenTableEvent(table, "pagination-change", setPagination);
+  
+  // Fetch data when state changes
+  useEffect(() => {
+    const controller = new AbortController();
+    
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const query = new URLSearchParams();
+        
+        // Convert ColumnFiltersState to query params
+        filters.forEach((f) => {
+          const { operator, value } = f.value as { operator: string; value: string };
+          query.append(`filter[${f.id}][${operator}]`, value);
+        });
+        
+        // Add sorting
+        sorting.forEach((s) => {
+          query.append("sort", `${s.desc ? "-" : ""}${s.id}`);
+        });
+        
+        // Add pagination
+        query.append("page", String(pagination.pageIndex + 1));
+        query.append("limit", String(pagination.pageSize));
+        
+        const res = await fetch(`/api/users?${query}`, { 
+          signal: controller.signal 
+        });
+        const json = await res.json();
+        
+        setData(json.items);
+        setTotalCount(json.total);
+      } catch (e) {
+        if ((e as Error).name !== "AbortError") {
+          console.error(e);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+    return () => controller.abort();
+  }, [filters, sorting, pagination]);
+  
+  return <SeizenTable table={table} loading={isLoading} />;
+}
+```
+
+## Checking Remote Mode in Plugins
+
+Plugins can check if Remote Mode is enabled via `table.remote`:
+
+```tsx
+function MyPluginComponent() {
+  const { table } = usePluginContext();
+  
+  if (table.remote) {
+    // Adjust behavior for Remote Mode
+    // e.g., hide global search
+    return null;
+  }
+  
+  return <GlobalSearchInput />;
+}
+```
+
+## CSS Variables
+
+Customize the loading overlay appearance:
+
+```css
+:root {
+  --szui-loading-overlay-bg: rgba(255, 255, 255, 0.8);
+  --szui-spinner-size: 32px;
+  --szui-spinner-color: #3b82f6;
+}
+```
