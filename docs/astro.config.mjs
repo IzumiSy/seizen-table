@@ -7,9 +7,6 @@ import starlightLinksValidator from "starlight-links-validator";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 
-const [pluginAPITypeDoc, pluginAPITypeDocSidebarGroup] =
-  createStarlightTypeDocPlugin();
-
 // Copy demo assets from example package to public/demos
 function copyDemosAssets() {
   const copy = () => {
@@ -33,6 +30,10 @@ function copyDemosAssets() {
     },
   };
 }
+
+// Initialize TypeDoc plugins for Plugin API and Table API
+const [pluginAPITypeDoc, pluginAPITypeDocSidebarGroup] =
+  createStarlightTypeDocPlugin();
 const [tableAPITypeDoc, tableAPITypeDocSidebarGroup] =
   createStarlightTypeDocPlugin();
 
