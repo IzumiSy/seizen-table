@@ -521,6 +521,51 @@ export function SorterTab() {
 }
 
 // =============================================================================
+// Event Handlers Hook
+// =============================================================================
+
+/**
+ * Hook that subscribes to column control events from context menu.
+ * Extracted for testability with renderHook.
+ */
+export function useColumnControlEvents() {
+  const { table, useEvent } = usePluginContext();
+
+  // Subscribe to column:hide-request event (from context menu)
+  useEvent("column:hide-request", (payload) => {
+    const { columnId } = payload;
+    table.setColumnVisibility({
+      ...table.getColumnVisibility(),
+      [columnId]: false,
+    });
+  });
+
+  // Subscribe to column:sort-request event (from context menu)
+  useEvent("column:sort-request", (payload) => {
+    const { columnId, direction } = payload;
+    const currentSorting = table.getSortingState();
+    if (direction === "clear") {
+      const newSorting = currentSorting.filter((s) => s.id !== columnId);
+      table.setSorting(newSorting);
+    } else {
+      const existingIndex = currentSorting.findIndex((s) => s.id === columnId);
+      if (existingIndex >= 0) {
+        const newSorting = currentSorting.map((s) =>
+          s.id === columnId ? { ...s, desc: direction === "desc" } : s
+        );
+        table.setSorting(newSorting);
+      } else {
+        const newSorting = [
+          ...currentSorting,
+          { id: columnId, desc: direction === "desc" },
+        ];
+        table.setSorting(newSorting);
+      }
+    }
+  });
+}
+
+// =============================================================================
 // Column Control Panel Component
 // =============================================================================
 
@@ -531,6 +576,9 @@ export interface ColumnControlConfig {
 export function ColumnControlPanel() {
   const args = usePluginArgs<ColumnControlConfig>();
   const [activeTab, setActiveTab] = useState<TabType>("visibility");
+
+  // Subscribe to events from context menu
+  useColumnControlEvents();
 
   return (
     <div

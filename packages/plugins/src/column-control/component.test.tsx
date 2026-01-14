@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   createMockTable,
-  createMockPluginContext,
-  type MockTableInstance,
+  pluginMockState,
+  initPluginMockState,
+  setupPluginMocks,
+  getPluginContextValue,
+  getPluginArgsValue,
 } from "../test-utils";
 import type { PluginColumnInfo } from "@izumisy/seizen-table/plugin";
 
@@ -18,55 +22,38 @@ const defaultColumns: PluginColumnInfo[] = [
   { key: "email", header: "Email" },
 ];
 
-// Variables to hold mock return values - these will be updated per test
-let mockTable: MockTableInstance;
-let mockColumns: PluginColumnInfo[];
-let mockPluginArgs: unknown;
-let mockUseEvent: (event: string, callback: Function) => void;
+const defaultPluginArgs = { width: 280 };
 
-// Mock the plugin module
+// Mock the plugin module - uses shared mock state functions
 vi.mock("@izumisy/seizen-table/plugin", () => ({
-  usePluginContext: vi.fn(() => ({
-    table: mockTable,
-    columns: mockColumns,
-    data: [],
-    selectedRows: [],
-    openArgs: undefined,
-    useEvent: mockUseEvent,
-  })),
-  usePluginArgs: vi.fn(() => mockPluginArgs),
+  usePluginContext: vi.fn(() => getPluginContextValue()),
+  usePluginArgs: vi.fn(() => getPluginArgsValue()),
 }));
 
 // Import components after mocking
-import { ColumnControlPanel, VisibilityTab, SorterTab } from "./component";
+import {
+  ColumnControlPanel,
+  VisibilityTab,
+  SorterTab,
+  useColumnControlEvents,
+} from "./component";
 
 // =============================================================================
 // Test Setup
 // =============================================================================
 
-function setupMocks(
-  options: {
-    table?: MockTableInstance;
-    columns?: PluginColumnInfo[];
-    pluginArgs?: unknown;
-  } = {}
-) {
-  const mockContext = createMockPluginContext({
-    table: options.table,
-    columns: options.columns ?? defaultColumns,
+// Helper to setup mocks with default values
+function setupMocks(options: Parameters<typeof setupPluginMocks>[0] = {}) {
+  return setupPluginMocks({
+    ...options,
+    defaultColumns,
+    defaultPluginArgs,
   });
-
-  mockTable = mockContext.table;
-  mockColumns = options.columns ?? defaultColumns;
-  mockPluginArgs = options.pluginArgs ?? { width: 280 };
-  mockUseEvent = mockContext.useEvent;
-
-  return mockContext;
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
-  setupMocks();
+  initPluginMockState({ defaultColumns, defaultPluginArgs });
 });
 
 // =============================================================================
@@ -376,5 +363,210 @@ describe("ColumnControlPanel", () => {
 
     const panel = container.firstChild as HTMLElement;
     expect(panel.style.width).toBe("350px");
+  });
+});
+
+// =============================================================================
+// useColumnControlEvents Hook Tests
+// =============================================================================
+
+describe("useColumnControlEvents", () => {
+  describe("column:hide-request event", () => {
+    it("hides a column when hide-request event is emitted", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          columnVisibility: { name: true, age: true, email: true },
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      // Emit the hide-request event
+      pluginMockState.eventCallbacks.emit("column:hide-request", {
+        columnId: "age",
+      });
+
+      expect(table.setColumnVisibility).toHaveBeenCalledWith({
+        name: true,
+        age: false,
+        email: true,
+      });
+    });
+
+    it("preserves other column visibility states when hiding a column", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          columnVisibility: { name: true, age: false, email: true },
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:hide-request", {
+        columnId: "name",
+      });
+
+      expect(table.setColumnVisibility).toHaveBeenCalledWith({
+        name: false,
+        age: false,
+        email: true,
+      });
+    });
+  });
+
+  describe("column:sort-request event", () => {
+    it("adds ascending sort when no sorting exists", () => {
+      const { table } = setupMocks({
+        table: createMockTable({ sorting: [] }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "name",
+        direction: "asc",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([
+        { id: "name", desc: false },
+      ]);
+    });
+
+    it("adds descending sort when no sorting exists", () => {
+      const { table } = setupMocks({
+        table: createMockTable({ sorting: [] }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "name",
+        direction: "desc",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([
+        { id: "name", desc: true },
+      ]);
+    });
+
+    it("updates existing sort direction from asc to desc", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          sorting: [{ id: "name", desc: false }],
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "name",
+        direction: "desc",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([
+        { id: "name", desc: true },
+      ]);
+    });
+
+    it("updates existing sort direction from desc to asc", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          sorting: [{ id: "name", desc: true }],
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "name",
+        direction: "asc",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([
+        { id: "name", desc: false },
+      ]);
+    });
+
+    it("clears sort for a column", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          sorting: [{ id: "name", desc: false }],
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "name",
+        direction: "clear",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([]);
+    });
+
+    it("preserves other sorts when clearing one column", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          sorting: [
+            { id: "name", desc: false },
+            { id: "age", desc: true },
+          ],
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "name",
+        direction: "clear",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([
+        { id: "age", desc: true },
+      ]);
+    });
+
+    it("adds new sort to existing sorts (multi-sort)", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          sorting: [{ id: "name", desc: false }],
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "age",
+        direction: "desc",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([
+        { id: "name", desc: false },
+        { id: "age", desc: true },
+      ]);
+    });
+
+    it("preserves other sorts when updating direction of one column", () => {
+      const { table } = setupMocks({
+        table: createMockTable({
+          sorting: [
+            { id: "name", desc: false },
+            { id: "age", desc: true },
+          ],
+        }),
+      });
+
+      renderHook(() => useColumnControlEvents());
+
+      pluginMockState.eventCallbacks.emit("column:sort-request", {
+        columnId: "age",
+        direction: "asc",
+      });
+
+      expect(table.setSorting).toHaveBeenCalledWith([
+        { id: "name", desc: false },
+        { id: "age", desc: false },
+      ]);
+    });
   });
 });

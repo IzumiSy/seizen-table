@@ -1,6 +1,17 @@
 import { vi } from "vitest";
 import type { PluginColumnInfo } from "@izumisy/seizen-table/plugin";
 
+// Re-export mock state utilities
+export {
+  pluginMockState,
+  initPluginMockState,
+  setupPluginMocks,
+  getPluginContextValue,
+  getPluginArgsValue,
+  MOCK_FILTER_OPERATORS,
+  MOCK_FILTER_OPERATOR_LABELS,
+} from "./mockState";
+
 // =============================================================================
 // Mock Table Instance
 // =============================================================================
@@ -16,6 +27,7 @@ export interface MockTableInstance {
   getData: ReturnType<typeof vi.fn>;
   getSelectedRows: ReturnType<typeof vi.fn>;
   getFilterState: ReturnType<typeof vi.fn>;
+  setFilter: ReturnType<typeof vi.fn>;
   getPaginationState: ReturnType<typeof vi.fn>;
   getColumns: ReturnType<typeof vi.fn>;
   eventBus: {
@@ -62,6 +74,7 @@ export function createMockTable(
     getData: vi.fn(() => data),
     getSelectedRows: vi.fn(() => selectedRows),
     getFilterState: vi.fn(() => []),
+    setFilter: vi.fn(),
     getPaginationState: vi.fn(() => ({ pageIndex: 0, pageSize: 10 })),
     getColumns: vi.fn(() => []),
     eventBus: {
