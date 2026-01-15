@@ -36,7 +36,10 @@ export function Paginator<TData>({
   const pageSize = tanstack.getState().pagination.pageSize;
 
   // Calculate page info
-  const totalRows = tanstack.getFilteredRowModel().rows.length;
+  const totalRows =
+    typeof table.remote === "object"
+      ? table.remote.totalRowCount
+      : tanstack.getFilteredRowModel().rows.length;
   const startRow = pageIndex * pageSize + 1;
   const endRow = Math.min((pageIndex + 1) * pageSize, totalRows);
 
