@@ -709,7 +709,7 @@ describe("useSeizenTable", () => {
       expect(result.current.remote).toBe(true);
     });
 
-    it("should set remote: true when remote option has totalRowCount", () => {
+    it("should set remote: { totalRowCount } when remote option has totalRowCount", () => {
       const data = createTestData();
       const columns = createTestColumns();
 
@@ -717,7 +717,7 @@ describe("useSeizenTable", () => {
         useSeizenTable({ data, columns, remote: { totalRowCount: 100 } })
       );
 
-      expect(result.current.remote).toBe(true);
+      expect(result.current.remote).toEqual({ totalRowCount: 100 });
     });
 
     it("should calculate pageCount from totalRowCount in Remote Mode", () => {

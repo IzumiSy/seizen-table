@@ -265,7 +265,11 @@ export interface SeizenTableInstance<TData> {
   // ===========================================================================
 
   /**
-   * Whether table is in Remote Mode.
+   * Remote Mode configuration.
+   * - `false` when not in Remote Mode
+   * - `true` when in Remote Mode without totalRowCount (e.g., cursor pagination without total)
+   * - `{ totalRowCount: number }` when in Remote Mode with totalRowCount
+   *
    * Plugins can use this to adjust their behavior.
    *
    * @example
@@ -274,9 +278,11 @@ export interface SeizenTableInstance<TData> {
    *   // Hide global search in Remote Mode
    *   return null;
    * }
+   * // Access totalRowCount for pagination (check if it's an object first)
+   * const total = typeof table.remote === 'object' ? table.remote.totalRowCount : undefined;
    * ```
    */
-  readonly remote: boolean;
+  readonly remote: boolean | RemoteOptions;
 
   // ===========================================================================
   // Advanced
@@ -471,7 +477,11 @@ export function useSeizenTable<TData>({
       eventBus,
 
       // Remote Mode
-      remote: isRemote,
+      remote: isRemote
+        ? totalRowCount != null
+          ? { totalRowCount }
+          : true
+        : false,
 
       // TanStack Table instance for advanced usage
       _tanstackTable: tanstackTable,
