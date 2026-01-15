@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   useSeizenTable,
   SeizenTable,
@@ -29,6 +29,8 @@ interface ConfigurationPanelProps {
   onApiTokenChange: (token: string) => void;
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
+  onFetch: () => void;
+  loading: boolean;
   error: string | null;
 }
 
@@ -37,6 +39,8 @@ function ConfigurationPanel({
   onApiTokenChange,
   searchQuery,
   onSearchQueryChange,
+  onFetch,
+  loading,
   error,
 }: ConfigurationPanelProps) {
   return (
@@ -62,7 +66,7 @@ function ConfigurationPanel({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "1fr 1fr auto",
           gap: "12px",
           alignItems: "end",
         }}
@@ -120,6 +124,27 @@ function ConfigurationPanel({
             }}
           />
         </div>
+
+        <button
+          onClick={onFetch}
+          disabled={loading || !apiToken.trim() || !searchQuery.trim()}
+          style={{
+            padding: "8px 20px",
+            backgroundColor: loading ? "#9ca3af" : "#3b82f6",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            fontSize: "14px",
+            fontWeight: 500,
+            cursor:
+              loading || !apiToken.trim() || !searchQuery.trim()
+                ? "not-allowed"
+                : "pointer",
+            opacity: !apiToken.trim() || !searchQuery.trim() ? 0.5 : 1,
+          }}
+        >
+          {loading ? "Fetching..." : "Fetch"}
+        </button>
       </div>
 
       {error && (
@@ -500,16 +525,16 @@ export function RemoteDataDemo() {
     );
   });
 
-  // Initial fetch when API token is set
-  useEffect(() => {
-    if (apiToken.trim() && searchQuery.trim()) {
-      fetchRepositories(
-        table.getPaginationState(),
-        table.getSortingState(),
-        table.getFilterState()
-      );
-    }
-  }, [apiToken, searchQuery]);
+  // Handle fetch button click
+  const handleFetch = useCallback(() => {
+    remote.clearCursors();
+    table.setPageIndex(0);
+    fetchRepositories(
+      { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
+      table.getSortingState(),
+      table.getFilterState()
+    );
+  }, [remote, table, fetchRepositories]);
 
   // Handle API token change
   const handleApiTokenChange = useCallback((token: string) => {
@@ -533,6 +558,8 @@ export function RemoteDataDemo() {
         onApiTokenChange={handleApiTokenChange}
         searchQuery={searchQuery}
         onSearchQueryChange={handleSearchQueryChange}
+        onFetch={handleFetch}
+        loading={remote.loading}
         error={remote.error?.message ?? null}
       />
 
