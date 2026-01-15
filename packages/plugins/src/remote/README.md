@@ -2,6 +2,16 @@
 
 A minimal hook for managing remote data state with SeizenTable.
 
+## Design Philosophy
+
+This hook intentionally only manages **data-related state**:
+- `data`, `loading`, `error`, `totalCount`, `cursors`
+
+**Pagination, sorting, and filters are managed by the table** via `useSeizenTable`.
+This avoids state duplication and keeps the API simple.
+
+Use `useSeizenTableEvent` to react to table state changes and trigger data fetching.
+
 ## Installation
 
 ```typescript
@@ -64,34 +74,3 @@ function MyRemoteTable() {
   return <SeizenTable table={table} loading={remote.loading} />;
 }
 ```
-
-## API
-
-### `useRemoteData<TData>()`
-
-Returns a state object for managing remote data.
-
-#### Return Value
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `data` | `TData[]` | Current data array |
-| `loading` | `boolean` | Loading state |
-| `error` | `Error \| null` | Error state |
-| `totalCount` | `number` | Total row count from server |
-| `setLoading` | `(loading: boolean) => void` | Set loading state |
-| `setData` | `(data, options?) => void` | Set data with optional totalCount and cursor |
-| `setError` | `(error) => void` | Set error state |
-| `getCursor` | `(pageIndex: number) => string \| undefined` | Get cursor for a page |
-| `clearCursors` | `() => void` | Clear all stored cursors |
-| `getRemoteOptions` | `() => RemoteOptions` | Get remote options for useSeizenTable |
-
-## Design Philosophy
-
-This hook intentionally only manages **data-related state**:
-- `data`, `loading`, `error`, `totalCount`, `cursors`
-
-**Pagination, sorting, and filters are managed by the table** via `useSeizenTable`.
-This avoids state duplication and keeps the API simple.
-
-Use `useSeizenTableEvent` to react to table state changes and trigger data fetching.
