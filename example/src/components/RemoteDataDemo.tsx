@@ -5,6 +5,7 @@ import {
   SeizenTable,
   type PaginationState,
   type SortingState,
+  type ColumnFiltersState,
 } from "@izumisy/seizen-table";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
@@ -207,6 +208,7 @@ const columns = [
   },
   {
     accessorKey: "primaryLanguage",
+    accessorFn: (row: GitHubRepository) => row.primaryLanguage?.name ?? null,
     header: "Language",
     meta: { filterType: "string" as const },
     cell: ({ row }: { row: { original: GitHubRepository } }) => {
@@ -331,6 +333,48 @@ function mapSortingToGitHubOrder(sorting: SortingState): string {
   }
 }
 
+// Filter value type from FilterPlugin
+interface FilterValue {
+  operator: string;
+  value: string;
+}
+
+// Map filter state to GitHub search query modifiers
+function mapFiltersToGitHubQuery(filters: ColumnFiltersState): string {
+  const queryParts: string[] = [];
+
+  for (const filter of filters) {
+    // FilterPlugin sends value as { operator, value } object
+    const filterValue = filter.value as FilterValue;
+    const value = filterValue?.value;
+    if (!value || !value.trim()) continue;
+
+    switch (filter.id) {
+      case "primaryLanguage":
+        queryParts.push(`language:${value}`);
+        break;
+      case "owner":
+        queryParts.push(`user:${value}`);
+        break;
+      case "name":
+        queryParts.push(`${value} in:name`);
+        break;
+      case "description":
+        queryParts.push(`${value} in:description`);
+        break;
+      case "stargazerCount":
+        // Support range like ">100" or ">=1000"
+        queryParts.push(`stars:${value}`);
+        break;
+      case "forkCount":
+        queryParts.push(`forks:${value}`);
+        break;
+    }
+  }
+
+  return queryParts.join(" ");
+}
+
 export function RemoteDataDemo() {
   const [apiToken, setApiToken] = useState("");
   const [searchQuery, setSearchQuery] = useState("react");
@@ -346,25 +390,31 @@ export function RemoteDataDemo() {
     pageSize: 10,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [filters, setFilters] = useState<ColumnFiltersState>([]);
 
   const table = useSeizenTable({
     data,
     columns,
-    plugins: [FilterPlugin.configure({}), ColumnControlPlugin.configure({})],
+    plugins: [
+      FilterPlugin.configure({ disableGlobalSearch: true }),
+      ColumnControlPlugin.configure({}),
+    ],
     remote: totalCount > 0 ? { totalRowCount: totalCount } : true,
   });
 
   // Subscribe to table events
   useSeizenTableEvent(table, "pagination-change", (value) => {
-    console.log("Pagination changed:", value);
-
     setPagination(value);
   });
   useSeizenTableEvent(table, "sorting-change", (newSorting) => {
-    console.log("Sorting changed:", newSorting);
-
     setSorting(newSorting);
     // Reset pagination and cursors when sorting changes
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    setCursors(new Map());
+  });
+  useSeizenTableEvent(table, "filter-change", (newFilters) => {
+    setFilters(newFilters);
+    // Reset pagination and cursors when filters change
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     setCursors(new Map());
   });
@@ -386,7 +436,8 @@ export function RemoteDataDemo() {
 
     try {
       const sortQuery = mapSortingToGitHubOrder(sorting);
-      const fullQuery = `${searchQuery} ${sortQuery}`;
+      const filterQuery = mapFiltersToGitHubQuery(filters);
+      const fullQuery = `${searchQuery} ${sortQuery} ${filterQuery}`.trim();
 
       // Get cursor for current page (if not first page)
       const cursor =
@@ -446,9 +497,9 @@ export function RemoteDataDemo() {
     } finally {
       setLoading(false);
     }
-  }, [apiToken, searchQuery, pagination, sorting, cursors]);
+  }, [apiToken, searchQuery, pagination, sorting, filters, cursors]);
 
-  // Fetch data when pagination, sorting, search query, or token changes
+  // Fetch data when pagination, sorting, filters, search query, or token changes
   useEffect(() => {
     if (apiToken.trim() && searchQuery.trim()) {
       fetchRepositories();
@@ -457,6 +508,7 @@ export function RemoteDataDemo() {
     pagination.pageIndex,
     pagination.pageSize,
     sorting,
+    filters,
     searchQuery,
     apiToken,
   ]);
