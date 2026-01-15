@@ -8,6 +8,7 @@ import { DataExportDemo } from "./components/DataExportDemo";
 import { RowDetailDemo } from "./components/RowDetailDemo";
 import { FullDemo } from "./components/FullDemo";
 import { ThemingDemo } from "./components/ThemingDemo";
+import { RemoteDataDemo } from "./components/RemoteDataDemo";
 import * as styles from "./styles.css";
 
 const demos: { path: string; component: FC; title: string }[] = [
@@ -45,6 +46,11 @@ const demos: { path: string; component: FC; title: string }[] = [
     path: "row-detail",
     component: RowDetailDemo,
     title: "Row Detail",
+  },
+  {
+    path: "remote-data",
+    component: RemoteDataDemo,
+    title: "Remote Data (GitHub API)",
   },
   {
     path: "full",

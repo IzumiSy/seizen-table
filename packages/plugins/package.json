@@ -27,6 +27,10 @@
     "./preset-filter": {
       "import": "./dist/preset-filter.js",
       "types": "./dist/preset-filter.d.ts"
+    },
+    "./remote": {
+      "import": "./dist/remote.js",
+      "types": "./dist/remote.d.ts"
     }
   },
   "files": [
