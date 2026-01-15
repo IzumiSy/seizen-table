@@ -7,93 +7,15 @@ import {
   PluginArgsProvider,
   usePluginArgs,
 } from "./Context";
-import type { SeizenTableInstance } from "../table/useSeizenTable";
 import type {
   ColumnFiltersState,
   SortingState,
   PaginationState,
 } from "@tanstack/react-table";
-
-// =============================================================================
-// Test Helpers
-// =============================================================================
-
-interface TestRow {
-  id: number;
-  name: string;
-}
-
-/**
- * Create a mock SeizenTableInstance for testing
- */
-function createMockTableInstance(
-  overrides: Partial<SeizenTableInstance<TestRow>> = {}
-): SeizenTableInstance<TestRow> {
-  const eventListeners = new Map<string, Set<(payload: unknown) => void>>();
-
-  const mockEventBus = {
-    emit: vi.fn((event: string, payload: unknown) => {
-      const listeners = eventListeners.get(event);
-      if (listeners) {
-        listeners.forEach((cb) => cb(payload));
-      }
-    }),
-    subscribe: vi.fn((event: string, callback: (payload: unknown) => void) => {
-      if (!eventListeners.has(event)) {
-        eventListeners.set(event, new Set());
-      }
-      eventListeners.get(event)!.add(callback);
-      return () => {
-        eventListeners.get(event)?.delete(callback);
-      };
-    }),
-  };
-
-  const mockPlugin = {
-    open: vi.fn(),
-    close: vi.fn(),
-    isOpen: vi.fn(() => false),
-    getActiveId: vi.fn(() => null),
-    setActive: vi.fn(),
-    toggle: vi.fn(),
-    _state: { id: null, args: undefined },
-  };
-
-  return {
-    getData: () => [
-      { id: 1, name: "Alice" },
-      { id: 2, name: "Bob" },
-    ],
-    getColumns: () => [
-      { accessorKey: "id", header: "ID" },
-      { accessorKey: "name", header: "Name" },
-    ],
-    getSelectedRows: () => [],
-    setSelectedRows: vi.fn(),
-    clearSelection: vi.fn(),
-    getFilterState: () => [],
-    setFilter: vi.fn(),
-    getGlobalFilter: () => "",
-    setGlobalFilter: vi.fn(),
-    getSortingState: () => [],
-    setSorting: vi.fn(),
-    getPaginationState: () => ({ pageIndex: 0, pageSize: 10 }),
-    setPageIndex: vi.fn(),
-    setPageSize: vi.fn(),
-    getColumnVisibility: () => ({}),
-    setColumnVisibility: vi.fn(),
-    toggleColumnVisibility: vi.fn(),
-    getColumnOrder: () => [],
-    setColumnOrder: vi.fn(),
-    moveColumn: vi.fn(),
-    plugins: [],
-    plugin: mockPlugin as any,
-    eventBus: mockEventBus as any,
-    remote: false,
-    _tanstackTable: {} as any,
-    ...overrides,
-  };
-}
+import {
+  createMockTableInstance,
+  type TestRow,
+} from "../../tests/utils/mockTable";
 
 // =============================================================================
 // PluginContextProvider Tests
