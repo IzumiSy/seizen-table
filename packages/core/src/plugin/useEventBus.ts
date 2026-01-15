@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import type {
   ColumnFiltersState,
   PaginationState,
@@ -171,18 +171,21 @@ export function useEventBus() {
     []
   );
 
-  return {
-    /**
-     * Emit an event to all subscribers
-     */
-    emit,
+  return useMemo(
+    () => ({
+      /**
+       * Emit an event to all subscribers
+       */
+      emit,
 
-    /**
-     * Subscribe to an event
-     * @returns Unsubscribe function
-     */
-    subscribe,
-  };
+      /**
+       * Subscribe to an event
+       * @returns Unsubscribe function
+       */
+      subscribe,
+    }),
+    [emit, subscribe]
+  );
 }
 
 export type EventBus = ReturnType<typeof useEventBus>;

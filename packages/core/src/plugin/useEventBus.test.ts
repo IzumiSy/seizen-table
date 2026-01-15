@@ -255,6 +255,16 @@ describe("useEventBus", () => {
       expect(result.current.subscribe).toBe(subscribe1);
     });
 
+    it("eventBus object itself should be stable across renders", () => {
+      const { result, rerender } = renderHook(() => useEventBus());
+
+      const eventBus1 = result.current;
+
+      rerender();
+
+      expect(result.current).toBe(eventBus1);
+    });
+
     it("should maintain subscribers across re-renders", () => {
       const { result, rerender } = renderHook(() => useEventBus());
       const callback = vi.fn();
