@@ -20,6 +20,7 @@ export default defineConfig({
         "row-detail": "./src/row-detail/index.ts",
         "all-slots-demo": "./src/all-slots-demo/index.ts",
         "preset-filter": "./src/preset-filter/index.ts",
+        remote: "./src/remote/index.ts",
       },
       formats: ["es"],
     },

@@ -1,14 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  useSeizenTable,
-  useSeizenTableEvent,
-  SeizenTable,
-  type PaginationState,
-  type SortingState,
-  type ColumnFiltersState,
-} from "@izumisy/seizen-table";
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
+import {
+  useRemoteTableState,
+  useBindRemoteTableEvents,
+} from "@izumisy/seizen-table-plugins/remote";
 
 interface GitHubRepository {
   id: string;
@@ -312,138 +309,119 @@ const SEARCH_REPOSITORIES_QUERY = `
   }
 `;
 
-// Map sorting state to GitHub GraphQL order
-function mapSortingToGitHubOrder(sorting: SortingState): string {
-  if (sorting.length === 0) {
-    return "sort:stars-desc";
-  }
-
-  const sort = sorting[0];
-  const direction = sort.desc ? "desc" : "asc";
-
-  switch (sort.id) {
-    case "stargazerCount":
-      return `sort:stars-${direction}`;
-    case "forkCount":
-      return `sort:forks-${direction}`;
-    case "updatedAt":
-      return `sort:updated-${direction}`;
-    default:
-      return "sort:stars-desc";
-  }
-}
-
 // Filter value type from FilterPlugin
 interface FilterValue {
   operator: string;
   value: string;
 }
 
-// Map filter state to GitHub search query modifiers
-function mapFiltersToGitHubQuery(filters: ColumnFiltersState): string {
-  const queryParts: string[] = [];
+// Build GitHub search query from sorting and filters
+function buildGitHubQuery(
+  searchQuery: string,
+  sorting: { id: string; desc: boolean }[],
+  filters: { id: string; value: unknown }[]
+): string {
+  const parts: string[] = [searchQuery];
 
+  // Add sorting
+  if (sorting.length > 0) {
+    const sort = sorting[0];
+    const direction = sort.desc ? "desc" : "asc";
+    switch (sort.id) {
+      case "stargazerCount":
+        parts.push(`sort:stars-${direction}`);
+        break;
+      case "forkCount":
+        parts.push(`sort:forks-${direction}`);
+        break;
+      case "updatedAt":
+        parts.push(`sort:updated-${direction}`);
+        break;
+      default:
+        parts.push("sort:stars-desc");
+    }
+  } else {
+    parts.push("sort:stars-desc");
+  }
+
+  // Add filters
   for (const filter of filters) {
-    // FilterPlugin sends value as { operator, value } object
     const filterValue = filter.value as FilterValue;
     const value = filterValue?.value;
     if (!value || !value.trim()) continue;
 
     switch (filter.id) {
       case "primaryLanguage":
-        queryParts.push(`language:${value}`);
+        parts.push(`language:${value}`);
         break;
       case "owner":
-        queryParts.push(`user:${value}`);
+        parts.push(`user:${value}`);
         break;
       case "name":
-        queryParts.push(`${value} in:name`);
+        parts.push(`${value} in:name`);
         break;
       case "description":
-        queryParts.push(`${value} in:description`);
+        parts.push(`${value} in:description`);
         break;
       case "stargazerCount":
-        // Support range like ">100" or ">=1000"
-        queryParts.push(`stars:${value}`);
+        parts.push(`stars:${value}`);
         break;
       case "forkCount":
-        queryParts.push(`forks:${value}`);
+        parts.push(`forks:${value}`);
         break;
     }
   }
 
-  return queryParts.join(" ");
+  return parts.join(" ").trim();
 }
 
 export function RemoteDataDemo() {
+  // GitHub API specific state
   const [apiToken, setApiToken] = useState("");
   const [searchQuery, setSearchQuery] = useState("react");
-  const [data, setData] = useState<GitHubRepository[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [cursors, setCursors] = useState<Map<number, string>>(new Map());
 
-  // State for remote data fetching
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+  // Remote table state (data, loading, error, pagination, sorting, filters, etc.)
+  const remote = useRemoteTableState<GitHubRepository>({
+    initialPagination: { pageIndex: 0, pageSize: 10 },
   });
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [filters, setFilters] = useState<ColumnFiltersState>([]);
 
+  // Create table instance
   const table = useSeizenTable({
-    data,
+    data: remote.data,
     columns,
     plugins: [
       FilterPlugin.configure({ disableGlobalSearch: true }),
       ColumnControlPlugin.configure({}),
     ],
-    remote: totalCount > 0 ? { totalRowCount: totalCount } : true,
+    remote: remote.getRemoteOptions(),
   });
 
-  // Subscribe to table events
-  useSeizenTableEvent(table, "pagination-change", (value) => {
-    setPagination(value);
-  });
-  useSeizenTableEvent(table, "sorting-change", (newSorting) => {
-    setSorting(newSorting);
-    // Reset pagination and cursors when sorting changes
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    setCursors(new Map());
-  });
-  useSeizenTableEvent(table, "filter-change", (newFilters) => {
-    setFilters(newFilters);
-    // Reset pagination and cursors when filters change
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    setCursors(new Map());
-  });
+  // Bind table events to remote state
+  useBindRemoteTableEvents(table, remote);
 
-  // Fetch data using GraphQL
+  // Fetch data from GitHub GraphQL API
   const fetchRepositories = useCallback(async () => {
     if (!apiToken.trim()) {
-      setError("API token is required for GitHub GraphQL API");
+      remote.setError(
+        new Error("API token is required for GitHub GraphQL API")
+      );
       return;
     }
 
     if (!searchQuery.trim()) {
-      setError("Please enter a search query");
+      remote.setError(new Error("Please enter a search query"));
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    remote.setLoading(true);
+    remote.setError(null);
 
     try {
-      const sortQuery = mapSortingToGitHubOrder(sorting);
-      const filterQuery = mapFiltersToGitHubQuery(filters);
-      const fullQuery = `${searchQuery} ${sortQuery} ${filterQuery}`.trim();
-
-      // Get cursor for current page (if not first page)
-      const cursor =
-        pagination.pageIndex > 0
-          ? cursors.get(pagination.pageIndex - 1)
-          : undefined;
+      const query = buildGitHubQuery(
+        searchQuery,
+        remote.sorting,
+        remote.filters
+      );
 
       const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
@@ -454,9 +432,9 @@ export function RemoteDataDemo() {
         body: JSON.stringify({
           query: SEARCH_REPOSITORIES_QUERY,
           variables: {
-            query: fullQuery,
-            first: pagination.pageSize,
-            after: cursor,
+            query,
+            first: remote.pagination.pageSize,
+            after: remote.getCurrentCursor(),
           },
         }),
       });
@@ -479,59 +457,54 @@ export function RemoteDataDemo() {
         (node: GitHubRepository | null) => node !== null
       );
 
-      setData(repositories);
-      setTotalCount(Math.min(searchResult.repositoryCount, 1000)); // GitHub limits to 1000 results
-
-      // Store cursor for next page
-      if (searchResult.pageInfo.endCursor) {
-        setCursors((prev) => {
-          const newCursors = new Map(prev);
-          newCursors.set(pagination.pageIndex, searchResult.pageInfo.endCursor);
-          return newCursors;
-        });
-      }
+      // Set data with totalCount and cursor
+      remote.setData(repositories, {
+        totalCount: Math.min(searchResult.repositoryCount, 1000), // GitHub limits to 1000
+        cursor: searchResult.pageInfo.endCursor,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch data");
-      setData([]);
-      setTotalCount(0);
+      remote.setError(
+        err instanceof Error ? err : new Error("Failed to fetch data")
+      );
+      remote.setData([], { totalCount: 0 });
     } finally {
-      setLoading(false);
+      remote.setLoading(false);
     }
-  }, [apiToken, searchQuery, pagination, sorting, filters, cursors]);
+  }, [apiToken, searchQuery, remote]);
 
-  // Fetch data when pagination, sorting, filters, search query, or token changes
+  // Fetch data when query state changes
   useEffect(() => {
     if (apiToken.trim() && searchQuery.trim()) {
       fetchRepositories();
     }
   }, [
-    pagination.pageIndex,
-    pagination.pageSize,
-    sorting,
-    filters,
+    remote.pagination.pageIndex,
+    remote.pagination.pageSize,
+    remote.sorting,
+    remote.filters,
     searchQuery,
     apiToken,
   ]);
 
-  // Initial fetch when token is provided
+  // Handle API token change
   const handleApiTokenChange = useCallback(
     (token: string) => {
       setApiToken(token);
       if (token.trim() && searchQuery.trim()) {
-        // Reset state for new token
-        setCursors(new Map());
-        setPagination({ pageIndex: 0, pageSize: 10 });
+        remote.resetToFirstPage();
       }
     },
-    [searchQuery]
+    [searchQuery, remote]
   );
 
-  const handleSearchQueryChange = useCallback((query: string) => {
-    setSearchQuery(query);
-    // Reset pagination and cursors when search changes
-    setCursors(new Map());
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  }, []);
+  // Handle search query change
+  const handleSearchQueryChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      remote.resetToFirstPage();
+    },
+    [remote]
+  );
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -540,7 +513,7 @@ export function RemoteDataDemo() {
         onApiTokenChange={handleApiTokenChange}
         searchQuery={searchQuery}
         onSearchQueryChange={handleSearchQueryChange}
-        error={error}
+        error={remote.error?.message ?? null}
       />
 
       {/* Table */}
@@ -551,7 +524,7 @@ export function RemoteDataDemo() {
           overflow: "hidden",
         }}
       >
-        <SeizenTable table={table} loading={loading} />
+        <SeizenTable table={table} loading={remote.loading} />
       </div>
     </div>
   );
