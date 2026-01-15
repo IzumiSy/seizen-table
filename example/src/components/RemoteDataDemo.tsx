@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
+import {
+  useSeizenTable,
+  SeizenTable,
+  useSeizenTableEvent,
+} from "@izumisy/seizen-table";
 import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
 import { ColumnControlPlugin } from "@izumisy/seizen-table-plugins/column-control";
-import {
-  useRemoteTableState,
-  useBindRemoteTableEvents,
-} from "@izumisy/seizen-table-plugins/remote";
+import { useRemoteData } from "@izumisy/seizen-table-plugins/remote";
 
 interface GitHubRepository {
   id: string;
@@ -380,10 +381,8 @@ export function RemoteDataDemo() {
   const [apiToken, setApiToken] = useState("");
   const [searchQuery, setSearchQuery] = useState("react");
 
-  // Remote table state (data, loading, error, pagination, sorting, filters, etc.)
-  const remote = useRemoteTableState<GitHubRepository>({
-    initialPagination: { pageIndex: 0, pageSize: 10 },
-  });
+  // Remote data state (data, loading, error, totalCount, cursors)
+  const remote = useRemoteData<GitHubRepository>();
 
   // Create table instance
   const table = useSeizenTable({
@@ -396,114 +395,135 @@ export function RemoteDataDemo() {
     remote: remote.getRemoteOptions(),
   });
 
-  // Bind table events to remote state
-  useBindRemoteTableEvents(table, remote);
-
   // Fetch data from GitHub GraphQL API
-  const fetchRepositories = useCallback(async () => {
-    if (!apiToken.trim()) {
-      remote.setError(
-        new Error("API token is required for GitHub GraphQL API")
-      );
-      return;
-    }
+  const fetchRepositories = useCallback(
+    async (
+      pagination: { pageIndex: number; pageSize: number },
+      sorting: { id: string; desc: boolean }[],
+      filters: { id: string; value: unknown }[]
+    ) => {
+      if (!apiToken.trim()) {
+        remote.setError(
+          new Error("API token is required for GitHub GraphQL API")
+        );
+        return;
+      }
 
-    if (!searchQuery.trim()) {
-      remote.setError(new Error("Please enter a search query"));
-      return;
-    }
+      if (!searchQuery.trim()) {
+        remote.setError(new Error("Please enter a search query"));
+        return;
+      }
 
-    remote.setLoading(true);
-    remote.setError(null);
+      remote.setLoading(true);
+      remote.setError(null);
 
-    try {
-      const query = buildGitHubQuery(
-        searchQuery,
-        remote.sorting,
-        remote.filters
-      );
+      try {
+        const query = buildGitHubQuery(searchQuery, sorting, filters);
 
-      const response = await fetch("https://api.github.com/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiToken}`,
-        },
-        body: JSON.stringify({
-          query: SEARCH_REPOSITORIES_QUERY,
-          variables: {
-            query,
-            first: remote.pagination.pageSize,
-            after: remote.getCurrentCursor(),
+        const response = await fetch("https://api.github.com/graphql", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiToken}`,
           },
-        }),
-      });
+          body: JSON.stringify({
+            query: SEARCH_REPOSITORIES_QUERY,
+            variables: {
+              query,
+              first: pagination.pageSize,
+              after: remote.getCursor(pagination.pageIndex - 1),
+            },
+          }),
+        });
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Invalid API token. Please check your token.");
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error("Invalid API token. Please check your token.");
+          }
+          throw new Error(`GitHub API error: ${response.status}`);
         }
-        throw new Error(`GitHub API error: ${response.status}`);
-      }
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (result.errors) {
-        throw new Error(result.errors[0]?.message || "GraphQL error");
-      }
+        if (result.errors) {
+          throw new Error(result.errors[0]?.message || "GraphQL error");
+        }
 
-      const searchResult = result.data.search;
-      const repositories = searchResult.nodes.filter(
-        (node: GitHubRepository | null) => node !== null
-      );
+        const searchResult = result.data.search;
+        const repositories = searchResult.nodes.filter(
+          (node: GitHubRepository | null) => node !== null
+        );
 
-      // Set data with totalCount and cursor
-      remote.setData(repositories, {
-        totalCount: Math.min(searchResult.repositoryCount, 1000), // GitHub limits to 1000
-        cursor: searchResult.pageInfo.endCursor,
-      });
-    } catch (err) {
-      remote.setError(
-        err instanceof Error ? err : new Error("Failed to fetch data")
-      );
-      remote.setData([], { totalCount: 0 });
-    } finally {
-      remote.setLoading(false);
-    }
-  }, [apiToken, searchQuery, remote]);
-
-  // Fetch data when query state changes
-  useEffect(() => {
-    if (apiToken.trim() && searchQuery.trim()) {
-      fetchRepositories();
-    }
-  }, [
-    remote.pagination.pageIndex,
-    remote.pagination.pageSize,
-    remote.sorting,
-    remote.filters,
-    searchQuery,
-    apiToken,
-  ]);
-
-  // Handle API token change
-  const handleApiTokenChange = useCallback(
-    (token: string) => {
-      setApiToken(token);
-      if (token.trim() && searchQuery.trim()) {
-        remote.resetToFirstPage();
+        // Set data with totalCount and cursor
+        remote.setData(repositories, {
+          totalCount: Math.min(searchResult.repositoryCount, 1000), // GitHub limits to 1000
+          cursor: searchResult.pageInfo.endCursor,
+        });
+      } catch (err) {
+        remote.setError(
+          err instanceof Error ? err : new Error("Failed to fetch data")
+        );
+        remote.setData([], { totalCount: 0 });
+      } finally {
+        remote.setLoading(false);
       }
     },
-    [searchQuery, remote]
+    [apiToken, searchQuery, remote]
   );
+
+  // Subscribe to table events
+  useSeizenTableEvent(table, "pagination-change", (pagination) => {
+    fetchRepositories(
+      pagination,
+      table.getSortingState(),
+      table.getFilterState()
+    );
+  });
+
+  useSeizenTableEvent(table, "sorting-change", (sorting) => {
+    remote.clearCursors();
+    table.setPageIndex(0);
+    fetchRepositories(
+      { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
+      sorting,
+      table.getFilterState()
+    );
+  });
+
+  useSeizenTableEvent(table, "filter-change", (filters) => {
+    remote.clearCursors();
+    table.setPageIndex(0);
+    fetchRepositories(
+      { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
+      table.getSortingState(),
+      filters
+    );
+  });
+
+  // Initial fetch when API token is set
+  useEffect(() => {
+    if (apiToken.trim() && searchQuery.trim()) {
+      fetchRepositories(
+        table.getPaginationState(),
+        table.getSortingState(),
+        table.getFilterState()
+      );
+    }
+  }, [apiToken, searchQuery]);
+
+  // Handle API token change
+  const handleApiTokenChange = useCallback((token: string) => {
+    setApiToken(token);
+  }, []);
 
   // Handle search query change
   const handleSearchQueryChange = useCallback(
     (query: string) => {
       setSearchQuery(query);
-      remote.resetToFirstPage();
+      remote.clearCursors();
+      table.setPageIndex(0);
     },
-    [remote]
+    [remote, table]
   );
 
   return (

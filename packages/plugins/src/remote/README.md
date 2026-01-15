@@ -1,62 +1,53 @@
-# Remote Table State
+# Remote Data
 
-Utilities for managing remote data source state with SeizenTable.
+A minimal hook for managing remote data state with SeizenTable.
 
 ## Installation
 
-These utilities are included in `@izumisy/seizen-table-plugins`.
-
 ```typescript
-import {
-  useRemoteTableState,
-  useBindRemoteTableEvents,
-} from "@izumisy/seizen-table-plugins/remote";
+import { useRemoteData } from "@izumisy/seizen-table-plugins/remote";
 ```
 
 ## Usage
 
 ```tsx
-import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
-import {
-  useRemoteTableState,
-  useBindRemoteTableEvents,
-} from "@izumisy/seizen-table-plugins/remote";
+import { useSeizenTable, SeizenTable, useSeizenTableEvent } from "@izumisy/seizen-table";
+import { useRemoteData } from "@izumisy/seizen-table-plugins/remote";
 
 function MyRemoteTable() {
-  // 1. Create remote state
-  const remote = useRemoteTableState<MyData>({
-    initialPagination: { pageIndex: 0, pageSize: 10 },
-  });
+  const remote = useRemoteData<MyData>();
 
-  // 2. Create table with remote data
   const table = useSeizenTable({
     data: remote.data,
     columns,
     remote: remote.getRemoteOptions(),
   });
 
-  // 3. Bind table events to remote state
-  useBindRemoteTableEvents(table, remote);
+  // Fetch data on pagination change
+  useSeizenTableEvent(table, "pagination-change", (pagination) => {
+    fetchData(pagination, table.getState().sorting);
+  });
 
-  // 4. Fetch data when query state changes
-  useEffect(() => {
-    fetchData();
-  }, [remote.pagination, remote.sorting, remote.filters]);
+  // Fetch data on sorting change (reset to first page)
+  useSeizenTableEvent(table, "sorting-change", (sorting) => {
+    remote.clearCursors();
+    table.setPageIndex(0);
+    fetchData({ pageIndex: 0, pageSize: table.getState().pagination.pageSize }, sorting);
+  });
 
-  async function fetchData() {
+  async function fetchData(pagination, sorting) {
     remote.setLoading(true);
     try {
       const result = await api.getData({
-        page: remote.pagination.pageIndex,
-        pageSize: remote.pagination.pageSize,
-        sort: remote.sorting,
-        filters: remote.filters,
-        cursor: remote.getCurrentCursor(), // for cursor-based pagination
+        page: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        cursor: remote.getCursor(pagination.pageIndex - 1), // for cursor-based pagination
+        sort: sorting,
       });
 
       remote.setData(result.items, {
         totalCount: result.total,
-        cursor: result.nextCursor, // optional, for cursor-based pagination
+        cursor: result.nextCursor, // for cursor-based pagination
       });
     } catch (err) {
       remote.setError(err);
@@ -65,53 +56,42 @@ function MyRemoteTable() {
     }
   }
 
+  // Initial fetch
+  useEffect(() => {
+    fetchData(table.getState().pagination, table.getState().sorting);
+  }, []);
+
   return <SeizenTable table={table} loading={remote.loading} />;
 }
 ```
 
 ## API
 
-### `useRemoteTableState<TData>(options?)`
+### `useRemoteData<TData>()`
 
-Returns a state object for managing remote table data.
-
-#### Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `initialPagination` | `PaginationState` | `{ pageIndex: 0, pageSize: 10 }` | Initial pagination state |
-| `initialSorting` | `SortingState` | `[]` | Initial sorting state |
-| `initialFilters` | `ColumnFiltersState` | `[]` | Initial filters state |
+Returns a state object for managing remote data.
 
 #### Return Value
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `data` | `TData[]` | Current data |
+| `data` | `TData[]` | Current data array |
 | `loading` | `boolean` | Loading state |
 | `error` | `Error \| null` | Error state |
-| `pagination` | `PaginationState` | Current pagination |
-| `sorting` | `SortingState` | Current sorting |
-| `filters` | `ColumnFiltersState` | Current filters |
 | `totalCount` | `number` | Total row count from server |
-| `setPagination` | `(pagination) => void` | Update pagination |
-| `setSorting` | `(sorting) => void` | Update sorting |
-| `setFilters` | `(filters) => void` | Update filters |
-| `setLoading` | `(loading) => void` | Update loading state |
+| `setLoading` | `(loading: boolean) => void` | Set loading state |
 | `setData` | `(data, options?) => void` | Set data with optional totalCount and cursor |
-| `setError` | `(error) => void` | Set error |
-| `resetToFirstPage` | `() => void` | Reset to first page and clear cursors |
-| `reset` | `() => void` | Reset all state to initial values |
-| `getCurrentCursor` | `() => string \| undefined` | Get cursor for current page |
-| `getRemoteOptions` | `() => RemoteOptions` | Get options for `useSeizenTable` |
+| `setError` | `(error) => void` | Set error state |
+| `getCursor` | `(pageIndex: number) => string \| undefined` | Get cursor for a page |
+| `clearCursors` | `() => void` | Clear all stored cursors |
+| `getRemoteOptions` | `() => RemoteOptions` | Get remote options for useSeizenTable |
 
-### `useBindRemoteTableEvents(table, remote, options?)`
+## Design Philosophy
 
-Binds SeizenTable events to remote state.
+This hook intentionally only manages **data-related state**:
+- `data`, `loading`, `error`, `totalCount`, `cursors`
 
-#### Options
+**Pagination, sorting, and filters are managed by the table** via `useSeizenTable`.
+This avoids state duplication and keeps the API simple.
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `resetOnSortingChange` | `boolean` | `true` | Reset to first page when sorting changes |
-| `resetOnFilterChange` | `boolean` | `true` | Reset to first page when filters change |
+Use `useSeizenTableEvent` to react to table state changes and trigger data fetching.
