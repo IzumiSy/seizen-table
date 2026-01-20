@@ -191,7 +191,9 @@
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
-  transition: color 0.2s ease, filter 0.2s ease;
+  transition:
+    color 0.2s ease,
+    filter 0.2s ease;
 }
 
 .page-footer .footer-links a:hover {
