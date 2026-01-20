@@ -345,7 +345,7 @@ interface FilterValue {
 function buildGitHubQuery(
   searchQuery: string,
   sorting: { id: string; desc: boolean }[],
-  filters: { id: string; value: unknown }[]
+  filters: { id: string; value: unknown }[],
 ): string {
   const parts: string[] = [searchQuery];
 
@@ -420,16 +420,21 @@ export function RemoteDataDemo() {
     remote: remote.getRemoteOptions(),
   });
 
+  const resetRemotePagination = useCallback(() => {
+    remote.clearCursors();
+    table.setPageIndex(0);
+  }, [remote, table]);
+
   // Fetch data from GitHub GraphQL API
   const fetchRepositories = useCallback(
     async (
       pagination: { pageIndex: number; pageSize: number },
       sorting: { id: string; desc: boolean }[],
-      filters: { id: string; value: unknown }[]
+      filters: { id: string; value: unknown }[],
     ) => {
       if (!apiToken.trim()) {
         remote.setError(
-          new Error("API token is required for GitHub GraphQL API")
+          new Error("API token is required for GitHub GraphQL API"),
         );
         return;
       }
@@ -476,7 +481,7 @@ export function RemoteDataDemo() {
 
         const searchResult = result.data.search;
         const repositories = searchResult.nodes.filter(
-          (node: GitHubRepository | null) => node !== null
+          (node: GitHubRepository | null) => node !== null,
         );
 
         // Set data with totalCount and cursor
@@ -486,14 +491,14 @@ export function RemoteDataDemo() {
         });
       } catch (err) {
         remote.setError(
-          err instanceof Error ? err : new Error("Failed to fetch data")
+          err instanceof Error ? err : new Error("Failed to fetch data"),
         );
         remote.setData([], { totalCount: 0 });
       } finally {
         remote.setLoading(false);
       }
     },
-    [apiToken, searchQuery, remote]
+    [apiToken, searchQuery, remote],
   );
 
   // Subscribe to table events
@@ -501,40 +506,37 @@ export function RemoteDataDemo() {
     fetchRepositories(
       pagination,
       table.getSortingState(),
-      table.getFilterState()
+      table.getFilterState(),
     );
   });
 
   useSeizenTableEvent(table, "sorting-change", (sorting) => {
-    remote.clearCursors();
-    table.setPageIndex(0);
+    resetRemotePagination();
     fetchRepositories(
       { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
       sorting,
-      table.getFilterState()
+      table.getFilterState(),
     );
   });
 
   useSeizenTableEvent(table, "filter-change", (filters) => {
-    remote.clearCursors();
-    table.setPageIndex(0);
+    resetRemotePagination();
     fetchRepositories(
       { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
       table.getSortingState(),
-      filters
+      filters,
     );
   });
 
   // Handle fetch button click
   const handleFetch = useCallback(() => {
-    remote.clearCursors();
-    table.setPageIndex(0);
+    resetRemotePagination();
     fetchRepositories(
       { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
       table.getSortingState(),
-      table.getFilterState()
+      table.getFilterState(),
     );
-  }, [remote, table, fetchRepositories]);
+  }, [resetRemotePagination, table, fetchRepositories]);
 
   // Handle API token change
   const handleApiTokenChange = useCallback((token: string) => {
@@ -545,10 +547,9 @@ export function RemoteDataDemo() {
   const handleSearchQueryChange = useCallback(
     (query: string) => {
       setSearchQuery(query);
-      remote.clearCursors();
-      table.setPageIndex(0);
+      resetRemotePagination();
     },
-    [remote, table]
+    [resetRemotePagination],
   );
 
   return (

@@ -3,7 +3,7 @@ title: Remote Data
 description: Learn how to integrate Seizen Table with external data sources like REST APIs, GraphQL, or TanStack DB.
 ---
 
-import { Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
 
 Seizen Table supports a **Remote Mode** that enables seamless integration with external data sources. In this mode, filtering, sorting, and pagination are handled by your external data source (e.g., REST API, GraphQL, TanStack DB), while Seizen Table manages the UI state.
 
@@ -28,9 +28,48 @@ const table = useSeizenTable({
   remote: { totalRowCount: 1000 },
 });
 ```
-
 <Aside type="tip">
   When `remote` is enabled, Seizen Table's internal filtering, sorting, and pagination are disabled. The `data` prop is expected to already be processed by your external source.
+</Aside>
+
+## Data State Helper (`useRemoteData`)
+
+If you want a small helper to manage remote-related state (data/loading/error/totalCount/cursors), use `useRemoteData` from `@izumisy/seizen-table-plugins/remote`.
+
+```tsx
+import { useSeizenTable, SeizenTable } from "@izumisy/seizen-table";
+import { useRemoteData } from "@izumisy/seizen-table-plugins/remote";
+
+const remote = useRemoteData<User>();
+
+const table = useSeizenTable({
+  data: remote.data,
+  columns,
+  remote: remote.getRemoteOptions(),
+});
+
+return <SeizenTable table={table} loading={remote.loading} />;
+```
+
+### What it does
+
+`useRemoteData` is an optional helper hook that manages **only data-related state** for Remote Mode.
+It does **not** manage table UI state (pagination/sorting/filters); those are still owned by `useSeizenTable`.
+
+- **Data state**: `data`, `loading`, `error`
+- **Server information**: `totalCount` (used to calculate page count)
+- **Cursor utilities**: `getCursor(pageIndex)`, `clearCursors()` for cursor-based pagination
+- **Remote option helper**: `getRemoteOptions()` to feed `remote: true` / `remote: { totalRowCount }` appropriately
+
+### Why use it
+
+- Keeps responsibilities separated: table state vs. network/data state
+- Avoids repeating the same `useState` bundle across screens/tables
+- Makes cursor-based pagination easier to implement consistently
+- Gives a single, predictable place to set `loading/error` and the server `totalCount`
+
+<Aside type="note">
+  `useRemoteData` is a convenience helper. If your app already has a data-fetching layer (React Query, SWR, TanStack DB, etc.), you can skip it and pass processed `data` + `remote` options to `useSeizenTable` directly.
 </Aside>
 
 ## How It Works
@@ -46,6 +85,13 @@ In Remote Mode:
 3. Events are emitted (`filter-change`, `sorting-change`, `pagination-change`)
 4. Your app subscribes to events and updates the external data source
 5. New `data` prop is passed to the table
+
+In many remote setups, a sorting/filter change should reset pagination to the first page. If you use cursor-based pagination, you usually also want to clear cursors at the same time:
+
+```ts
+remote.clearCursors();
+table.setPageIndex(0);
+```
 
 ## Loading State
 
@@ -65,92 +111,134 @@ Use the `loading` prop to show a loading overlay while fetching data:
 />
 ```
 
+### CSS Variables
+
+Customize the loading overlay appearance:
+
+```css
+:root {
+  --szui-loading-overlay-bg: rgba(255, 255, 255, 0.8);
+  --szui-spinner-size: 32px;
+  --szui-spinner-color: #3b82f6;
+}
+```
+
 ## Complete Example
 
-Here's a complete example integrating with a REST API:
+Here's a complete example integrating with a REST API using `useRemoteData`:
 
 ```tsx
-import { useState, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { 
   useSeizenTable, 
   useSeizenTableEvent, 
   SeizenTable,
-  type ColumnFiltersState,
-  type SortingState,
-  type PaginationState,
 } from "@izumisy/seizen-table";
-import { FilterPlugin } from "@izumisy/seizen-table-plugins";
+import { FilterPlugin } from "@izumisy/seizen-table-plugins/filter";
+import { useRemoteData } from "@izumisy/seizen-table-plugins/remote";
 
 function UsersTable() {
-  const [data, setData] = useState<User[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // State for external data fetching
-  const [filters, setFilters] = useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [pagination, setPagination] = useState<PaginationState>({ 
-    pageIndex: 0, 
-    pageSize: 20 
-  });
+  const remote = useRemoteData<User>();
   
   const table = useSeizenTable({
-    data,
+    data: remote.data,
     columns,
-    plugins: [FilterPlugin()],
-    remote: { totalRowCount: totalCount },
+    plugins: [FilterPlugin.configure({ disableGlobalSearch: true })],
+    remote: remote.getRemoteOptions(),
   });
-  
-  // Subscribe to state change events
-  useSeizenTableEvent(table, "filter-change", setFilters);
-  useSeizenTableEvent(table, "sorting-change", setSorting);
-  useSeizenTableEvent(table, "pagination-change", setPagination);
-  
-  // Fetch data when state changes
-  useEffect(() => {
-    const controller = new AbortController();
-    
-    const fetchData = async () => {
-      setIsLoading(true);
+
+  const resetRemotePagination = useCallback(() => {
+    remote.clearCursors();
+    table.setPageIndex(0);
+  }, [remote, table]);
+
+  const fetchUsers = useCallback(
+    async (
+      pagination: { pageIndex: number; pageSize: number },
+      sorting: { id: string; desc: boolean }[],
+      filters: { id: string; value: unknown }[]
+    ) => {
+      remote.setLoading(true);
+      remote.setError(null);
+
       try {
         const query = new URLSearchParams();
-        
-        // Convert ColumnFiltersState to query params
+
+        // Convert filter state to query params (example)
         filters.forEach((f) => {
-          const { operator, value } = f.value as { operator: string; value: string };
+          const { operator, value } = f.value as {
+            operator: string;
+            value: string;
+          };
           query.append(`filter[${f.id}][${operator}]`, value);
         });
-        
+
         // Add sorting
         sorting.forEach((s) => {
           query.append("sort", `${s.desc ? "-" : ""}${s.id}`);
         });
-        
+
         // Add pagination
         query.append("page", String(pagination.pageIndex + 1));
         query.append("limit", String(pagination.pageSize));
-        
-        const res = await fetch(`/api/users?${query}`, { 
-          signal: controller.signal 
-        });
+
+        // Optional: cursor-based pagination
+        const cursor = remote.getCursor(pagination.pageIndex - 1);
+        if (cursor) query.append("cursor", cursor);
+
+        const res = await fetch(`/api/users?${query}`);
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         const json = await res.json();
-        
-        setData(json.items);
-        setTotalCount(json.total);
+
+        remote.setData(json.items, {
+          totalCount: json.total,
+          cursor: json.nextCursor,
+        });
       } catch (e) {
-        if ((e as Error).name !== "AbortError") {
-          console.error(e);
-        }
+        remote.setError(e instanceof Error ? e : new Error("Fetch failed"));
+        remote.setData([], { totalCount: 0 });
       } finally {
-        setIsLoading(false);
+        remote.setLoading(false);
       }
-    };
-    
-    fetchData();
-    return () => controller.abort();
-  }, [filters, sorting, pagination]);
+    },
+    [remote]
+  );
   
-  return <SeizenTable table={table} loading={isLoading} />;
+  // Fetch data on pagination change
+  useSeizenTableEvent(table, "pagination-change", (pagination) => {
+    fetchUsers(pagination, table.getSortingState(), table.getFilterState());
+  });
+
+  // Sorting changes usually reset to the first page
+  useSeizenTableEvent(table, "sorting-change", (sorting) => {
+    resetRemotePagination();
+    fetchUsers(
+      { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
+      sorting,
+      table.getFilterState()
+    );
+  });
+
+  // Filter changes usually reset to the first page
+  useSeizenTableEvent(table, "filter-change", (filters) => {
+    resetRemotePagination();
+    fetchUsers(
+      { pageIndex: 0, pageSize: table.getPaginationState().pageSize },
+      table.getSortingState(),
+      filters
+    );
+  });
+
+  // Initial fetch
+  useEffect(() => {
+    fetchUsers(
+      table.getPaginationState(),
+      table.getSortingState(),
+      table.getFilterState()
+    );
+  }, [fetchUsers, table]);
+  
+  return <SeizenTable table={table} loading={remote.loading} />;
 }
 ```
 
@@ -169,17 +257,5 @@ function MyPluginComponent() {
   }
   
   return <GlobalSearchInput />;
-}
-```
-
-## CSS Variables
-
-Customize the loading overlay appearance:
-
-```css
-:root {
-  --szui-loading-overlay-bg: rgba(255, 255, 255, 0.8);
-  --szui-spinner-size: 32px;
-  --szui-spinner-color: #3b82f6;
 }
 ```
