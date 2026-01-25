@@ -30,6 +30,6 @@
   },
   "devDependencies": {
     "@vanilla-extract/vite-plugin": "^5.1.4",
-    "typescript": "5.8.2"
+    "typescript": "5.9.3"
   }
 }
