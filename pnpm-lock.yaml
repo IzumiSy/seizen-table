@@ -58,13 +58,13 @@ importers:
         version: 0.7.0(@astrojs/starlight@0.37.2(astro@5.16.15(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.56.0)(typescript@5.8.2)(yaml@2.8.2)))(astro@5.16.15(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.56.0)(typescript@5.8.2)(yaml@2.8.2))
       starlight-typedoc:
         specifier: ^0.21.5
-        version: 0.21.5(@astrojs/starlight@0.37.2(astro@5.16.15(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.56.0)(typescript@5.8.2)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.8.2)))(typedoc@0.28.15(typescript@5.8.2))
+        version: 0.21.5(@astrojs/starlight@0.37.2(astro@5.16.15(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.56.0)(typescript@5.8.2)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.8.2)))(typedoc@0.28.16(typescript@5.8.2))
       typedoc:
-        specifier: ^0.28.15
-        version: 0.28.15(typescript@5.8.2)
+        specifier: ^0.28.16
+        version: 0.28.16(typescript@5.8.2)
       typedoc-plugin-markdown:
         specifier: ^4.9.0
-        version: 4.9.0(typedoc@0.28.15(typescript@5.8.2))
+        version: 4.9.0(typedoc@0.28.16(typescript@5.8.2))
     devDependencies:
       '@vanilla-extract/vite-plugin':
         specifier: ^5.1.4
@@ -2030,8 +2030,8 @@ packages:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
     engines: {node: '>=0.12'}
 
-  entities@7.0.0:
-    resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
+  entities@7.0.1:
+    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
     engines: {node: '>=0.12'}
 
   environment@1.1.0:
@@ -3352,8 +3352,8 @@ packages:
     peerDependencies:
       typedoc: 0.28.x
 
-  typedoc@0.28.15:
-    resolution: {integrity: sha512-mw2/2vTL7MlT+BVo43lOsufkkd2CJO4zeOSuWQQsiXoV2VuEn7f6IZp2jsUDPmBMABpgR0R5jlcJ2OGEFYmkyg==}
+  typedoc@0.28.16:
+    resolution: {integrity: sha512-x4xW77QC3i5DUFMBp0qjukOTnr/sSg+oEs86nB3LjDslvAmwe/PUGDWbe3GrIqt59oTqoXK5GRK9tAa0sYMiog==}
     engines: {node: '>= 18', pnpm: '>= 10'}
     hasBin: true
     peerDependencies:
@@ -5331,7 +5331,7 @@ snapshots:
     dependencies:
       '@babel/parser': 7.28.6
       '@vue/shared': 3.5.26
-      entities: 7.0.0
+      entities: 7.0.1
       estree-walker: 2.0.2
       source-map-js: 1.2.1
 
@@ -5795,7 +5795,7 @@ snapshots:
 
   entities@6.0.1: {}
 
-  entities@7.0.0: {}
+  entities@7.0.1: {}
 
   environment@1.1.0: {}
 
@@ -7529,12 +7529,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-typedoc@0.21.5(@astrojs/starlight@0.37.2(astro@5.16.15(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.56.0)(typescript@5.8.2)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.8.2)))(typedoc@0.28.15(typescript@5.8.2)):
+  starlight-typedoc@0.21.5(@astrojs/starlight@0.37.2(astro@5.16.15(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.56.0)(typescript@5.8.2)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.8.2)))(typedoc@0.28.16(typescript@5.8.2)):
     dependencies:
       '@astrojs/starlight': 0.37.2(astro@5.16.15(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.56.0)(typescript@5.8.2)(yaml@2.8.2))
       github-slugger: 2.0.0
-      typedoc: 0.28.15(typescript@5.8.2)
-      typedoc-plugin-markdown: 4.9.0(typedoc@0.28.15(typescript@5.8.2))
+      typedoc: 0.28.16(typescript@5.8.2)
+      typedoc-plugin-markdown: 4.9.0(typedoc@0.28.16(typescript@5.8.2))
 
   std-env@3.10.0: {}
 
@@ -7675,11 +7675,11 @@ snapshots:
 
   type-fest@4.41.0: {}
 
-  typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.8.2)):
+  typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.8.2)):
     dependencies:
-      typedoc: 0.28.15(typescript@5.8.2)
+      typedoc: 0.28.16(typescript@5.8.2)
 
-  typedoc@0.28.15(typescript@5.8.2):
+  typedoc@0.28.16(typescript@5.8.2):
     dependencies:
       '@gerrit0/mini-shiki': 3.21.0
       lunr: 2.3.9
