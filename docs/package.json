@@ -20,7 +20,7 @@
     "@vanilla-extract/css": "^1.18.0",
     "astro": "^5.16.15",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react-dom": "^19.2.4",
     "sharp": "^0.34.2",
     "starlight-links-validator": "^0.19.2",
     "starlight-llms-txt": "^0.7.0",
