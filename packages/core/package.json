@@ -47,6 +47,6 @@
     "vite-plugin-externalize-deps": "^0.10.0",
     "vite-tsconfig-paths": "^6.0.4",
     "vitest": "^4.0.16",
-    "zod": "^4.3.5"
+    "zod": "^4.3.6"
   }
 }
